@@ -1,1 +1,1 @@
-# template-java-microservice
+# spontaneous-payments

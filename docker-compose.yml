@@ -5,7 +5,7 @@ services:
     image: 'spontaneous-payments:latest'
     build:
       context: .
-    container_name: app
+    container_name: spontaneous-payments
     ports:
       - 8080:8080
 
