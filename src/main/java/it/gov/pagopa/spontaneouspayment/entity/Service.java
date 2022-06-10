@@ -42,8 +42,6 @@ public class Service {
 	private String basePath;
 	
 	private List<ServiceProperty> properties;
-	
-    
-    
+
 	
 }

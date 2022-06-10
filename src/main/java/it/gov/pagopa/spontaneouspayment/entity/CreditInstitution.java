@@ -3,6 +3,7 @@ package it.gov.pagopa.spontaneouspayment.entity;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 
 import org.springframework.data.annotation.CreatedDate;
@@ -37,6 +38,7 @@ public class CreditInstitution {
 	    private LocalDateTime lastUpdatedDate;
 	    private String status;
 	    
+	    @Valid
 	    private List<ServiceRef> services;
   
 }

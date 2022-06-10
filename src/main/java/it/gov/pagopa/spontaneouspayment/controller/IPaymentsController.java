@@ -4,6 +4,7 @@ import javax.validation.Valid;
 
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -24,6 +25,7 @@ import it.gov.pagopa.spontaneouspayment.model.response.PaymentPositionModel;
 
 @Tag(name = "Payments API")
 @RequestMapping
+@Validated
 public interface IPaymentsController {
 
 	@Operation(summary = "The Organization creates a spontaneous payment.", security = {@SecurityRequirement(name = "ApiKey"), @SecurityRequirement(name = "Authorization")}, operationId = "createSpontaneousPayment")

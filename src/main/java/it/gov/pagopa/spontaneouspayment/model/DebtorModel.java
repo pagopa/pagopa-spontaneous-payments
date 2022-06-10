@@ -5,6 +5,7 @@ import java.io.Serializable;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+
 import it.gov.pagopa.spontaneouspayment.model.enumeration.Type;
 import lombok.Data;
 import lombok.NoArgsConstructor;

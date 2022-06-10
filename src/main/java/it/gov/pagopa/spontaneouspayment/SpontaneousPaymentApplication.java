@@ -87,9 +87,6 @@ public class SpontaneousPaymentApplication implements CommandLineRunner{
 		serviceRepository.save(s1);
 		serviceRepository.save(s2);
         
-        // to find by Id, please specify partition key value if collection is partitioned
-        //final Optional<CreditInstitution> result = ciRepository.findById(ci.getId());
-        //System.out.print("***** result findById: " + result.get().getId());
 	}
 
 }
