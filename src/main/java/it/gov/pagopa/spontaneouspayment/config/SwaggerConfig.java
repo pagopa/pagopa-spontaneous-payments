@@ -18,7 +18,7 @@ import java.util.Map;
 
 @Configuration
 public class SwaggerConfig {
-	public static final String HEADER_REQUEST_ID = "X-Request-Id";
+    public static final String HEADER_REQUEST_ID = "X-Request-Id";
 
     @Bean
     public OpenAPI customOpenAPI(@Value("${application.description}") String appDescription, @Value("${application.version}") String appVersion) {

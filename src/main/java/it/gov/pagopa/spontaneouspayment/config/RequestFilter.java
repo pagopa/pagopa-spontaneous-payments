@@ -20,8 +20,8 @@ import java.util.UUID;
 @Order(Ordered.HIGHEST_PRECEDENCE)
 @Slf4j
 public class RequestFilter implements Filter {
-	
-	public static final String HEADER_REQUEST_ID = "X-Request-Id";
+
+    public static final String HEADER_REQUEST_ID = "X-Request-Id";
 
     /**
      * Get the request ID from the custom header "X-Request-Id" if present, otherwise it generates one.

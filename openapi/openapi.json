@@ -42,24 +42,6 @@
                     "required": true
                 },
                 "responses": {
-                    "400": {
-                        "description": "Malformed request.",
-                        "headers": {
-                            "X-Request-Id": {
-                                "description": "This header identifies the call",
-                                "schema": {
-                                    "type": "string"
-                                }
-                            }
-                        },
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ProblemJson"
-                                }
-                            }
-                        }
-                    },
                     "201": {
                         "description": "Request created.",
                         "headers": {
@@ -78,13 +60,20 @@
                             }
                         }
                     },
-                    "401": {
-                        "description": "Wrong or missing function key.",
+                    "500": {
+                        "description": "Service unavailable.",
                         "headers": {
                             "X-Request-Id": {
                                 "description": "This header identifies the call",
                                 "schema": {
                                     "type": "string"
+                                }
+                            }
+                        },
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemJson"
                                 }
                             }
                         }
@@ -107,8 +96,8 @@
                             }
                         }
                     },
-                    "500": {
-                        "description": "Service unavailable.",
+                    "400": {
+                        "description": "Malformed request.",
                         "headers": {
                             "X-Request-Id": {
                                 "description": "This header identifies the call",
@@ -121,6 +110,17 @@
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/ProblemJson"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Wrong or missing function key.",
+                        "headers": {
+                            "X-Request-Id": {
+                                "description": "This header identifies the call",
+                                "schema": {
+                                    "type": "string"
                                 }
                             }
                         }
@@ -201,7 +201,8 @@
             },
             "ServiceModel": {
                 "required": [
-                    "id"
+                    "id",
+                    "properties"
                 ],
                 "type": "object",
                 "properties": {
@@ -217,6 +218,9 @@
                 }
             },
             "ServicePropertyModel": {
+                "required": [
+                    "name"
+                ],
                 "type": "object",
                 "properties": {
                     "name": {
@@ -228,6 +232,10 @@
                 }
             },
             "SpontaneousPaymentModel": {
+                "required": [
+                    "debtor",
+                    "service"
+                ],
                 "type": "object",
                 "properties": {
                     "debtor": {

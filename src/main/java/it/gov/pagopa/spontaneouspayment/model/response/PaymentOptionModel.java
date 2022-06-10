@@ -20,14 +20,20 @@ public class PaymentOptionModel implements Serializable {
 
     @NotBlank(message = "iuv is required")
     private String iuv;
+
     @NotBlank(message = "amount is required")
     private long amount;
+
     private String description;
+
     @NotBlank(message = "is partial payment is required")
     private Boolean isPartialPayment;
+
     @NotBlank(message = "due date is required")
     private LocalDateTime dueDate;
+
     private LocalDateTime retentionDate;
+
     private long fee;
 
     private List<TransferModel> transfer = new ArrayList<>();

@@ -1,13 +1,37 @@
 # Spontaneous Payments
+
 PagoPA service for citizen/corporate spontaneous payments
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=pagopa_pagopa-api-config&metric=alert_status)](https://sonarcloud.io/project/overview?id=pagopa_pagopa-spontaneous-payments)
+
+- [Spontaneous Payments](#spontaneous-payments)
+    * [Api Documentation 📖](#api-documentation---)
+    * [Technology Stack](#technology-stack)
+    * [Start Project Locally 🚀](#start-project-locally---)
+        + [Prerequisites](#prerequisites)
+        + [Run docker container](#run-docker-container)
+    * [Develop Locally 💻](#develop-locally---)
+        + [Run](#run)
+        + [Prerequisites](#prerequisites-1)
+        + [Run the project](#run-the-project)
+        + [Configure Cosmos emulator](#configure-cosmos-emulator)
+        + [Testing 🧪](#testing---)
+            - [Unit testing](#unit-testing)
+            - [Integration testing](#integration-testing)
+            - [Load testing](#load-testing)
+    * [Contributors 👥](#contributors---)
+        + [Mainteiners](#mainteiners)
+
 ---
+
 ## Api Documentation 📖
+
 Spring application exposes API to manage the _Spontaneous Payments_.
 
-See the [OpenApi 3 here.](https://editor.swagger.io/?url=https://raw.githubusercontent.com/pagopa/pagopa-spontaneous-payments/main/openapi/openapi.yaml)
+See
+the [OpenApi 3 here.](https://editor.swagger.io/?url=https://raw.githubusercontent.com/pagopa/pagopa-spontaneous-payments/main/openapi/openapi.yaml)
 
 In local env typing following url on browser for ui interface:
+
 ```
 http://localhost:8080/swagger-ui/index.html
 

@@ -1,15 +1,5 @@
 package it.gov.pagopa.spontaneouspayment.controller;
 
-import javax.validation.Valid;
-
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -21,6 +11,16 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import it.gov.pagopa.spontaneouspayment.model.ProblemJson;
 import it.gov.pagopa.spontaneouspayment.model.SpontaneousPaymentModel;
 import it.gov.pagopa.spontaneouspayment.model.response.PaymentPositionModel;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
 
 
 @Tag(name = "Payments API")
@@ -28,7 +28,7 @@ import it.gov.pagopa.spontaneouspayment.model.response.PaymentPositionModel;
 @Validated
 public interface IPaymentsController {
 
-	@Operation(summary = "The Organization creates a spontaneous payment.", security = {@SecurityRequirement(name = "ApiKey"), @SecurityRequirement(name = "Authorization")}, operationId = "createSpontaneousPayment")
+    @Operation(summary = "The Organization creates a spontaneous payment.", security = {@SecurityRequirement(name = "ApiKey"), @SecurityRequirement(name = "Authorization")}, operationId = "createSpontaneousPayment")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Request created."),
             @ApiResponse(responseCode = "400", description = "Malformed request.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ProblemJson.class))),
@@ -40,6 +40,6 @@ public interface IPaymentsController {
             consumes = MediaType.APPLICATION_JSON_VALUE)
     ResponseEntity<PaymentPositionModel> createSpontaneousPayment(
             @Parameter(description = "Organization fiscal code, the fiscal code of the Organization.", required = true)
-            @PathVariable("organizationfiscalcode") String organizationFiscalCode,
+            @NotBlank @PathVariable("organizationfiscalcode") String organizationFiscalCode,
             @Valid @RequestBody SpontaneousPaymentModel spontaneousPayment);
 }

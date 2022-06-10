@@ -2,7 +2,7 @@
 
 # set -e
 
-# force delete image and container of MS AZ Cosmos DB Emulator
+# force delete image and container of MS AZ Cosmos DB Emulator
 docker container rm -f test-linux-emulator
 # force delete image and container of MS AZ Cosmos DB Emulator
 docker image rm -f mcr.microsoft.com/cosmosdb/linux/azure-cosmos-emulator:latest
