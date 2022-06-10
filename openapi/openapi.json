@@ -13,7 +13,7 @@
         }
     ],
     "paths": {
-        "/organizations/{organizationfiscalcode}/spontaneouspayment": {
+        "/organizations/{organizationfiscalcode}/spontaneouspayments": {
             "post": {
                 "tags": [
                     "Payments API"
@@ -42,24 +42,6 @@
                     "required": true
                 },
                 "responses": {
-                    "201": {
-                        "description": "Request created.",
-                        "headers": {
-                            "X-Request-Id": {
-                                "description": "This header identifies the call",
-                                "schema": {
-                                    "type": "string"
-                                }
-                            }
-                        },
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/PaymentPositionModel"
-                                }
-                            }
-                        }
-                    },
                     "400": {
                         "description": "Malformed request.",
                         "headers": {
@@ -74,6 +56,24 @@
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/ProblemJson"
+                                }
+                            }
+                        }
+                    },
+                    "201": {
+                        "description": "Request created.",
+                        "headers": {
+                            "X-Request-Id": {
+                                "description": "This header identifies the call",
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        },
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/PaymentPositionModel"
                                 }
                             }
                         }
