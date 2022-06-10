@@ -4,9 +4,11 @@
 
 # force delete image and container of MS AZ Cosmos DB Emulator
 docker container rm -f test-linux-emulator
+# force delete image and container of MS AZ Cosmos DB Emulator
 docker image rm -f mcr.microsoft.com/cosmosdb/linux/azure-cosmos-emulator:latest
 
 PORT=$1
+JVM_HOME=$2
 
 # Main ...
 if [ -z "$PORT" ]
@@ -17,15 +19,22 @@ else
   echo "CosmosDB starting on specific port $PORT"
 fi
 
+if [ -z "$JVM_HOME" ]
+then
+  JVM_HOME=$JAVA_HOME
+  echo "Using DEFAULT JAVA_HOME $JVM_HOME"
+else
+  echo "Using custom JAVA_HOME $JVM_HOME"
+fi
+
 
 # Azure Cosmos DB Emulator
 URL="https://localhost:$PORT/_explorer/index.html"
 
-
-ipaddr="`ifconfig | grep "inet " | grep -Fv 127.0.0.1 | awk '{print $2}' | head -n 1`" && echo $ipaddr
+ipaddr=$(ifconfig | grep "inet " | grep -Fv 127.0.0.1 | awk '{print $2}' | head -n 1)
+echo "Using ${ipaddr} for CosmosDB configuration..."
 
 docker pull mcr.microsoft.com/cosmosdb/linux/azure-cosmos-emulator
-
 
 docker run \
     --detach \
@@ -40,7 +49,7 @@ docker run \
     --tty \
     mcr.microsoft.com/cosmosdb/linux/azure-cosmos-emulator
 
-echo -n "Cosmos starting..."
+echo -n "CosmosDB starting..."
 cosmos_started="`docker logs test-linux-emulator | grep -wc Started`"
 echo -n $cosmos_started
 # check cosmos is UP
@@ -54,12 +63,19 @@ done
 
 echo "!!! STARTED !!!"
 
-curl -k https://$ipaddr:$PORT/_explorer/emulator.pem > emulatorcert.crt
+echo "Setting certificate..."
+
+curl -k "https://${ipaddr}:${PORT}/_explorer/emulator.pem" > emulatorcert.crt
 
 # add keychain accesss
 sudo security add-trusted-cert -d -r trustRoot -k /Library/Keychains/System.keychain emulatorcert.crt
 
 # add jvm trust-store
-sudo keytool -trustcacerts -keystore "${JAVA_HOME}/lib/security/cacerts" -storepass changeit -importcert -alias testalias -file emulatorcert.crt
+keystore_alias="cosmoskeystore"
+echo "Remember, the keystore passowrd is: changeit"
+sudo keytool -delete -alias $keystore_alias -keystore "${JAVA_HOME}/lib/security/cacerts"
+sudo keytool -trustcacerts -keystore "${JAVA_HOME}/lib/security/cacerts" -storepass changeit -importcert -alias $keystore_alias -file emulatorcert.crt
+
+echo "Setting certificate...done."
 
 open $URL
