@@ -2,3 +2,5 @@ target/**/*
 .vscode
 /.idea/
 emulatorcert.crt
+*.env
+**/*paDemandPaymentNoticeRequest.xml
