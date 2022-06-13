@@ -73,7 +73,10 @@ If all right, eventually you'll see something like that:
 ## Develop Locally 💻
 
 ### Run
-Todo
+
+```sh
+mvn spring-boot:run -Dspring-boot.run.profiles=local
+```
 
 ### Prerequisites
 - git
