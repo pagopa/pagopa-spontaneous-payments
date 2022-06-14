@@ -94,9 +94,18 @@ The easiest way to develop locally is start only db container and run spring-boo
 ### Configure Cosmos emulator 
 Launch the script in `utilities` folder:
 
-`
-sh cosmos.sh <port> <java_home>
-`
+
+To start CosmosDB
+```sh
+sh cosmos_start.sh <port> <java_home>
+```
+
+To init db/containers
+```py
+python cosmos_init_db.py
+```
+> NOTE : install `pip install python-dotenv && pip install azure-cosmos` and copy env file `cp .env.exmaple .env`
+
 ### Testing 🧪
 
 #### Unit testing
