@@ -91,7 +91,7 @@ The easiest way to develop locally is start only db container and run spring-boo
 ...
 ```
 
-### Configure Cosmos emulator 
+### Configure Cosmos emulator
 Launch the script in `utilities` folder:
 
 
