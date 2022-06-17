@@ -88,7 +88,7 @@ public class PaymentsService {
     }
 
     private CreditInstitution getCreditorInstitution(String organizationFiscalCode) {
-        return ciRepository.findByOrganizationFiscalCode(organizationFiscalCode)
+        return ciRepository.findByFiscalCode(organizationFiscalCode)
                 .orElseThrow(() -> new AppException(AppError.ORGANIZATION_SERVICE_NOT_FOUND, organizationFiscalCode));
     }
 

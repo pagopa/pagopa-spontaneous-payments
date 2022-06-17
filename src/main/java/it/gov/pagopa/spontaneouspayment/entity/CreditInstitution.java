@@ -1,6 +1,8 @@
 package it.gov.pagopa.spontaneouspayment.entity;
 
 import com.azure.spring.data.cosmos.core.mapping.Container;
+import com.azure.spring.data.cosmos.core.mapping.PartitionKey;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,20 +16,17 @@ import javax.validation.constraints.NotBlank;
 import java.time.LocalDateTime;
 import java.util.List;
 
-@Container(containerName = "credit_institution", ru = "400")
+@Container(containerName = "${azure.cosmos.ec-container-name}", autoCreateContainer = false)
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class CreditInstitution {
 
-	//@Id
-	//@GeneratedValue
-	//private String id;
 
 	@Id
-	//@PartitionKey
-	private String organizationFiscalCode;
+	@PartitionKey
+	private String fiscalCode;
 
 	@NotBlank(message = "company name is required")
 	private String companyName;
