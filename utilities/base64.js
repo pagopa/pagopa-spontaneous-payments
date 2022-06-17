@@ -57,7 +57,7 @@ paDemandPaymentNoticeRequest=`<soapenv:Envelope xmlns:soapenv="http://schemas.xm
 `
 
 paDemandPaymentNoticeRequestName=`paDemandPaymentNoticeRequest`
-
 let nomeFile=`${idService}-${paDemandPaymentNoticeRequestName}.xml`
+console.log(nomeFile)
 require("fs").writeFileSync(nomeFile, paDemandPaymentNoticeRequest);
 
