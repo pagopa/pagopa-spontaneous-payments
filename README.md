@@ -128,7 +128,7 @@ Todo
 To emulate a [paDemandPaymentNotice](https://pagopa.atlassian.net/wiki/spaces/PAG/pages/450626532/paDemandPaymentNotice) under `utilities` folder typing :
 
 ```sh
-
+sh paDemandPaymentNotice.sh
 ```
 
 ## Contributors 👥
