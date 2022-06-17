@@ -117,10 +117,19 @@ Typing `mvn clean verify`, if all right you'll see following stuffs
 ```
 
 #### Integration testing
+
 Todo
 
 #### Load testing
 Todo
+
+#### ✋ Manual testing
+
+To emulate a [paDemandPaymentNotice](https://pagopa.atlassian.net/wiki/spaces/PAG/pages/450626532/paDemandPaymentNotice) under `utilities` folder typing :
+
+```sh
+
+```
 
 ## Contributors 👥
 Made with ❤️ from PagoPa S.p.A.
