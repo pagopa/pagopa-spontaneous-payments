@@ -1,24 +1,28 @@
 package it.gov.pagopa.spontaneouspayment;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.CommandLineRunner;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.DependsOn;
+
 import com.azure.spring.data.cosmos.core.mapping.EnableCosmosAuditing;
 import com.azure.spring.data.cosmos.repository.config.EnableCosmosRepositories;
+
 import it.gov.pagopa.spontaneouspayment.entity.CreditInstitution;
 import it.gov.pagopa.spontaneouspayment.entity.Service;
 import it.gov.pagopa.spontaneouspayment.entity.ServiceProperty;
 import it.gov.pagopa.spontaneouspayment.entity.ServiceRef;
 import it.gov.pagopa.spontaneouspayment.repository.CIRepository;
 import it.gov.pagopa.spontaneouspayment.repository.ServiceRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.CommandLineRunner;
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @SpringBootApplication
 @EnableCosmosRepositories("it.gov.pagopa.spontaneouspayment.repository")
 @EnableCosmosAuditing
+@DependsOn("expressionResolver")
 public class SpontaneousPaymentApplication implements CommandLineRunner {
 
     @Autowired
@@ -33,7 +37,7 @@ public class SpontaneousPaymentApplication implements CommandLineRunner {
 
     public void run(String... var1) {
         CreditInstitution ci = new CreditInstitution();
-        ci.setOrganizationFiscalCode("organizationTest");
+        ci.setFiscalCode("organizationTest");
         ci.setCompanyName("Comune di Roma");
         ci.setStatus("ATTIVO");
 

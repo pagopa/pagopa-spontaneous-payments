@@ -12,9 +12,9 @@ import java.util.Optional;
 @Repository
 public interface CIRepository extends CosmosRepository<CreditInstitution, String> {
 
-    @Query("select TOP 1 * from c where c.organizationFiscalCode = @organizationFiscalCode and EXISTS (SELECT VALUE t FROM t IN c.services WHERE t.id = @serviceId)")
+    @Query("select TOP 1 * from c where c.fiscalCode = @organizationFiscalCode and EXISTS (SELECT VALUE t FROM t IN c.services WHERE t.id = @serviceId)")
     List<CreditInstitution> getCreditInstitutionByOrgFiscCodeAndServiceId(@Param("organizationFiscalCode") String organizationFiscalCode, @Param("serviceId") String serviceId);
 
-    Optional<CreditInstitution> findByOrganizationFiscalCode(String organizationFiscalCode);
+    Optional<CreditInstitution> findByFiscalCode(String organizationFiscalCode);
 
 }

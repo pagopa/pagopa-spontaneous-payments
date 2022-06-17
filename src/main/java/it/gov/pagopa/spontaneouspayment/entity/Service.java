@@ -1,6 +1,8 @@
 package it.gov.pagopa.spontaneouspayment.entity;
 
 import com.azure.spring.data.cosmos.core.mapping.Container;
+import com.azure.spring.data.cosmos.core.mapping.PartitionKey;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,7 +15,7 @@ import javax.validation.constraints.NotBlank;
 import java.time.LocalDateTime;
 import java.util.List;
 
-@Container(containerName = "services", ru = "400")
+@Container(containerName = "${azure.cosmos.service-container-name}", autoCreateContainer = false)
 @Getter
 @Setter
 @NoArgsConstructor
@@ -28,6 +30,7 @@ public class Service {
 	private String description;
 
 	@NotBlank(message = "transfer category is required")
+	@PartitionKey
 	private String transferCategory; // tassonomia
 
 	@NotBlank(message = "remittance information is required")
