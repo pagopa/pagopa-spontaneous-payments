@@ -25,6 +25,7 @@ public class Service {
 	@Id
 	private String id;
 
+	@NotBlank(message = "name is required")
 	private String name;
 
 	private String description;
