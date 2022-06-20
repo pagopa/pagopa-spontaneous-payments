@@ -28,7 +28,7 @@ PagoPA service for citizen/corporate spontaneous payments
 Spring application exposes API to manage the _Spontaneous Payments_.
 
 See
-the [OpenApi 3 here.](https://editor.swagger.io/?url=https://raw.githubusercontent.com/pagopa/pagopa-spontaneous-payments/main/openapi/openapi.yaml)
+the [OpenApi 3 here.](https://editor.swagger.io/?url=https://raw.githubusercontent.com/pagopa/pagopa-spontaneous-payments/main/openapi/openapi.json)
 
 In local env typing following url on browser for ui interface:
 
