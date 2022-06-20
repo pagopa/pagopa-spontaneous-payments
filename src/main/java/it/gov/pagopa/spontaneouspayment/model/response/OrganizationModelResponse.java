@@ -24,13 +24,13 @@ public class OrganizationModelResponse implements Serializable {
 	private static final long serialVersionUID = 6474656487948357626L;
 	
 	@NotBlank(message = "organization fiscal code is required")
-    private String organizationFiscalCode;
+    private String fiscalCode;
 
     @NotBlank(message = "company name is required")
     private String companyName;
     
     @NotNull(message = "status is required")
-    private Status type;
+    private Status status;
 
     @Valid
 	private List<EnrollmentModelResponse> enrollments;

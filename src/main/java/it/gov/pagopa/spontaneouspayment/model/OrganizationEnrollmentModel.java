@@ -1,7 +1,9 @@
 package it.gov.pagopa.spontaneouspayment.model;
 
 import java.io.Serializable;
+import java.util.List;
 
+import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 
 import lombok.Data;
@@ -17,8 +19,8 @@ public class OrganizationEnrollmentModel implements Serializable{
 	
 	@NotBlank(message = "company name is required")
 	private String companyName;
-	@NotBlank(message = "iban is required")
-	private String iban;
-	private String officeName;
+	
+	@Valid
+	private List<CreateEnrollmentModel> enrollments;
 
 }

@@ -12,11 +12,12 @@ import org.springframework.context.annotation.DependsOn;
 import com.azure.spring.data.cosmos.core.mapping.EnableCosmosAuditing;
 import com.azure.spring.data.cosmos.repository.config.EnableCosmosRepositories;
 
-import it.gov.pagopa.spontaneouspayment.entity.CreditInstitution;
+import it.gov.pagopa.spontaneouspayment.entity.Organization;
 import it.gov.pagopa.spontaneouspayment.entity.Service;
 import it.gov.pagopa.spontaneouspayment.entity.ServiceProperty;
 import it.gov.pagopa.spontaneouspayment.entity.ServiceRef;
-import it.gov.pagopa.spontaneouspayment.repository.CIRepository;
+import it.gov.pagopa.spontaneouspayment.model.enumeration.Status;
+import it.gov.pagopa.spontaneouspayment.repository.OrganizationRepository;
 import it.gov.pagopa.spontaneouspayment.repository.ServiceRepository;
 
 @SpringBootApplication
@@ -26,7 +27,7 @@ import it.gov.pagopa.spontaneouspayment.repository.ServiceRepository;
 public class SpontaneousPaymentApplication implements CommandLineRunner {
 
     @Autowired
-    private CIRepository ciRepository;
+    private OrganizationRepository ciRepository;
 
     @Autowired
     private ServiceRepository serviceRepository;
@@ -36,10 +37,10 @@ public class SpontaneousPaymentApplication implements CommandLineRunner {
     }
 
     public void run(String... var1) {
-        CreditInstitution ci = new CreditInstitution();
+        Organization ci = new Organization();
         ci.setFiscalCode("organizationTest");
         ci.setCompanyName("Comune di Roma");
-        ci.setStatus("ATTIVO");
+        ci.setStatus(Status.ENABLED);
 
 
         Service s1 = new Service();
@@ -67,17 +68,17 @@ public class SpontaneousPaymentApplication implements CommandLineRunner {
         s2.setProperties(properties2);
 
         ServiceRef ref1 = new ServiceRef();
-        ref1.setId("id-servizio-1");
+        ref1.setServiceId("id-servizio-1");
         ref1.setIban("iban-1");
         ServiceRef ref2 = new ServiceRef();
-        ref2.setId("id-servizio-2");
+        ref2.setServiceId("id-servizio-2");
         ref2.setIban("iban-2");
         List<ServiceRef> servicesRef = new ArrayList<>();
         servicesRef.add(ref1);
         servicesRef.add(ref2);
 
 
-        ci.setServices(servicesRef);
+        ci.setEnrollments(servicesRef);
 
 
         ciRepository.deleteAll();

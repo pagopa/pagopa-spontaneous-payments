@@ -22,7 +22,7 @@
 				"operationId": "getECEnrollments",
 				"parameters": [
 					{
-						"name": "organizationfiscalcode",
+						"name": "organizationFiscalCode",
 						"in": "path",
 						"description": "The fiscal code of the Organization.",
 						"required": true,
@@ -32,17 +32,6 @@
 					}
 				],
 				"responses": {
-					"401": {
-						"description": "Wrong or missing function key.",
-						"headers": {
-							"X-Request-Id": {
-								"description": "This header identifies the call",
-								"schema": {
-									"type": "string"
-								}
-							}
-						}
-					},
 					"200": {
 						"description": "Obtained all enrollments for the creditor institution.",
 						"headers": {
@@ -96,6 +85,17 @@
 								}
 							}
 						}
+					},
+					"401": {
+						"description": "Wrong or missing function key.",
+						"headers": {
+							"X-Request-Id": {
+								"description": "This header identifies the call",
+								"schema": {
+									"type": "string"
+								}
+							}
+						}
 					}
 				},
 				"security": [
@@ -115,7 +115,7 @@
 				"operationId": "updateEC",
 				"parameters": [
 					{
-						"name": "organizationfiscalcode",
+						"name": "organizationFiscalCode",
 						"in": "path",
 						"description": "The fiscal code of the Organization.",
 						"required": true,
@@ -135,8 +135,8 @@
 					"required": true
 				},
 				"responses": {
-					"400": {
-						"description": "Malformed request.",
+					"500": {
+						"description": "Service unavailable.",
 						"headers": {
 							"X-Request-Id": {
 								"description": "This header identifies the call",
@@ -153,13 +153,20 @@
 							}
 						}
 					},
-					"401": {
-						"description": "Wrong or missing function key.",
+					"400": {
+						"description": "Malformed request.",
 						"headers": {
 							"X-Request-Id": {
 								"description": "This header identifies the call",
 								"schema": {
 									"type": "string"
+								}
+							}
+						},
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ProblemJson"
 								}
 							}
 						}
@@ -200,73 +207,6 @@
 							}
 						}
 					},
-					"500": {
-						"description": "Service unavailable.",
-						"headers": {
-							"X-Request-Id": {
-								"description": "This header identifies the call",
-								"schema": {
-									"type": "string"
-								}
-							}
-						},
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/ProblemJson"
-								}
-							}
-						}
-					}
-				},
-				"security": [
-					{
-						"ApiKey": []
-					},
-					{
-						"Authorization": []
-					}
-				]
-			},
-			"parameters": [
-				{
-					"name": "X-Request-Id",
-					"in": "header",
-					"description": "This header identifies the call, if not passed it is self-generated. This ID is returned in the response.",
-					"schema": {
-						"type": "string"
-					}
-				}
-			]
-		},
-		"/organizations/{organizationFiscalCode}/services/{serviceId}": {
-			"get": {
-				"tags": [
-					"Enrollments API"
-				],
-				"summary": "Return the single enrollment to a service.",
-				"operationId": "getSingleEnrollment",
-				"parameters": [
-					{
-						"name": "organizationfiscalcode",
-						"in": "path",
-						"description": "The fiscal code of the Organization.",
-						"required": true,
-						"schema": {
-							"type": "string"
-						}
-					},
-					{
-						"name": "serviceId",
-						"in": "path",
-						"description": "The service id to enroll.",
-						"required": true,
-						"schema": {
-							"type": "string"
-						}
-					}
-				],
-				"responses": {
 					"401": {
 						"description": "Wrong or missing function key.",
 						"headers": {
@@ -274,190 +214,6 @@
 								"description": "This header identifies the call",
 								"schema": {
 									"type": "string"
-								}
-							}
-						}
-					},
-					"404": {
-						"description": "Not found the enroll service.",
-						"headers": {
-							"X-Request-Id": {
-								"description": "This header identifies the call",
-								"schema": {
-									"type": "string"
-								}
-							}
-						},
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/ProblemJson"
-								}
-							}
-						}
-					},
-					"500": {
-						"description": "Service unavailable.",
-						"headers": {
-							"X-Request-Id": {
-								"description": "This header identifies the call",
-								"schema": {
-									"type": "string"
-								}
-							}
-						},
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/ProblemJson"
-								}
-							}
-						}
-					},
-					"200": {
-						"description": "Obtained single enrollment.",
-						"headers": {
-							"X-Request-Id": {
-								"description": "This header identifies the call",
-								"schema": {
-									"type": "string"
-								}
-							}
-						},
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/EnrollmentModelResponse"
-								}
-							}
-						}
-					}
-				},
-				"security": [
-					{
-						"ApiKey": []
-					},
-					{
-						"Authorization": []
-					}
-				]
-			},
-			"put": {
-				"tags": [
-					"Enrollments API"
-				],
-				"summary": "The organization updates the enrollment to service for the creditor institution.",
-				"operationId": "updateECEnrollment",
-				"parameters": [
-					{
-						"name": "organizationfiscalcode",
-						"in": "path",
-						"description": "The fiscal code of the Organization.",
-						"required": true,
-						"schema": {
-							"type": "string"
-						}
-					},
-					{
-						"name": "serviceId",
-						"in": "path",
-						"description": "The service id to enroll.",
-						"required": true,
-						"schema": {
-							"type": "string"
-						}
-					}
-				],
-				"requestBody": {
-					"content": {
-						"application/json": {
-							"schema": {
-								"$ref": "#/components/schemas/EnrollmentModel"
-							}
-						}
-					},
-					"required": true
-				},
-				"responses": {
-					"404": {
-						"description": "Not found the creditor institution or the enroll service.",
-						"headers": {
-							"X-Request-Id": {
-								"description": "This header identifies the call",
-								"schema": {
-									"type": "string"
-								}
-							}
-						},
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/ProblemJson"
-								}
-							}
-						}
-					},
-					"400": {
-						"description": "Malformed request.",
-						"headers": {
-							"X-Request-Id": {
-								"description": "This header identifies the call",
-								"schema": {
-									"type": "string"
-								}
-							}
-						},
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/ProblemJson"
-								}
-							}
-						}
-					},
-					"401": {
-						"description": "Wrong or missing function key.",
-						"headers": {
-							"X-Request-Id": {
-								"description": "This header identifies the call",
-								"schema": {
-									"type": "string"
-								}
-							}
-						}
-					},
-					"200": {
-						"description": "Request updated.",
-						"headers": {
-							"X-Request-Id": {
-								"description": "This header identifies the call",
-								"schema": {
-									"type": "string"
-								}
-							}
-						},
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/OrganizationModelResponse"
-								}
-							}
-						}
-					},
-					"500": {
-						"description": "Service unavailable.",
-						"headers": {
-							"X-Request-Id": {
-								"description": "This header identifies the call",
-								"schema": {
-									"type": "string"
-								}
-							}
-						},
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/ProblemJson"
 								}
 							}
 						}
@@ -476,22 +232,13 @@
 				"tags": [
 					"Enrollments API"
 				],
-				"summary": "The organization creates a creditor institution with its subscription to the 1st service.",
-				"operationId": "createECAndFirstServiceEnrollment",
+				"summary": "The organization creates a creditor institution with possible enrollments to services.",
+				"operationId": "createEC",
 				"parameters": [
 					{
-						"name": "organizationfiscalcode",
+						"name": "organizationFiscalCode",
 						"in": "path",
 						"description": "The fiscal code of the Organization.",
-						"required": true,
-						"schema": {
-							"type": "string"
-						}
-					},
-					{
-						"name": "serviceId",
-						"in": "path",
-						"description": "The service id to enroll.",
 						"required": true,
 						"schema": {
 							"type": "string"
@@ -509,8 +256,8 @@
 					"required": true
 				},
 				"responses": {
-					"400": {
-						"description": "Malformed request.",
+					"500": {
+						"description": "Service unavailable.",
 						"headers": {
 							"X-Request-Id": {
 								"description": "This header identifies the call",
@@ -527,19 +274,8 @@
 							}
 						}
 					},
-					"401": {
-						"description": "Wrong or missing function key.",
-						"headers": {
-							"X-Request-Id": {
-								"description": "This header identifies the call",
-								"schema": {
-									"type": "string"
-								}
-							}
-						}
-					},
-					"500": {
-						"description": "Service unavailable.",
+					"400": {
+						"description": "Malformed request.",
 						"headers": {
 							"X-Request-Id": {
 								"description": "This header identifies the call",
@@ -574,6 +310,84 @@
 							}
 						}
 					},
+					"401": {
+						"description": "Wrong or missing function key.",
+						"headers": {
+							"X-Request-Id": {
+								"description": "This header identifies the call",
+								"schema": {
+									"type": "string"
+								}
+							}
+						}
+					}
+				},
+				"security": [
+					{
+						"ApiKey": []
+					},
+					{
+						"Authorization": []
+					}
+				]
+			},
+			"parameters": [
+				{
+					"name": "X-Request-Id",
+					"in": "header",
+					"description": "This header identifies the call, if not passed it is self-generated. This ID is returned in the response.",
+					"schema": {
+						"type": "string"
+					}
+				}
+			]
+		},
+		"/organizations/{organizationFiscalCode}/services/{serviceId}": {
+			"get": {
+				"tags": [
+					"Enrollments API"
+				],
+				"summary": "Return the single enrollment to a service.",
+				"operationId": "getSingleEnrollment",
+				"parameters": [
+					{
+						"name": "organizationFiscalCode",
+						"in": "path",
+						"description": "The fiscal code of the Organization.",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"name": "serviceId",
+						"in": "path",
+						"description": "The service id to enroll.",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"responses": {
+					"500": {
+						"description": "Service unavailable.",
+						"headers": {
+							"X-Request-Id": {
+								"description": "This header identifies the call",
+								"schema": {
+									"type": "string"
+								}
+							}
+						},
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ProblemJson"
+								}
+							}
+						}
+					},
 					"404": {
 						"description": "Not found the enroll service.",
 						"headers": {
@@ -588,6 +402,313 @@
 							"application/json": {
 								"schema": {
 									"$ref": "#/components/schemas/ProblemJson"
+								}
+							}
+						}
+					},
+					"200": {
+						"description": "Obtained single enrollment.",
+						"headers": {
+							"X-Request-Id": {
+								"description": "This header identifies the call",
+								"schema": {
+									"type": "string"
+								}
+							}
+						},
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/EnrollmentModelResponse"
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Wrong or missing function key.",
+						"headers": {
+							"X-Request-Id": {
+								"description": "This header identifies the call",
+								"schema": {
+									"type": "string"
+								}
+							}
+						}
+					}
+				},
+				"security": [
+					{
+						"ApiKey": []
+					},
+					{
+						"Authorization": []
+					}
+				]
+			},
+			"put": {
+				"tags": [
+					"Enrollments API"
+				],
+				"summary": "The organization update an enrollment to a service for the creditor institution.",
+				"operationId": "updateECEnrollment",
+				"parameters": [
+					{
+						"name": "organizationFiscalCode",
+						"in": "path",
+						"description": "The fiscal code of the Organization.",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"name": "serviceId",
+						"in": "path",
+						"description": "The service id to enroll.",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"requestBody": {
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/EnrollmentModel"
+							}
+						}
+					},
+					"required": true
+				},
+				"responses": {
+					"500": {
+						"description": "Service unavailable.",
+						"headers": {
+							"X-Request-Id": {
+								"description": "This header identifies the call",
+								"schema": {
+									"type": "string"
+								}
+							}
+						},
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ProblemJson"
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "Not found the creditor institution or the enroll service.",
+						"headers": {
+							"X-Request-Id": {
+								"description": "This header identifies the call",
+								"schema": {
+									"type": "string"
+								}
+							}
+						},
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ProblemJson"
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "Malformed request.",
+						"headers": {
+							"X-Request-Id": {
+								"description": "This header identifies the call",
+								"schema": {
+									"type": "string"
+								}
+							}
+						},
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ProblemJson"
+								}
+							}
+						}
+					},
+					"200": {
+						"description": "Request updated.",
+						"headers": {
+							"X-Request-Id": {
+								"description": "This header identifies the call",
+								"schema": {
+									"type": "string"
+								}
+							}
+						},
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/OrganizationModelResponse"
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Wrong or missing function key.",
+						"headers": {
+							"X-Request-Id": {
+								"description": "This header identifies the call",
+								"schema": {
+									"type": "string"
+								}
+							}
+						}
+					}
+				},
+				"security": [
+					{
+						"ApiKey": []
+					},
+					{
+						"Authorization": []
+					}
+				]
+			},
+			"post": {
+				"tags": [
+					"Enrollments API"
+				],
+				"summary": "The organization creates an enrollment to a service for the creditor institution.",
+				"operationId": "createECEnrollment",
+				"parameters": [
+					{
+						"name": "organizationFiscalCode",
+						"in": "path",
+						"description": "The fiscal code of the Organization.",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"name": "serviceId",
+						"in": "path",
+						"description": "The service id to enroll.",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"requestBody": {
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/EnrollmentModel"
+							}
+						}
+					},
+					"required": true
+				},
+				"responses": {
+					"409": {
+						"description": "The enrollment to the service already exists.",
+						"headers": {
+							"X-Request-Id": {
+								"description": "This header identifies the call",
+								"schema": {
+									"type": "string"
+								}
+							}
+						},
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ProblemJson"
+								}
+							}
+						}
+					},
+					"500": {
+						"description": "Service unavailable.",
+						"headers": {
+							"X-Request-Id": {
+								"description": "This header identifies the call",
+								"schema": {
+									"type": "string"
+								}
+							}
+						},
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ProblemJson"
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "Not found the creditor institution or the enroll service.",
+						"headers": {
+							"X-Request-Id": {
+								"description": "This header identifies the call",
+								"schema": {
+									"type": "string"
+								}
+							}
+						},
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ProblemJson"
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "Malformed request.",
+						"headers": {
+							"X-Request-Id": {
+								"description": "This header identifies the call",
+								"schema": {
+									"type": "string"
+								}
+							}
+						},
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ProblemJson"
+								}
+							}
+						}
+					},
+					"201": {
+						"description": "Request created.",
+						"headers": {
+							"X-Request-Id": {
+								"description": "This header identifies the call",
+								"schema": {
+									"type": "string"
+								}
+							}
+						},
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/OrganizationModelResponse"
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Wrong or missing function key.",
+						"headers": {
+							"X-Request-Id": {
+								"description": "This header identifies the call",
+								"schema": {
+									"type": "string"
 								}
 							}
 						}
@@ -610,7 +731,7 @@
 				"operationId": "deleteECEnrollment",
 				"parameters": [
 					{
-						"name": "organizationfiscalcode",
+						"name": "organizationFiscalCode",
 						"in": "path",
 						"description": "The fiscal code of the Organization.",
 						"required": true,
@@ -629,8 +750,8 @@
 					}
 				],
 				"responses": {
-					"404": {
-						"description": "Not found the creditor institution or the enroll service.",
+					"500": {
+						"description": "Service unavailable.",
 						"headers": {
 							"X-Request-Id": {
 								"description": "This header identifies the call",
@@ -647,19 +768,8 @@
 							}
 						}
 					},
-					"401": {
-						"description": "Wrong or missing function key.",
-						"headers": {
-							"X-Request-Id": {
-								"description": "This header identifies the call",
-								"schema": {
-									"type": "string"
-								}
-							}
-						}
-					},
-					"500": {
-						"description": "Service unavailable.",
+					"404": {
+						"description": "Not found the creditor institution or the enroll service.",
 						"headers": {
 							"X-Request-Id": {
 								"description": "This header identifies the call",
@@ -688,6 +798,17 @@
 						},
 						"content": {
 							"application/json": {
+								"schema": {
+									"type": "string"
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Wrong or missing function key.",
+						"headers": {
+							"X-Request-Id": {
+								"description": "This header identifies the call",
 								"schema": {
 									"type": "string"
 								}
@@ -762,6 +883,42 @@
 							}
 						}
 					},
+					"409": {
+						"description": "Conflict: duplicate debt position found.",
+						"headers": {
+							"X-Request-Id": {
+								"description": "This header identifies the call",
+								"schema": {
+									"type": "string"
+								}
+							}
+						},
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ProblemJson"
+								}
+							}
+						}
+					},
+					"500": {
+						"description": "Service unavailable.",
+						"headers": {
+							"X-Request-Id": {
+								"description": "This header identifies the call",
+								"schema": {
+									"type": "string"
+								}
+							}
+						},
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ProblemJson"
+								}
+							}
+						}
+					},
 					"400": {
 						"description": "Malformed request.",
 						"headers": {
@@ -787,42 +944,6 @@
 								"description": "This header identifies the call",
 								"schema": {
 									"type": "string"
-								}
-							}
-						}
-					},
-					"500": {
-						"description": "Service unavailable.",
-						"headers": {
-							"X-Request-Id": {
-								"description": "This header identifies the call",
-								"schema": {
-									"type": "string"
-								}
-							}
-						},
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/ProblemJson"
-								}
-							}
-						}
-					},
-					"409": {
-						"description": "Conflict: duplicate debt position found.",
-						"headers": {
-							"X-Request-Id": {
-								"description": "This header identifies the call",
-								"schema": {
-									"type": "string"
-								}
-							}
-						},
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/ProblemJson"
 								}
 							}
 						}
@@ -856,17 +977,6 @@
 				"summary": "Return all services.",
 				"operationId": "getServices",
 				"responses": {
-					"401": {
-						"description": "Wrong or missing function key.",
-						"headers": {
-							"X-Request-Id": {
-								"description": "This header identifies the call",
-								"schema": {
-									"type": "string"
-								}
-							}
-						}
-					},
 					"200": {
 						"description": "Obtained all enrollments for the creditor institution.",
 						"headers": {
@@ -899,6 +1009,17 @@
 							"application/json": {
 								"schema": {
 									"$ref": "#/components/schemas/ProblemJson"
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Wrong or missing function key.",
+						"headers": {
+							"X-Request-Id": {
+								"description": "This header identifies the call",
+								"schema": {
+									"type": "string"
 								}
 							}
 						}
@@ -943,8 +1064,8 @@
 					}
 				],
 				"responses": {
-					"404": {
-						"description": "No service found.",
+					"500": {
+						"description": "Service unavailable.",
 						"headers": {
 							"X-Request-Id": {
 								"description": "This header identifies the call",
@@ -990,8 +1111,8 @@
 							}
 						}
 					},
-					"500": {
-						"description": "Service unavailable.",
+					"404": {
+						"description": "No service found.",
 						"headers": {
 							"X-Request-Id": {
 								"description": "This header identifies the call",
@@ -1090,18 +1211,18 @@
 			"OrganizationModelResponse": {
 				"required": [
 					"companyName",
-					"organizationFiscalCode",
-					"type"
+					"fiscalCode",
+					"status"
 				],
 				"type": "object",
 				"properties": {
-					"organizationFiscalCode": {
+					"fiscalCode": {
 						"type": "string"
 					},
 					"companyName": {
 						"type": "string"
 					},
-					"type": {
+					"status": {
 						"type": "string",
 						"enum": [
 							"ENABLED",
@@ -1395,14 +1516,14 @@
 					}
 				}
 			},
-			"OrganizationEnrollmentModel": {
+			"CreateEnrollmentModel": {
 				"required": [
-					"companyName",
-					"iban"
+					"iban",
+					"serviceId"
 				],
 				"type": "object",
 				"properties": {
-					"companyName": {
+					"serviceId": {
 						"type": "string"
 					},
 					"iban": {
@@ -1410,6 +1531,23 @@
 					},
 					"officeName": {
 						"type": "string"
+					}
+				}
+			},
+			"OrganizationEnrollmentModel": {
+				"required": [
+					"companyName"
+				],
+				"type": "object",
+				"properties": {
+					"companyName": {
+						"type": "string"
+					},
+					"enrollments": {
+						"type": "array",
+						"items": {
+							"$ref": "#/components/schemas/CreateEnrollmentModel"
+						}
 					}
 				}
 			},

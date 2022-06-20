@@ -1,13 +1,13 @@
 package it.gov.pagopa.spontaneouspayment.service;
 
-import it.gov.pagopa.spontaneouspayment.entity.CreditInstitution;
+import it.gov.pagopa.spontaneouspayment.entity.Organization;
 import it.gov.pagopa.spontaneouspayment.entity.ServiceProperty;
 import it.gov.pagopa.spontaneouspayment.exception.AppError;
 import it.gov.pagopa.spontaneouspayment.exception.AppException;
 import it.gov.pagopa.spontaneouspayment.model.ServiceModel;
 import it.gov.pagopa.spontaneouspayment.model.SpontaneousPaymentModel;
 import it.gov.pagopa.spontaneouspayment.model.response.PaymentPositionModel;
-import it.gov.pagopa.spontaneouspayment.repository.CIRepository;
+import it.gov.pagopa.spontaneouspayment.repository.OrganizationRepository;
 import it.gov.pagopa.spontaneouspayment.repository.ServiceRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,7 +20,7 @@ import javax.validation.constraints.NotNull;
 public class PaymentsService {
 
     @Autowired
-    private CIRepository ciRepository;
+    private OrganizationRepository orgRepository;
 
     @Autowired
     private ServiceRepository serviceRepository;
@@ -76,8 +76,8 @@ public class PaymentsService {
 
     private void checkServiceOrganization(@NotBlank String organizationFiscalCode,
                                           @NotNull it.gov.pagopa.spontaneouspayment.entity.Service service) {
-        var ci = ciRepository.getCreditInstitutionByOrgFiscCodeAndServiceId(organizationFiscalCode, service.getId());
-        if (ci.isEmpty()) {
+        var org = orgRepository.getCreditInstitutionByOrgFiscCodeAndServiceId(organizationFiscalCode, service.getId());
+        if (org.isEmpty()) {
             throw new AppException(AppError.ORGANIZATION_SERVICE_NOT_FOUND, organizationFiscalCode, service.getId());
         }
     }
@@ -87,8 +87,8 @@ public class PaymentsService {
                 .orElseThrow(() -> new AppException(AppError.SERVICE_NOT_FOUND, service.getId()));
     }
 
-    private CreditInstitution getCreditorInstitution(String organizationFiscalCode) {
-        return ciRepository.findByFiscalCode(organizationFiscalCode)
+    private Organization getCreditorInstitution(String organizationFiscalCode) {
+        return orgRepository.findByFiscalCode(organizationFiscalCode)
                 .orElseThrow(() -> new AppException(AppError.ORGANIZATION_SERVICE_NOT_FOUND, organizationFiscalCode));
     }
 

@@ -3,6 +3,7 @@ package it.gov.pagopa.spontaneouspayment.entity;
 import com.azure.spring.data.cosmos.core.mapping.Container;
 import com.azure.spring.data.cosmos.core.mapping.PartitionKey;
 
+import it.gov.pagopa.spontaneouspayment.model.enumeration.Status;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -43,7 +44,7 @@ public class Service {
 	@LastModifiedDate
 	private LocalDateTime lastUpdatedDate;
 
-	private String status;
+	private Status status;
 
 	private String endpoint;
 

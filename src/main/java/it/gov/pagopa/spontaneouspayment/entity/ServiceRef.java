@@ -13,7 +13,7 @@ import javax.validation.constraints.NotBlank;
 @AllArgsConstructor
 public class ServiceRef {
 
-	private String id;
+	private String serviceId;
 
 	private String officeName; // es. Ufficio Tributi
 
