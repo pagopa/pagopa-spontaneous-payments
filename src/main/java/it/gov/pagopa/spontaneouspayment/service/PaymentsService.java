@@ -56,7 +56,7 @@ public class PaymentsService {
                     .parallelStream()
                     .anyMatch(o -> o.getName().equals(confProp.getName()));
             if (!isPresent) {
-                throw new AppException(AppError.PROPERTY_NOT_FOUND, confProp.getName());
+                throw new AppException(AppError.PROPERTY_MISSING, confProp.getName());
             }
         }
     }

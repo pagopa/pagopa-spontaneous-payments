@@ -37,7 +37,8 @@ public class EnrollmentsController implements IEnrollmentsController{
 	public ResponseEntity<OrganizationModelResponse> createEC(@NotBlank String organizationFiscalCode,
 			@Valid OrganizationEnrollmentModel organizationEnrollmentModel) {
 		log.info(String.format(LOG_BASE_HEADER_INFO, "POST", "createEC", String.format(LOG_BASE_PARAMS_DETAIL, organizationFiscalCode)));
-		 // flip model to entity
+		 
+		// flip model to entity
 		Organization orgEntity = modelMapper.map(organizationEnrollmentModel, Organization.class);
 		orgEntity.setFiscalCode(organizationFiscalCode);
 		orgEntity.setStatus(Status.ENABLED);
@@ -50,15 +51,19 @@ public class EnrollmentsController implements IEnrollmentsController{
 	@Override
 	public ResponseEntity<OrganizationModelResponse> createECEnrollment(@NotBlank String organizationFiscalCode,
 			@NotBlank String serviceId, @Valid EnrollmentModel enrollmentModel) {
-		// TODO Auto-generated method stub
-		return null;
+		return new ResponseEntity<>(
+				modelMapper.map(enrollmentsService.createECEnrollment(organizationFiscalCode, serviceId, enrollmentModel), 
+						OrganizationModelResponse.class), 
+				HttpStatus.CREATED);
 	}
 
 	@Override
 	public ResponseEntity<OrganizationModelResponse> updateECEnrollment(@NotBlank String organizationFiscalCode,
 			@NotBlank String serviceId, @Valid EnrollmentModel enrollmentModel) {
-		// TODO Auto-generated method stub
-		return null;
+		return new ResponseEntity<>(
+				modelMapper.map(enrollmentsService.updateECEnrollment(organizationFiscalCode, serviceId, enrollmentModel), 
+						OrganizationModelResponse.class), 
+				HttpStatus.OK);
 	}
 
 	@Override

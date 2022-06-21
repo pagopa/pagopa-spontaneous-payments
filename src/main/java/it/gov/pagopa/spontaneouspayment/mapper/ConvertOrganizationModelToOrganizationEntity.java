@@ -18,12 +18,14 @@ public class ConvertOrganizationModelToOrganizationEntity
 	public Organization convert(MappingContext<OrganizationEnrollmentModel, Organization> context) {
 		OrganizationEnrollmentModel source = context.getSource();
 		List<ServiceRef> enrollments = new ArrayList<>();
-		for (CreateEnrollmentModel cem: source.getEnrollments()) {
-			ServiceRef sr = new ServiceRef();
-			sr.setServiceId(cem.getServiceId());
-			sr.setIban(cem.getIban());
-			sr.setOfficeName(cem.getOfficeName());
-			enrollments.add(sr);
+		if (null != source.getEnrollments() && !source.getEnrollments().isEmpty()) {
+			for (CreateEnrollmentModel cem: source.getEnrollments()) {
+				ServiceRef sr = new ServiceRef();
+				sr.setServiceId(cem.getServiceId());
+				sr.setIban(cem.getIban());
+				sr.setOfficeName(cem.getOfficeName());
+				enrollments.add(sr);
+			}
 		}
 		return Organization.builder().companyName(source.getCompanyName()).enrollments(enrollments).build();
 	}
