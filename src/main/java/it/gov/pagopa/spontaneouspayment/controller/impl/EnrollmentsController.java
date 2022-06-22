@@ -24,9 +24,6 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class EnrollmentsController implements IEnrollmentsController{
 	
-	private static final String LOG_BASE_HEADER_INFO = "[RequestMethod: %s] - [ClassMethod: %s] - [MethodParamsToLog: %s]";
-    private static final String LOG_BASE_PARAMS_DETAIL = "organizationFiscalCode= %s";
-    
     @Autowired
     private EnrollmentsService enrollmentsService;
     
@@ -36,7 +33,6 @@ public class EnrollmentsController implements IEnrollmentsController{
 	@Override
 	public ResponseEntity<OrganizationModelResponse> createEC(@NotBlank String organizationFiscalCode,
 			@Valid OrganizationEnrollmentModel organizationEnrollmentModel) {
-		log.info(String.format(LOG_BASE_HEADER_INFO, "POST", "createEC", String.format(LOG_BASE_PARAMS_DETAIL, organizationFiscalCode)));
 		 
 		// flip model to entity
 		Organization orgEntity = modelMapper.map(organizationEnrollmentModel, Organization.class);
@@ -69,27 +65,32 @@ public class EnrollmentsController implements IEnrollmentsController{
 	@Override
 	public ResponseEntity<OrganizationModelResponse> updateEC(@NotBlank String organizationFiscalCode,
 			@Valid OrganizationModel organizationModel) {
-		// TODO Auto-generated method stub
-		return null;
+		return new ResponseEntity<>(
+				modelMapper.map(enrollmentsService.updateEC(organizationFiscalCode, organizationModel), 
+						OrganizationModelResponse.class), 
+				HttpStatus.OK);
 	}
 
 	@Override
 	public ResponseEntity<String> deleteECEnrollment(@NotBlank String organizationFiscalCode,
 			@NotBlank String serviceId) {
-		// TODO Auto-generated method stub
-		return null;
+		enrollmentsService.deleteECEnrollment(organizationFiscalCode, serviceId);
+		return new ResponseEntity<>(
+				"\"The enrollment to service "+serviceId+" for "+organizationFiscalCode+" was successfully removed\"", 
+				HttpStatus.OK);
+		
 	}
 
 	@Override
 	public ResponseEntity<EnrollmentModelResponse> getSingleEnrollment(@NotBlank String organizationFiscalCode,
 			@NotBlank String serviceId) {
-		// TODO Auto-generated method stub
-		return null;
+		return new ResponseEntity<>(
+				modelMapper.map(enrollmentsService.getSingleEnrollment(organizationFiscalCode, serviceId), EnrollmentModelResponse.class), 
+				HttpStatus.OK);
 	}
 
 	@Override
 	public ResponseEntity<OrganizationModelResponse> getECEnrollments(@NotBlank String organizationFiscalCode) {
-		log.info(String.format(LOG_BASE_HEADER_INFO, "GET", "getECEnrollments", String.format(LOG_BASE_PARAMS_DETAIL, organizationFiscalCode)));
 		return new ResponseEntity<>(
 				modelMapper.map(enrollmentsService.getECEnrollments(organizationFiscalCode), OrganizationModelResponse.class), 
 				HttpStatus.OK);

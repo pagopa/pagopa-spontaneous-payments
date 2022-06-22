@@ -102,13 +102,12 @@ public interface IEnrollmentsController {
     
     @Operation(summary = "The organization deletes the enrollment to service for the creditor institution.", security = {@SecurityRequirement(name = "ApiKey"), @SecurityRequirement(name = "Authorization")}, operationId = "deleteECEnrollment")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Request deleted."),
+            @ApiResponse(responseCode = "200", description = "Request deleted.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(name = "StringResponse", implementation = String.class))),
             @ApiResponse(responseCode = "401", description = "Wrong or missing function key.", content = @Content(schema = @Schema())),
             @ApiResponse(responseCode = "404", description = "Not found the creditor institution or the enroll service.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ProblemJson.class))),
             @ApiResponse(responseCode = "500", description = "Service unavailable.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ProblemJson.class)))})
     @DeleteMapping(value = "/organizations/{organizationFiscalCode}/services/{serviceId}",
-            produces = MediaType.APPLICATION_JSON_VALUE,
-            consumes = MediaType.APPLICATION_JSON_VALUE)
+            produces = MediaType.APPLICATION_JSON_VALUE)
     ResponseEntity<String> deleteECEnrollment(
     		@Parameter(description = "The fiscal code of the Organization.", required = true)
             @NotBlank @PathVariable("organizationFiscalCode") String organizationFiscalCode,
@@ -122,7 +121,7 @@ public interface IEnrollmentsController {
             @ApiResponse(responseCode = "404", description = "Not found the enroll service.", content = @Content(schema = @Schema(implementation = ProblemJson.class))),
             @ApiResponse(responseCode = "500", description = "Service unavailable.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ProblemJson.class)))})
     @GetMapping(value = "/organizations/{organizationFiscalCode}/services/{serviceId}",
-            produces = {"application/json"})
+            produces = MediaType.APPLICATION_JSON_VALUE)
     ResponseEntity<EnrollmentModelResponse> getSingleEnrollment(
     		@Parameter(description = "The fiscal code of the Organization.", required = true)
             @NotBlank @PathVariable("organizationFiscalCode") String organizationFiscalCode,
@@ -136,7 +135,7 @@ public interface IEnrollmentsController {
             @ApiResponse(responseCode = "404", description = "Not found the creditor institution.", content = @Content(schema = @Schema(implementation = ProblemJson.class))),
             @ApiResponse(responseCode = "500", description = "Service unavailable.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ProblemJson.class)))})
     @GetMapping(value = "/organizations/{organizationFiscalCode}",
-            produces = {"application/json"})
+            produces = MediaType.APPLICATION_JSON_VALUE)
     ResponseEntity<OrganizationModelResponse> getECEnrollments(
     		@Parameter(description = "The fiscal code of the Organization.", required = true)
             @NotBlank @PathVariable("organizationFiscalCode") String organizationFiscalCode);

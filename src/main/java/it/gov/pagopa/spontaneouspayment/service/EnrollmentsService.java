@@ -15,6 +15,7 @@ import it.gov.pagopa.spontaneouspayment.entity.ServiceRef;
 import it.gov.pagopa.spontaneouspayment.exception.AppError;
 import it.gov.pagopa.spontaneouspayment.exception.AppException;
 import it.gov.pagopa.spontaneouspayment.model.EnrollmentModel;
+import it.gov.pagopa.spontaneouspayment.model.OrganizationModel;
 import it.gov.pagopa.spontaneouspayment.repository.OrganizationRepository;
 import it.gov.pagopa.spontaneouspayment.repository.ServiceRepository;
 
@@ -57,9 +58,8 @@ public class EnrollmentsService {
     		throw new AppException(AppError.SERVICE_NOT_FOUND, serviceId);
         }
     	
-    	PartitionKey orgFiscalCodePartitionKey = new PartitionKey(organizationFiscalCode);
     	// check if the organization fiscal code exists
-    	Organization orgEntity = orgRepository.findById(organizationFiscalCode, orgFiscalCodePartitionKey)
+    	Organization orgEntity = orgRepository.findById(organizationFiscalCode, new PartitionKey(organizationFiscalCode))
     			.orElseThrow(() -> new AppException(AppError.ORGANIZATION_NOT_FOUND, organizationFiscalCode));
     	
     	// check if the enroll to service already exist for the organization fiscal code 
@@ -82,16 +82,15 @@ public class EnrollmentsService {
 	}
     
     public Organization updateECEnrollment(String organizationFiscalCode,
-			@NotBlank String serviceId, EnrollmentModel enrollmentModel) {
+			String serviceId, EnrollmentModel enrollmentModel) {
     	
-    	PartitionKey orgFiscalCodePartitionKey = new PartitionKey(organizationFiscalCode);
     	// check if the organization fiscal code exists
-    	Organization orgEntity = orgRepository.findById(organizationFiscalCode, orgFiscalCodePartitionKey)
+    	Organization orgEntity = orgRepository.findById(organizationFiscalCode, new PartitionKey(organizationFiscalCode))
     			.orElseThrow(() -> new AppException(AppError.ORGANIZATION_NOT_FOUND, organizationFiscalCode));
     	
     	// check if the enroll to service exist for the organization fiscal code 
     	ServiceRef enrollToUpdate = orgEntity.getEnrollments().stream().filter(s -> s.getServiceId().equals(serviceId)).findFirst()
-    			.orElseThrow(() -> new AppException(AppError.ENROLLMENT_TO_SERVICE_NOT_FOUND, organizationFiscalCode, serviceId));
+    			.orElseThrow(() -> new AppException(AppError.ENROLLMENT_TO_SERVICE_NOT_FOUND, serviceId, organizationFiscalCode));
     	
     	// removes old enrollment
     	orgEntity.getEnrollments().remove(enrollToUpdate);
@@ -107,14 +106,54 @@ public class EnrollmentsService {
     	return orgRepository.save(orgEntity);
 	}
     
+    public Organization updateEC(String organizationFiscalCode,
+    		OrganizationModel organizationModel) {
+    	
+    	// check if the organization fiscal code exists
+    	Organization orgEntity = orgRepository.findById(organizationFiscalCode, new PartitionKey(organizationFiscalCode))
+    			.orElseThrow(() -> new AppException(AppError.ORGANIZATION_NOT_FOUND, organizationFiscalCode));
+    	
+    	// update EC info
+    	orgEntity.setCompanyName(organizationModel.getCompanyName());
+    	orgEntity.setStatus(organizationModel.getStatus());
+    	
+    	
+    	return orgRepository.save(orgEntity);
+	}
+    
+    
+    public void deleteECEnrollment(String organizationFiscalCode,
+			String serviceId) {
+    	// check if the organization fiscal code exists
+    	Organization orgEntity = orgRepository.findById(organizationFiscalCode, new PartitionKey(organizationFiscalCode))
+    			.orElseThrow(() -> new AppException(AppError.ORGANIZATION_NOT_FOUND, organizationFiscalCode));
+    	
+    	// check if the enroll to service exist for the organization fiscal code 
+    	ServiceRef enrollToRemove = orgEntity.getEnrollments().stream().filter(s -> s.getServiceId().equals(serviceId)).findFirst()
+    			.orElseThrow(() -> new AppException(AppError.ENROLLMENT_TO_SERVICE_NOT_FOUND, serviceId, organizationFiscalCode));
+    	
+    	// removes the enrollment
+    	orgEntity.getEnrollments().remove(enrollToRemove);
+    	
+    	orgRepository.save(orgEntity);
+    }
+    
+    
+    public ServiceRef getSingleEnrollment (String organizationFiscalCode,
+			String serviceId) {
+    	// check if the organization fiscal code exists
+    	Organization orgEntity = orgRepository.findById(organizationFiscalCode, new PartitionKey(organizationFiscalCode))
+    			.orElseThrow(() -> new AppException(AppError.ORGANIZATION_NOT_FOUND, organizationFiscalCode));
+    	
+    	// if the enroll to service exists is returned 
+    	return orgEntity.getEnrollments().stream().filter(s -> s.getServiceId().equals(serviceId)).findFirst()
+    			.orElseThrow(() -> new AppException(AppError.ENROLLMENT_TO_SERVICE_NOT_FOUND, serviceId, organizationFiscalCode));
+    	
+    }
+    
     public Organization getECEnrollments (String organizationFiscalCode) {
-    	Optional<Organization> org = orgRepository.findByFiscalCode(organizationFiscalCode);
-    	
-    	if (org.isEmpty()) {
-    		throw new AppException(AppError.ORGANIZATION_NOT_FOUND, organizationFiscalCode);
-    	}
-    	
-    	return org.get();
+    	return orgRepository.findByFiscalCode(organizationFiscalCode)
+    			.orElseThrow(() -> new AppException(AppError.ORGANIZATION_NOT_FOUND, organizationFiscalCode));
     }
 
 
