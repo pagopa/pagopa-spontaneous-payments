@@ -18,10 +18,8 @@ import it.gov.pagopa.spontaneouspayment.model.enumeration.Status;
 import it.gov.pagopa.spontaneouspayment.model.response.EnrollmentModelResponse;
 import it.gov.pagopa.spontaneouspayment.model.response.OrganizationModelResponse;
 import it.gov.pagopa.spontaneouspayment.service.EnrollmentsService;
-import lombok.extern.slf4j.Slf4j;
 
 @Controller
-@Slf4j
 public class EnrollmentsController implements IEnrollmentsController{
 	
     @Autowired

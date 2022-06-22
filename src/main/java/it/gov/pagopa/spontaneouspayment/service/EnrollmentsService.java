@@ -1,6 +1,5 @@
 package it.gov.pagopa.spontaneouspayment.service;
 
-import java.util.Optional;
 import java.util.stream.StreamSupport;
 
 import javax.validation.constraints.NotBlank;
