@@ -17,8 +17,12 @@ import it.gov.pagopa.spontaneouspayment.model.EnrollmentModel;
 import it.gov.pagopa.spontaneouspayment.model.OrganizationModel;
 import it.gov.pagopa.spontaneouspayment.repository.OrganizationRepository;
 import it.gov.pagopa.spontaneouspayment.repository.ServiceRepository;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 
 @Service
+@AllArgsConstructor
+@NoArgsConstructor
 public class EnrollmentsService {
 
     @Autowired
