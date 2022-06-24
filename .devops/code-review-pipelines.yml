@@ -8,7 +8,7 @@
 trigger: none
 
 pool:
-  vmImage: 'ubuntu-20.04'
+  vmImage: 'ubuntu-18.04'
 
 variables:
   MAVEN_CACHE_FOLDER: $(Pipeline.Workspace)/.m2/repository
@@ -44,7 +44,7 @@ steps:
       publishJUnitResults: false
       testResultsFiles: '**/surefire-reports/TEST-*.xml'
       goals: 'package'
-      sonarQubeRunAnalysis: true
+      sonarQubeRunAnalysis: false
 
   - task: SonarCloudPublish@1
     displayName: 'Publish SonarCloud results on build summary'
