@@ -23,14 +23,13 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
-import it.gov.pagopa.spontaneouspayment.SpontaneousPaymentApplication;
 import it.gov.pagopa.spontaneouspayment.config.TestUtil;
 import it.gov.pagopa.spontaneouspayment.entity.Organization;
 import it.gov.pagopa.spontaneouspayment.model.EnrollmentModel;
 import it.gov.pagopa.spontaneouspayment.model.OrganizationModel;
 import it.gov.pagopa.spontaneouspayment.service.EnrollmentsService;
 
-@SpringBootTest(classes = SpontaneousPaymentApplication.class)
+@SpringBootTest
 @AutoConfigureMockMvc
 class EnrollmentsControllerTest {
 	
