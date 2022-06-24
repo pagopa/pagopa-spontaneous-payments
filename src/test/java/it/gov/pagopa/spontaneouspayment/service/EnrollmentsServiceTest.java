@@ -173,7 +173,12 @@ class EnrollmentsServiceTest {
 		CosmosAsyncClient client = new CosmosClientBuilder().gatewayMode().endpointDiscoveryEnabled(false)
 				.endpoint(emulator.getEmulatorEndpoint()).key(emulator.getEmulatorKey()).buildAsyncClient();
 		client.getDatabase("db").delete();
+		client.close();
 		emulator.stop();
+		emulator.close();
+		System.clearProperty("javax.net.ssl.trustStore");
+		System.clearProperty("javax.net.ssl.trustStorePassword");
+		System.clearProperty("javax.net.ssl.trustStoreType");
 	}
 	
 
