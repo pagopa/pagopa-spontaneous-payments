@@ -44,7 +44,8 @@ steps:
       publishJUnitResults: false
       testResultsFiles: '**/surefire-reports/TEST-*.xml'
       goals: 'package'
-      sonarQubeRunAnalysis: false
+      sonarQubeRunAnalysis: true
+      sqMavenPluginVersionChoice: latest
 
   - task: SonarCloudPublish@1
     displayName: 'Publish SonarCloud results on build summary'
