@@ -9,6 +9,9 @@ import it.gov.pagopa.spontaneouspayment.model.SpontaneousPaymentModel;
 import it.gov.pagopa.spontaneouspayment.model.response.PaymentPositionModel;
 import it.gov.pagopa.spontaneouspayment.repository.OrganizationRepository;
 import it.gov.pagopa.spontaneouspayment.repository.ServiceRepository;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +20,8 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 @Service
+@AllArgsConstructor
+@NoArgsConstructor
 public class PaymentsService {
 
     @Autowired
@@ -33,10 +38,10 @@ public class PaymentsService {
         // check if service exists
         var serviceConfiguration = getServiceDetails(spontaneousPayment.getService());
 
-        // check if organizationFiscalCode exists
+        // check if the relationship between organization and enrollment to service exists
         checkServiceOrganization(organizationFiscalCode, serviceConfiguration);
 
-        // check if the services exist in the DB
+        // checks if the request contains the properties required by the configured service
         checkServiceProperties(spontaneousPayment, serviceConfiguration);
 
         return createDebtPosition(serviceConfiguration);
@@ -89,7 +94,7 @@ public class PaymentsService {
 
     private Organization getCreditorInstitution(String organizationFiscalCode) {
         return orgRepository.findByFiscalCode(organizationFiscalCode)
-                .orElseThrow(() -> new AppException(AppError.ORGANIZATION_SERVICE_NOT_FOUND, organizationFiscalCode));
+                .orElseThrow(() -> new AppException(AppError.ORGANIZATION_NOT_FOUND, organizationFiscalCode));
     }
 
 
