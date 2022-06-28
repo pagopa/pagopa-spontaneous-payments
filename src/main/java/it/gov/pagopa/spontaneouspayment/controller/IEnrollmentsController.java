@@ -114,6 +114,18 @@ public interface IEnrollmentsController {
             @Parameter(description = "The service id to enroll.", required = true)
             @NotBlank @PathVariable("serviceId") String serviceId);
     
+    @Operation(summary = "The organization deletes the creditor institution.", security = {@SecurityRequirement(name = "ApiKey"), @SecurityRequirement(name = "Authorization")}, operationId = "deleteEC")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Request deleted.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(name = "StringResponse", implementation = String.class))),
+            @ApiResponse(responseCode = "401", description = "Wrong or missing function key.", content = @Content(schema = @Schema())),
+            @ApiResponse(responseCode = "404", description = "Not found the creditor institution.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ProblemJson.class))),
+            @ApiResponse(responseCode = "500", description = "Service unavailable.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ProblemJson.class)))})
+    @DeleteMapping(value = "/organizations/{organizationFiscalCode}",
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    ResponseEntity<String> deleteEC(
+    		@Parameter(description = "The fiscal code of the Organization.", required = true)
+            @NotBlank @PathVariable("organizationFiscalCode") String organizationFiscalCode);
+    
     @Operation(summary = "Return the single enrollment to a service.", security = {@SecurityRequirement(name = "ApiKey"), @SecurityRequirement(name = "Authorization")}, operationId = "getSingleEnrollment")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Obtained single enrollment.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(name = "EnrollmentModelResponse", implementation = EnrollmentModelResponse.class))),

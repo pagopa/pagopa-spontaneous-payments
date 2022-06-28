@@ -8,6 +8,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import it.gov.pagopa.spontaneouspayment.entity.Organization;
+import it.gov.pagopa.spontaneouspayment.entity.Service;
 import it.gov.pagopa.spontaneouspayment.entity.ServiceRef;
 import it.gov.pagopa.spontaneouspayment.model.CreateEnrollmentModel;
 import it.gov.pagopa.spontaneouspayment.model.DebtorModel;
@@ -191,6 +192,18 @@ public class TestUtil {
 						.properties(props)
 						.build())
 				.build();
+	}
+	
+	public static List<Service> getMockServices() {
+		List<Service> services = new ArrayList<>();
+		services.add(Service.builder().id("mockId1").name("mockName1").transferCategory("mockTransferCategory1").remittanceInformation("mockRemittanceInformation1").build());
+		services.add(Service.builder().id("mockId2").name("mockName2").transferCategory("mockTransferCategory2").remittanceInformation("mockRemittanceInformation2").build());
+
+		return  services;
+	}
+	
+	public static Service getMockService() {
+		return Service.builder().id("mockId").name("mockName").transferCategory("mockTransferCategory").remittanceInformation("mockRemittanceInformation").build();
 	}
 	
 }

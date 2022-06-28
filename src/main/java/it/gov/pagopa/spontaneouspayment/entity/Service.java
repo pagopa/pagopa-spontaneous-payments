@@ -5,6 +5,7 @@ import com.azure.spring.data.cosmos.core.mapping.PartitionKey;
 
 import it.gov.pagopa.spontaneouspayment.model.enumeration.Status;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -21,6 +22,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class Service {
 
 	@Id

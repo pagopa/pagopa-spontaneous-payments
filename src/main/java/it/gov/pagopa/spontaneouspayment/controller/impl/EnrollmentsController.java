@@ -78,6 +78,14 @@ public class EnrollmentsController implements IEnrollmentsController{
 				HttpStatus.OK);
 		
 	}
+	
+	@Override
+	public ResponseEntity<String> deleteEC(@NotBlank String organizationFiscalCode) {
+		enrollmentsService.deleteEC(organizationFiscalCode);
+		return new ResponseEntity<>(
+				"\"The organization "+organizationFiscalCode+" was successfully removed\"", 
+				HttpStatus.OK);
+	}
 
 	@Override
 	public ResponseEntity<EnrollmentModelResponse> getSingleEnrollment(@NotBlank String organizationFiscalCode,
@@ -93,5 +101,7 @@ public class EnrollmentsController implements IEnrollmentsController{
 				modelMapper.map(enrollmentsService.getECEnrollments(organizationFiscalCode), OrganizationModelResponse.class), 
 				HttpStatus.OK);
 	}
+
+	
 
 }

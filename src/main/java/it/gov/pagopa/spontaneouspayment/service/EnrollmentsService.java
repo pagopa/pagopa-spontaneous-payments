@@ -138,6 +138,13 @@ public class EnrollmentsService {
     	orgRepository.save(orgEntity);
     }
     
+    public void deleteEC(String organizationFiscalCode) {
+    	// check if the organization fiscal code exists
+    	Organization orgEntity = this.checkOrganizationFiscalCode (organizationFiscalCode);
+    	 	
+    	orgRepository.delete(orgEntity);
+	}
+    
     
     public ServiceRef getSingleEnrollment (String organizationFiscalCode,
 			String serviceId) {

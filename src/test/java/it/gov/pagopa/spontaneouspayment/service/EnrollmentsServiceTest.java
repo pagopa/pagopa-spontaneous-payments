@@ -472,5 +472,43 @@ class EnrollmentsServiceTest {
 		}
 		
 	}
+	
+	@Test 
+	void deleteEC() {
+		assertTrue(emulator.isRunning());
+		// Creates a dummy organization
+		Organization ci = new Organization();
+		ci.setFiscalCode("organizationDummy");
+		ci.setCompanyName("Comune di Napoli");
+		ci.setStatus(Status.ENABLED);
+		ServiceRef ref1 = new ServiceRef();
+		ref1.setServiceId("id-servizio-1");
+		ref1.setIban("iban-1");
+		List<ServiceRef> servicesRef = new ArrayList<>();
+		servicesRef.add(ref1);
+		ci.setEnrollments(servicesRef);
+		Organization orgCreated = enrollmentsService.createEC(ci);
+		assertEquals("organizationDummy", orgCreated.getFiscalCode());
+		assertEquals("Comune di Napoli", orgCreated.getCompanyName());
+		assertEquals(1, orgCreated.getEnrollments().size());
+		// Remove the dummy organization
+		enrollmentsService.deleteEC("organizationDummy");
+		// This line means the call was successful
+		assertTrue(true);
+	}
+	
+	@Test 
+	void deleteEC_404() {
+		assertTrue(emulator.isRunning());
+		try {
+			// non-existent organization -> must raise a 404 exception
+			enrollmentsService.deleteEC("organizationFake");
+			fail();
+		} catch (AppException e) {
+			assertEquals(HttpStatus.NOT_FOUND, e.getHttpStatus());
+		} catch (Exception e) {
+			fail();
+		}
+	}
 
 }

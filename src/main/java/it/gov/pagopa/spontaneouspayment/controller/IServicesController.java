@@ -1,5 +1,7 @@
 package it.gov.pagopa.spontaneouspayment.controller;
 
+import java.util.List;
+
 import javax.validation.constraints.NotBlank;
 
 import org.springframework.http.MediaType;
@@ -20,7 +22,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import it.gov.pagopa.spontaneouspayment.model.ProblemJson;
 import it.gov.pagopa.spontaneouspayment.model.response.OrganizationModelResponse;
 import it.gov.pagopa.spontaneouspayment.model.response.ServiceDetailModelResponse;
-import it.gov.pagopa.spontaneouspayment.model.response.SevicesModelResponse;
+import it.gov.pagopa.spontaneouspayment.model.response.ServiceModelResponse;
 
 
 @Tag(name = "Services API")
@@ -47,5 +49,5 @@ public interface IServicesController {
             @ApiResponse(responseCode = "500", description = "Service unavailable.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ProblemJson.class)))})
     @GetMapping(value = "/services",
             produces = {"application/json"})
-    ResponseEntity<SevicesModelResponse> getServices();
+    ResponseEntity<List<ServiceModelResponse>> getServices();
 }
