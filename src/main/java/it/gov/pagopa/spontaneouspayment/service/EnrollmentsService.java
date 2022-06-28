@@ -37,7 +37,7 @@ public class EnrollmentsService {
     	
     	// check if all services the EC wants to enroll are configured in the database
     	for (ServiceRef servRef : orgEntity.getEnrollments()) {
-    		boolean exist = StreamSupport.stream(allServices.spliterator(), false).anyMatch(s -> s.getId().equals(servRef.getServiceId()));
+    		boolean exist = StreamSupport.stream(allServices.spliterator(), true).anyMatch(s -> s.getId().equals(servRef.getServiceId()));
     		if (!exist) {
                 throw new AppException(AppError.SERVICE_NOT_FOUND, servRef.getServiceId());
             }
@@ -56,7 +56,7 @@ public class EnrollmentsService {
     	Iterable<it.gov.pagopa.spontaneouspayment.entity.Service> allServices = serviceRepository.findAll();
     	
     	// check if the service the EC wants to enroll is configured in the database
-    	boolean exists = StreamSupport.stream(allServices.spliterator(), false).anyMatch(s -> s.getId().equals(serviceId));
+    	boolean exists = StreamSupport.stream(allServices.spliterator(), true).anyMatch(s -> s.getId().equals(serviceId));
     	if (!exists) {
     		throw new AppException(AppError.SERVICE_NOT_FOUND, serviceId);
         }
