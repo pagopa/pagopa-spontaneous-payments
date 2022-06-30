@@ -1,14 +1,13 @@
 package it.gov.pagopa.spontaneouspayment.controller.impl;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
-
 import it.gov.pagopa.spontaneouspayment.controller.IPaymentsController;
 import it.gov.pagopa.spontaneouspayment.model.SpontaneousPaymentModel;
 import it.gov.pagopa.spontaneouspayment.model.response.PaymentPositionModel;
 import it.gov.pagopa.spontaneouspayment.service.PaymentsService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
 
 @Controller
 public class PaymentsController implements IPaymentsController {

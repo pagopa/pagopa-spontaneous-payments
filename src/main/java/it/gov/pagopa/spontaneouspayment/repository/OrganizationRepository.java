@@ -14,6 +14,6 @@ public interface OrganizationRepository extends CosmosRepository<Organization, S
 
     @Query("select TOP 1 * from c where c.fiscalCode = @organizationFiscalCode and EXISTS (SELECT VALUE t FROM t IN c.enrollments WHERE t.serviceId = @serviceId)")
     List<Organization> getCreditInstitutionByOrgFiscCodeAndServiceId(@Param("organizationFiscalCode") String organizationFiscalCode, @Param("serviceId") String serviceId);
-    
+
     Optional<Organization> findByFiscalCode(String organizationFiscalCode);
 }

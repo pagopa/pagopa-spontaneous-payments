@@ -1,16 +1,5 @@
 package it.gov.pagopa.spontaneouspayment.controller;
 
-import java.util.List;
-
-import javax.validation.constraints.NotBlank;
-
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -22,6 +11,15 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import it.gov.pagopa.spontaneouspayment.model.ProblemJson;
 import it.gov.pagopa.spontaneouspayment.model.response.ServiceDetailModelResponse;
 import it.gov.pagopa.spontaneouspayment.model.response.ServiceModelResponse;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import javax.validation.constraints.NotBlank;
+import java.util.List;
 
 
 @Tag(name = "Services API")
@@ -40,7 +38,7 @@ public interface IServicesController {
     ResponseEntity<ServiceDetailModelResponse> getServiceDetails(
             @Parameter(description = "The service id for which to have the details.", required = true)
             @NotBlank @PathVariable("serviceId") String serviceId);
-    
+
     @Operation(summary = "Return all services.", security = {@SecurityRequirement(name = "ApiKey"), @SecurityRequirement(name = "Authorization")}, operationId = "getServices")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Obtained all services.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(name = "ServiceModelResponse", implementation = ServiceModelResponse.class))),

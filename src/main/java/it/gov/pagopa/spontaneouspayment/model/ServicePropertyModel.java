@@ -14,13 +14,13 @@ import java.io.Serializable;
 @Builder
 public class ServicePropertyModel implements Serializable {
 
-	/**
-	 * generated serialVersionUID
-	 */
-	private static final long serialVersionUID = -4881284106551118200L;
+    /**
+     * generated serialVersionUID
+     */
+    private static final long serialVersionUID = -4881284106551118200L;
 
-	@NotBlank
-	private String name;
+    @NotBlank
+    private String name;
 
-	private String value;
+    private String value;
 }

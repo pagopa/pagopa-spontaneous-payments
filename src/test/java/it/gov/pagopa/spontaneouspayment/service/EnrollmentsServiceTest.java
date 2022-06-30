@@ -1,20 +1,19 @@
 package it.gov.pagopa.spontaneouspayment.service;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-import static org.mockito.Mockito.spy;
-
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.nio.file.Path;
-import java.security.KeyStore;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
-import java.security.cert.CertificateException;
-import java.util.ArrayList;
-import java.util.List;
-
+import com.azure.cosmos.CosmosAsyncClient;
+import com.azure.cosmos.CosmosClientBuilder;
+import com.azure.cosmos.models.CosmosContainerResponse;
+import com.azure.cosmos.models.CosmosDatabaseResponse;
+import it.gov.pagopa.spontaneouspayment.entity.Organization;
+import it.gov.pagopa.spontaneouspayment.entity.Service;
+import it.gov.pagopa.spontaneouspayment.entity.ServiceProperty;
+import it.gov.pagopa.spontaneouspayment.entity.ServiceRef;
+import it.gov.pagopa.spontaneouspayment.exception.AppException;
+import it.gov.pagopa.spontaneouspayment.model.EnrollmentModel;
+import it.gov.pagopa.spontaneouspayment.model.OrganizationModel;
+import it.gov.pagopa.spontaneouspayment.model.enumeration.Status;
+import it.gov.pagopa.spontaneouspayment.repository.OrganizationRepository;
+import it.gov.pagopa.spontaneouspayment.repository.ServiceRepository;
 import org.junit.Rule;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
@@ -30,21 +29,20 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.utility.DockerImageName;
 
-import com.azure.cosmos.CosmosAsyncClient;
-import com.azure.cosmos.CosmosClientBuilder;
-import com.azure.cosmos.models.CosmosContainerResponse;
-import com.azure.cosmos.models.CosmosDatabaseResponse;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.nio.file.Path;
+import java.security.KeyStore;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.cert.CertificateException;
+import java.util.ArrayList;
+import java.util.List;
 
-import it.gov.pagopa.spontaneouspayment.entity.Organization;
-import it.gov.pagopa.spontaneouspayment.entity.Service;
-import it.gov.pagopa.spontaneouspayment.entity.ServiceProperty;
-import it.gov.pagopa.spontaneouspayment.entity.ServiceRef;
-import it.gov.pagopa.spontaneouspayment.exception.AppException;
-import it.gov.pagopa.spontaneouspayment.model.EnrollmentModel;
-import it.gov.pagopa.spontaneouspayment.model.OrganizationModel;
-import it.gov.pagopa.spontaneouspayment.model.enumeration.Status;
-import it.gov.pagopa.spontaneouspayment.repository.OrganizationRepository;
-import it.gov.pagopa.spontaneouspayment.repository.ServiceRepository;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+import static org.mockito.Mockito.spy;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @SpringBootTest

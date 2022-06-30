@@ -2,7 +2,6 @@ package it.gov.pagopa.spontaneouspayment.entity;
 
 import com.azure.spring.data.cosmos.core.mapping.Container;
 import com.azure.spring.data.cosmos.core.mapping.PartitionKey;
-
 import it.gov.pagopa.spontaneouspayment.model.enumeration.Status;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -25,34 +24,34 @@ import java.util.List;
 @Builder
 public class Service {
 
-	@Id
-	private String id;
+    @Id
+    private String id;
 
-	@NotBlank(message = "name is required")
-	private String name;
+    @NotBlank(message = "name is required")
+    private String name;
 
-	private String description;
+    private String description;
 
-	@NotBlank(message = "transfer category is required")
-	@PartitionKey
-	private String transferCategory; // tassonomia
+    @NotBlank(message = "transfer category is required")
+    @PartitionKey
+    private String transferCategory; // tassonomia
 
-	@NotBlank(message = "remittance information is required")
-	private String remittanceInformation; // causale
+    @NotBlank(message = "remittance information is required")
+    private String remittanceInformation; // causale
 
-	@CreatedDate
-	private LocalDateTime insertedDate;
+    @CreatedDate
+    private LocalDateTime insertedDate;
 
-	@LastModifiedDate
-	private LocalDateTime lastUpdatedDate;
+    @LastModifiedDate
+    private LocalDateTime lastUpdatedDate;
 
-	private Status status;
+    private Status status;
 
-	private String endpoint;
+    private String endpoint;
 
-	private String basePath;
+    private String basePath;
 
-	private List<ServiceProperty> properties;
+    private List<ServiceProperty> properties;
 
 
 }

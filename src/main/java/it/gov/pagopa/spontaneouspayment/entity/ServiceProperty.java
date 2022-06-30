@@ -14,10 +14,10 @@ import javax.validation.constraints.NotBlank;
 @AllArgsConstructor
 public class ServiceProperty {
 
-	@NotBlank
-	private String name;
+    @NotBlank
+    private String name;
 
-	private String type;
+    private String type;
 
-	private boolean isRequired;
+    private boolean isRequired;
 }

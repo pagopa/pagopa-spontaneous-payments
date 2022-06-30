@@ -1,24 +1,21 @@
 package it.gov.pagopa.spontaneouspayment.entity;
 
-import java.time.LocalDateTime;
-import java.util.List;
-
-import javax.validation.Valid;
-import javax.validation.constraints.NotBlank;
-
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.annotation.LastModifiedDate;
-
 import com.azure.spring.data.cosmos.core.mapping.Container;
 import com.azure.spring.data.cosmos.core.mapping.PartitionKey;
-
 import it.gov.pagopa.spontaneouspayment.model.enumeration.Status;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.LastModifiedDate;
+
+import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
+import java.time.LocalDateTime;
+import java.util.List;
 
 @Container(containerName = "${azure.cosmos.ec-container-name}", autoCreateContainer = false)
 @Getter
@@ -29,22 +26,22 @@ import lombok.Setter;
 public class Organization {
 
 
-	@Id
-	@PartitionKey
-	private String fiscalCode;
+    @Id
+    @PartitionKey
+    private String fiscalCode;
 
-	@NotBlank(message = "company name is required")
-	private String companyName;
+    @NotBlank(message = "company name is required")
+    private String companyName;
 
-	@CreatedDate
-	private LocalDateTime insertedDate;
+    @CreatedDate
+    private LocalDateTime insertedDate;
 
-	@LastModifiedDate
-	private LocalDateTime lastUpdatedDate;
+    @LastModifiedDate
+    private LocalDateTime lastUpdatedDate;
 
-	private Status status;
+    private Status status;
 
-	@Valid
-	private List<ServiceRef> enrollments;
+    @Valid
+    private List<ServiceRef> enrollments;
 
 }
