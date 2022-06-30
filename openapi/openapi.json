@@ -32,8 +32,8 @@
 					}
 				],
 				"responses": {
-					"200": {
-						"description": "Obtained all enrollments for the creditor institution.",
+					"500": {
+						"description": "Service unavailable.",
 						"headers": {
 							"X-Request-Id": {
 								"description": "This header identifies the call",
@@ -45,13 +45,13 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/OrganizationModelResponse"
+									"$ref": "#/components/schemas/ProblemJson"
 								}
 							}
 						}
 					},
-					"500": {
-						"description": "Service unavailable.",
+					"404": {
+						"description": "Not found the creditor institution.",
 						"headers": {
 							"X-Request-Id": {
 								"description": "This header identifies the call",
@@ -79,8 +79,8 @@
 							}
 						}
 					},
-					"404": {
-						"description": "Not found the creditor institution.",
+					"200": {
+						"description": "Obtained all enrollments for the creditor institution.",
 						"headers": {
 							"X-Request-Id": {
 								"description": "This header identifies the call",
@@ -92,7 +92,7 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/ProblemJson"
+									"$ref": "#/components/schemas/OrganizationModelResponse"
 								}
 							}
 						}
@@ -135,8 +135,8 @@
 					"required": true
 				},
 				"responses": {
-					"500": {
-						"description": "Service unavailable.",
+					"404": {
+						"description": "Not found the creditor institution.",
 						"headers": {
 							"X-Request-Id": {
 								"description": "This header identifies the call",
@@ -153,13 +153,20 @@
 							}
 						}
 					},
-					"401": {
-						"description": "Wrong or missing function key.",
+					"500": {
+						"description": "Service unavailable.",
 						"headers": {
 							"X-Request-Id": {
 								"description": "This header identifies the call",
 								"schema": {
 									"type": "string"
+								}
+							}
+						},
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ProblemJson"
 								}
 							}
 						}
@@ -182,20 +189,13 @@
 							}
 						}
 					},
-					"404": {
-						"description": "Not found the creditor institution.",
+					"401": {
+						"description": "Wrong or missing function key.",
 						"headers": {
 							"X-Request-Id": {
 								"description": "This header identifies the call",
 								"schema": {
 									"type": "string"
-								}
-							}
-						},
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/ProblemJson"
 								}
 							}
 						}
@@ -256,24 +256,6 @@
 					"required": true
 				},
 				"responses": {
-					"409": {
-						"description": "The organization to create already exists.",
-						"headers": {
-							"X-Request-Id": {
-								"description": "This header identifies the call",
-								"schema": {
-									"type": "string"
-								}
-							}
-						},
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/ProblemJson"
-								}
-							}
-						}
-					},
 					"500": {
 						"description": "Service unavailable.",
 						"headers": {
@@ -303,24 +285,6 @@
 							}
 						}
 					},
-					"201": {
-						"description": "Request created.",
-						"headers": {
-							"X-Request-Id": {
-								"description": "This header identifies the call",
-								"schema": {
-									"type": "string"
-								}
-							}
-						},
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/OrganizationModelResponse"
-								}
-							}
-						}
-					},
 					"400": {
 						"description": "Malformed request.",
 						"headers": {
@@ -335,6 +299,42 @@
 							"application/json": {
 								"schema": {
 									"$ref": "#/components/schemas/ProblemJson"
+								}
+							}
+						}
+					},
+					"409": {
+						"description": "The organization to create already exists.",
+						"headers": {
+							"X-Request-Id": {
+								"description": "This header identifies the call",
+								"schema": {
+									"type": "string"
+								}
+							}
+						},
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ProblemJson"
+								}
+							}
+						}
+					},
+					"201": {
+						"description": "Request created.",
+						"headers": {
+							"X-Request-Id": {
+								"description": "This header identifies the call",
+								"schema": {
+									"type": "string"
+								}
+							}
+						},
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/OrganizationModelResponse"
 								}
 							}
 						}
@@ -367,6 +367,24 @@
 					}
 				],
 				"responses": {
+					"404": {
+						"description": "Not found the creditor institution.",
+						"headers": {
+							"X-Request-Id": {
+								"description": "This header identifies the call",
+								"schema": {
+									"type": "string"
+								}
+							}
+						},
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ProblemJson"
+								}
+							}
+						}
+					},
 					"500": {
 						"description": "Service unavailable.",
 						"headers": {
@@ -410,24 +428,6 @@
 								"description": "This header identifies the call",
 								"schema": {
 									"type": "string"
-								}
-							}
-						}
-					},
-					"404": {
-						"description": "Not found the creditor institution.",
-						"headers": {
-							"X-Request-Id": {
-								"description": "This header identifies the call",
-								"schema": {
-									"type": "string"
-								}
-							}
-						},
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/ProblemJson"
 								}
 							}
 						}
@@ -517,17 +517,6 @@
 							}
 						}
 					},
-					"401": {
-						"description": "Wrong or missing function key.",
-						"headers": {
-							"X-Request-Id": {
-								"description": "This header identifies the call",
-								"schema": {
-									"type": "string"
-								}
-							}
-						}
-					},
 					"200": {
 						"description": "Obtained single enrollment.",
 						"headers": {
@@ -542,6 +531,17 @@
 							"application/json": {
 								"schema": {
 									"$ref": "#/components/schemas/EnrollmentModelResponse"
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Wrong or missing function key.",
+						"headers": {
+							"X-Request-Id": {
+								"description": "This header identifies the call",
+								"schema": {
+									"type": "string"
 								}
 							}
 						}
@@ -611,6 +611,24 @@
 							}
 						}
 					},
+					"200": {
+						"description": "Request updated.",
+						"headers": {
+							"X-Request-Id": {
+								"description": "This header identifies the call",
+								"schema": {
+									"type": "string"
+								}
+							}
+						},
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/OrganizationModelResponse"
+								}
+							}
+						}
+					},
 					"404": {
 						"description": "Not found the creditor institution or the enroll service.",
 						"headers": {
@@ -636,24 +654,6 @@
 								"description": "This header identifies the call",
 								"schema": {
 									"type": "string"
-								}
-							}
-						}
-					},
-					"200": {
-						"description": "Request updated.",
-						"headers": {
-							"X-Request-Id": {
-								"description": "This header identifies the call",
-								"schema": {
-									"type": "string"
-								}
-							}
-						},
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/OrganizationModelResponse"
 								}
 							}
 						}
@@ -741,6 +741,24 @@
 							}
 						}
 					},
+					"409": {
+						"description": "The enrollment to the service already exists.",
+						"headers": {
+							"X-Request-Id": {
+								"description": "This header identifies the call",
+								"schema": {
+									"type": "string"
+								}
+							}
+						},
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ProblemJson"
+								}
+							}
+						}
+					},
 					"404": {
 						"description": "Not found the creditor institution or the enroll service.",
 						"headers": {
@@ -770,8 +788,8 @@
 							}
 						}
 					},
-					"409": {
-						"description": "The enrollment to the service already exists.",
+					"400": {
+						"description": "Malformed request.",
 						"headers": {
 							"X-Request-Id": {
 								"description": "This header identifies the call",
@@ -802,24 +820,6 @@
 							"application/json": {
 								"schema": {
 									"$ref": "#/components/schemas/OrganizationModelResponse"
-								}
-							}
-						}
-					},
-					"400": {
-						"description": "Malformed request.",
-						"headers": {
-							"X-Request-Id": {
-								"description": "This header identifies the call",
-								"schema": {
-									"type": "string"
-								}
-							}
-						},
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/ProblemJson"
 								}
 							}
 						}
@@ -1088,6 +1088,27 @@
 				"summary": "Return all services.",
 				"operationId": "getServices",
 				"responses": {
+					"200": {
+						"description": "Obtained all services.",
+						"headers": {
+							"X-Request-Id": {
+								"description": "This header identifies the call",
+								"schema": {
+									"type": "string"
+								}
+							}
+						},
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "array",
+									"items": {
+										"$ref": "#/components/schemas/ServiceModelResponse"
+									}
+								}
+							}
+						}
+					},
 					"500": {
 						"description": "Service unavailable.",
 						"headers": {
@@ -1113,24 +1134,6 @@
 								"description": "This header identifies the call",
 								"schema": {
 									"type": "string"
-								}
-							}
-						}
-					},
-					"200": {
-						"description": "Obtained all services.",
-						"headers": {
-							"X-Request-Id": {
-								"description": "This header identifies the call",
-								"schema": {
-									"type": "string"
-								}
-							}
-						},
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/ServiceModelResponse"
 								}
 							}
 						}
@@ -1211,17 +1214,6 @@
 							}
 						}
 					},
-					"401": {
-						"description": "Wrong or missing function key.",
-						"headers": {
-							"X-Request-Id": {
-								"description": "This header identifies the call",
-								"schema": {
-									"type": "string"
-								}
-							}
-						}
-					},
 					"404": {
 						"description": "No service found.",
 						"headers": {
@@ -1236,6 +1228,17 @@
 							"application/json": {
 								"schema": {
 									"$ref": "#/components/schemas/ProblemJson"
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Wrong or missing function key.",
+						"headers": {
+							"X-Request-Id": {
+								"description": "This header identifies the call",
+								"schema": {
+									"type": "string"
 								}
 							}
 						}
