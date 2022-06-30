@@ -20,7 +20,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import it.gov.pagopa.spontaneouspayment.model.ProblemJson;
-import it.gov.pagopa.spontaneouspayment.model.response.OrganizationModelResponse;
 import it.gov.pagopa.spontaneouspayment.model.response.ServiceDetailModelResponse;
 import it.gov.pagopa.spontaneouspayment.model.response.ServiceModelResponse;
 
@@ -44,7 +43,7 @@ public interface IServicesController {
     
     @Operation(summary = "Return all services.", security = {@SecurityRequirement(name = "ApiKey"), @SecurityRequirement(name = "Authorization")}, operationId = "getServices")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Obtained all enrollments for the creditor institution.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(name = "OrganizationModelResponse", implementation = OrganizationModelResponse.class))),
+            @ApiResponse(responseCode = "200", description = "Obtained all services.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(name = "ServiceModelResponse", implementation = ServiceModelResponse.class))),
             @ApiResponse(responseCode = "401", description = "Wrong or missing function key.", content = @Content(schema = @Schema())),
             @ApiResponse(responseCode = "500", description = "Service unavailable.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ProblemJson.class)))})
     @GetMapping(value = "/services",
