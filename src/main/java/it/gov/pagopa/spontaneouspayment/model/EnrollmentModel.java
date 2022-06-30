@@ -5,22 +5,20 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.validation.constraints.NotBlank;
 import java.io.Serializable;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class ServicePropertyModel implements Serializable {
+public class EnrollmentModel implements Serializable {
 
     /**
      * generated serialVersionUID
      */
-    private static final long serialVersionUID = -4881284106551118200L;
+    private static final long serialVersionUID = 8505165905680276253L;
 
-    @NotBlank
-    private String name;
+    private String iban;
+    private String officeName;
 
-    private String value;
 }

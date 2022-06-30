@@ -12,15 +12,17 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class ServicePropertyModel implements Serializable {
+public class CreateEnrollmentModel implements Serializable {
 
     /**
      * generated serialVersionUID
      */
-    private static final long serialVersionUID = -4881284106551118200L;
+    private static final long serialVersionUID = -3542093274149923876L;
 
-    @NotBlank
-    private String name;
+    @NotBlank(message = "service id is required")
+    private String serviceId;
+    @NotBlank(message = "iban is required")
+    private String iban;
+    private String officeName;
 
-    private String value;
 }

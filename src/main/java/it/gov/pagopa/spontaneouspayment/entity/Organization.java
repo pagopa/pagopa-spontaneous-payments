@@ -2,8 +2,9 @@ package it.gov.pagopa.spontaneouspayment.entity;
 
 import com.azure.spring.data.cosmos.core.mapping.Container;
 import com.azure.spring.data.cosmos.core.mapping.PartitionKey;
-
+import it.gov.pagopa.spontaneouspayment.model.enumeration.Status;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -21,25 +22,26 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class CreditInstitution {
+@Builder
+public class Organization {
 
 
-	@Id
-	@PartitionKey
-	private String fiscalCode;
+    @Id
+    @PartitionKey
+    private String fiscalCode;
 
-	@NotBlank(message = "company name is required")
-	private String companyName;
+    @NotBlank(message = "company name is required")
+    private String companyName;
 
-	@CreatedDate
-	private LocalDateTime insertedDate;
+    @CreatedDate
+    private LocalDateTime insertedDate;
 
-	@LastModifiedDate
-	private LocalDateTime lastUpdatedDate;
+    @LastModifiedDate
+    private LocalDateTime lastUpdatedDate;
 
-	private String status;
+    private Status status;
 
-	@Valid
-	private List<ServiceRef> services;
+    @Valid
+    private List<ServiceRef> enrollments;
 
 }

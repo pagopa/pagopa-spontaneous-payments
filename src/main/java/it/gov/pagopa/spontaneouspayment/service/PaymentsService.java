@@ -1,14 +1,16 @@
 package it.gov.pagopa.spontaneouspayment.service;
 
-import it.gov.pagopa.spontaneouspayment.entity.CreditInstitution;
+import it.gov.pagopa.spontaneouspayment.entity.Organization;
 import it.gov.pagopa.spontaneouspayment.entity.ServiceProperty;
 import it.gov.pagopa.spontaneouspayment.exception.AppError;
 import it.gov.pagopa.spontaneouspayment.exception.AppException;
 import it.gov.pagopa.spontaneouspayment.model.ServiceModel;
 import it.gov.pagopa.spontaneouspayment.model.SpontaneousPaymentModel;
 import it.gov.pagopa.spontaneouspayment.model.response.PaymentPositionModel;
-import it.gov.pagopa.spontaneouspayment.repository.CIRepository;
+import it.gov.pagopa.spontaneouspayment.repository.OrganizationRepository;
 import it.gov.pagopa.spontaneouspayment.repository.ServiceRepository;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,10 +19,12 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 @Service
+@AllArgsConstructor
+@NoArgsConstructor
 public class PaymentsService {
 
     @Autowired
-    private CIRepository ciRepository;
+    private OrganizationRepository orgRepository;
 
     @Autowired
     private ServiceRepository serviceRepository;
@@ -33,10 +37,10 @@ public class PaymentsService {
         // check if service exists
         var serviceConfiguration = getServiceDetails(spontaneousPayment.getService());
 
-        // check if organizationFiscalCode exists
+        // check if the relationship between organization and enrollment to service exists
         checkServiceOrganization(organizationFiscalCode, serviceConfiguration);
 
-        // check if the services exist in the DB
+        // checks if the request contains the properties required by the configured service
         checkServiceProperties(spontaneousPayment, serviceConfiguration);
 
         return createDebtPosition(serviceConfiguration);
@@ -56,7 +60,7 @@ public class PaymentsService {
                     .parallelStream()
                     .anyMatch(o -> o.getName().equals(confProp.getName()));
             if (!isPresent) {
-                throw new AppException(AppError.PROPERTY_NOT_FOUND, confProp.getName());
+                throw new AppException(AppError.PROPERTY_MISSING, confProp.getName());
             }
         }
     }
@@ -76,8 +80,8 @@ public class PaymentsService {
 
     private void checkServiceOrganization(@NotBlank String organizationFiscalCode,
                                           @NotNull it.gov.pagopa.spontaneouspayment.entity.Service service) {
-        var ci = ciRepository.getCreditInstitutionByOrgFiscCodeAndServiceId(organizationFiscalCode, service.getId());
-        if (ci.isEmpty()) {
+        var org = orgRepository.getCreditInstitutionByOrgFiscCodeAndServiceId(organizationFiscalCode, service.getId());
+        if (org.isEmpty()) {
             throw new AppException(AppError.ORGANIZATION_SERVICE_NOT_FOUND, organizationFiscalCode, service.getId());
         }
     }
@@ -87,9 +91,9 @@ public class PaymentsService {
                 .orElseThrow(() -> new AppException(AppError.SERVICE_NOT_FOUND, service.getId()));
     }
 
-    private CreditInstitution getCreditorInstitution(String organizationFiscalCode) {
-        return ciRepository.findByFiscalCode(organizationFiscalCode)
-                .orElseThrow(() -> new AppException(AppError.ORGANIZATION_SERVICE_NOT_FOUND, organizationFiscalCode));
+    private Organization getCreditorInstitution(String organizationFiscalCode) {
+        return orgRepository.findByFiscalCode(organizationFiscalCode)
+                .orElseThrow(() -> new AppException(AppError.ORGANIZATION_NOT_FOUND, organizationFiscalCode));
     }
 
 
