@@ -15,13 +15,13 @@ import javax.validation.constraints.NotBlank;
 @Builder
 public class ServiceRef {
 
-	private String serviceId;
+    private String serviceId;
 
-	private String officeName; // es. Ufficio Tributi
+    private String officeName; // es. Ufficio Tributi
 
-	@NotBlank(message = "iban is required")
-	private String iban;
+    @NotBlank(message = "iban is required")
+    private String iban;
 
-	private String postalIban;
+    private String postalIban;
 
 }

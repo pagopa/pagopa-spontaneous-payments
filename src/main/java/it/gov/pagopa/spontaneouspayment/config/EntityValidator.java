@@ -28,7 +28,7 @@ public class EntityValidator {
      * @param joinPoint not used
      * @param result    the response to validate
      */
-    @AfterReturning(pointcut = "execution(* it.gov.pagopa.spontaneouspayment.repository.impl.*.*(..))", returning = "result")
+    @AfterReturning(pointcut = "execution(* it.gov.pagopa.spontaneouspayment.repository.*.*(..))", returning = "result")
     public void validateResponse(JoinPoint joinPoint, Object result) {
         if (result instanceof ResponseEntity) {
             validateResponse((ResponseEntity<?>) result);
