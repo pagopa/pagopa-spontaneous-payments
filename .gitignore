@@ -4,3 +4,6 @@ target/**/*
 emulatorcert.crt
 .env
 **/*paDemandPaymentNoticeRequest.xml
+/node_modules/
+**/package-lock.json
+**/package.json
