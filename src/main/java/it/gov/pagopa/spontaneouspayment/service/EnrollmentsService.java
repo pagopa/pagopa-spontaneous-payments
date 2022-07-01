@@ -15,6 +15,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.validation.constraints.NotBlank;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 import java.util.stream.StreamSupport;
 
 @Service
@@ -33,13 +38,11 @@ public class EnrollmentsService {
         Iterable<it.gov.pagopa.spontaneouspayment.entity.Service> allServices = serviceRepository.findAll();
 
         // check if all services the EC wants to enroll are configured in the database
-        for (ServiceRef servRef : orgEntity.getEnrollments()) {
-            boolean exist = StreamSupport.stream(allServices.spliterator(), true).anyMatch(s -> s.getId().equals(servRef.getServiceId()));
-            if (!exist) {
-                throw new AppException(AppError.SERVICE_NOT_FOUND, servRef.getServiceId());
-            }
-        }
-
+        Optional.ofNullable(orgEntity.getEnrollments()).ifPresent(servRef -> servRef.forEach(e -> {
+        	boolean exist = StreamSupport.stream(allServices.spliterator(), true).anyMatch(s -> s.getId().equals(e.getServiceId()));
+            if (!exist) {throw new AppException(AppError.SERVICE_NOT_FOUND, e.getServiceId());}
+        }));
+        			
         // check if organization fiscal code already exists
         if (orgRepository.existsById(orgEntity.getFiscalCode())) {
             throw new AppException(AppError.ENTITY_DUPLICATED, "Already exists an entity with id " + orgEntity.getFiscalCode());
@@ -62,7 +65,7 @@ public class EnrollmentsService {
         Organization orgEntity = this.checkOrganizationFiscalCode(organizationFiscalCode);
 
         // check if the enroll to service already exist for the organization fiscal code
-        exists = orgEntity.getEnrollments()
+        exists = Optional.ofNullable(orgEntity.getEnrollments()).orElseGet(Collections::emptyList)
                 .parallelStream()
                 .anyMatch(s -> s.getServiceId().equals(serviceId));
         if (exists) {
@@ -70,12 +73,12 @@ public class EnrollmentsService {
         }
 
         // creates the new enrollment and adds it to the organization
-        orgEntity.getEnrollments().add(
-                ServiceRef.builder()
+        List<ServiceRef> enrollments = Optional.ofNullable(orgEntity.getEnrollments()).orElseGet(ArrayList::new);
+        enrollments.add(ServiceRef.builder()
                         .serviceId(serviceId)
                         .officeName(enrollmentModel.getOfficeName())
-                        .iban(enrollmentModel.getIban()).build()
-        );
+                        .iban(enrollmentModel.getIban()).build());
+        orgEntity.setEnrollments(enrollments);
 
         return orgRepository.save(orgEntity);
     }
