@@ -12,7 +12,7 @@ function get(url) {
              return res;
          })
          .catch(error => {
-             assert.fail(error);
+             return error.response;
          });
 }
 
@@ -22,7 +22,7 @@ function post(url, body) {
             return res;
         })
         .catch(error => {
-            assert.fail(error);
+            return error.response;
         });
 }
 
@@ -32,7 +32,7 @@ function put(url, body) {
             return res;
         })
         .catch(error => {
-            assert.fail(error);
+            return error.response;
         });
 }
 
@@ -43,7 +43,7 @@ function del(url) {
             return res;
         })
         .catch(error => {
-            assert.fail(error);
+            return error.response;
         });
 }
 

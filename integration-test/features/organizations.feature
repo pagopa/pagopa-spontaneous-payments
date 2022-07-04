@@ -5,7 +5,7 @@ Feature: All about Organizations
   Scenario: An organization creates an enrollment
     Given the organization "777777"
     When the organization enrolls in the service "service-1"
-    Then the organization gets the status code 200
+    Then the organization gets the status code 201
     And the service is listed in the organization's details
 
   Scenario: An organization tries to create an enrollment, but service not found

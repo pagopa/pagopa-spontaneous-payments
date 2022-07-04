@@ -14,7 +14,9 @@ let service;
 // Given
 
 Given('the organization {string}', async function (idOrg) {
+    // precondition
     await deleteOrganization(idOrg);
+
     responseToCheck = await createOrganization(idOrg, {companyName: idOrg});
     assert.strictEqual(responseToCheck.status, 201);
     // save data
@@ -23,6 +25,9 @@ Given('the organization {string}', async function (idOrg) {
 });
 
 Given('the organization {string} with the service {string}', async function (idOrg, idService) {
+    // precondition
+    await deleteOrganization(idOrg);
+
     // save data
     service = {
         serviceId: idService,
@@ -37,46 +42,42 @@ Given('the organization {string} with the service {string}', async function (idO
     assert.strictEqual(responseToCheck.status, 201);
     // save data
     organization = responseToCheck.data;
-    organization.code = idOrg;
 });
 
 
 // When
 When('the organization enrolls in the service {string}', async function (idService) {
     // save data
-    const code = organization.code;
     service = {
         serviceId: idService,
         iban: randomIban(),
         officeName: randomName()
     };
     // call
-    responseToCheck = await createOrganizationService(organization.code, idService, service);
-    assert.strictEqual(responseToCheck.status, 201);
+    responseToCheck = await createOrganizationService(organization.fiscalCode, idService, service);
     // save data
     organization = responseToCheck.data;
-    organization.code = code;
 });
 
-When('the organization deletes the service {string}', function (idService) {
+When('the organization deletes the service {string}', async function (idService) {
     service.serviceId = idService
-    responseToCheck = deleteOrganizationService(organization.code, idService);
+    responseToCheck = await deleteOrganizationService(organization.fiscalCode, idService);
     assert.strictEqual(responseToCheck.status, 200);
 });
 
 
 When('the organization changes the service IBAN with {string}', async function (iban) {
-    responseToCheck = await updateOrganizationService(organization.code, service.serviceId, {
+    responseToCheck = await updateOrganizationService(organization.fiscalCode, service.serviceId, {
         iban: iban,
         officeName: service.officeName
     })
     assert.strictEqual(responseToCheck.status, 200);
     // save data
-    service = responseToCheck.data
+    organization = responseToCheck.data
 });
 
 When('the organization set the status to {string}', async function (status) {
-    responseToCheck = await updateOrganization(organization.code, {
+    responseToCheck = await updateOrganization(organization.fiscalCode, {
         companyName: organization.companyName,
         status: status
     })
@@ -88,13 +89,11 @@ When('the organization set the status to {string}', async function (status) {
 // Then
 
 Then(/^the service is listed in the organization's details$/, async function () {
-    const code = organization.code;
-    responseToCheck = await getOrganization(organization.code);
+    responseToCheck = await getOrganization(organization.fiscalCode);
     assert.strictEqual(responseToCheck.status, 200);
     assert.deepStrictEqual(responseToCheck.data.enrollments, organization.enrollments)
     // save data
     organization = responseToCheck.data
-    organization.code = code;
 });
 
 Then('the organization gets the status code {int}', function (status) {
@@ -102,17 +101,19 @@ Then('the organization gets the status code {int}', function (status) {
 });
 
 Then(/^the service is not found for the organization$/, async function () {
-    responseToCheck = await getOrganizationService(organization.code, service.serviceId);
+    responseToCheck = await getOrganizationService(organization.fiscalCode, service.serviceId);
     assert.strictEqual(responseToCheck.status, 404);
 });
 
 Then('the service for the organization has the IBAN {string}', async function (iban) {
-    responseToCheck = await getOrganizationService(organization.code, service.serviceId);
+    responseToCheck = await getOrganizationService(organization.fiscalCode, service.serviceId);
     assert.strictEqual(responseToCheck.status, 200);
     assert.strictEqual(responseToCheck.data.iban, iban);
 
 });
 
-Then(/^the status is "([^"]*)" in the organization's details$/, function () {
-
+Then('the status is {string} in the organization\'s details', async function (status) {
+    responseToCheck = await getOrganization(organization.fiscalCode);
+    assert.strictEqual(responseToCheck.status, 200);
+    assert.strictEqual(responseToCheck.data.status, status);
 });
