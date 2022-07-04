@@ -1,4 +1,6 @@
 Feature: All about Organizations
+  Background:
+    Given GPS running
 
   Scenario: An organization creates an enrollment
     Given the organization "777777"

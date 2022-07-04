@@ -1,0 +1,11 @@
+{
+  "name": "pagopa-spontaneous-payments",
+  "version": "1.0.0",
+  "scripts": {
+    "test": "npx cucumber-js"
+  },
+  "dependencies": {
+    "@cucumber/cucumber": "^8.4.0",
+    "axios": "^0.27.2"
+  }
+}

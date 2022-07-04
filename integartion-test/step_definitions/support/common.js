@@ -1,7 +1,10 @@
 const axios = require("axios");
 const assert = require("assert");
+const fs = require('fs');
 
-const gps_host = 'http://localhost:9090';
+let rawdata = fs.readFileSync('../../config/properties.json');
+let properties = JSON.parse(rawdata);
+const gps_host = properties.gps_host;
 
 function get(url) {
     return axios.get(gps_host + url)
