@@ -2,7 +2,7 @@ const axios = require("axios");
 const assert = require("assert");
 const fs = require('fs');
 
-let rawdata = fs.readFileSync('../../config/properties.json');
+let rawdata = fs.readFileSync('./config/properties.json');
 let properties = JSON.parse(rawdata);
 const gps_host = properties.gps_host;
 

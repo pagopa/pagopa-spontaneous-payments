@@ -1,45 +1,45 @@
 const {post, get, put, del} = require("./common");
 
-async function getOrganization(code) {
-    await get(`/organizations/${code}`)
+function getOrganization(code) {
+    return get(`/organizations/${code}`)
 }
 
-async function createOrganization(idOrg, body) {
-    await post(`/organizations/${idOrg}`, body)
+function createOrganization(idOrg, body) {
+    return post(`/organizations/${idOrg}`, body)
 }
 
-async function updateOrganization(idOrg, body) {
-    await put(`/organizations/${idOrg}`, body)
+function updateOrganization(idOrg, body) {
+    return put(`/organizations/${idOrg}`, body)
 }
 
-async function deleteOrganization(idOrg) {
-    await del(`/organizations/${idOrg}`)
-}
-
-
-async function getOrganizationService(idOrg, idService) {
-    await get(`/organizations/${idOrg}/services/${idService}`)
-}
-
-async function createOrganizationService(idOrg, idService, body) {
-    await post(`/organizations/${idOrg}/services/${idService}`, body)
-}
-
-async function updateOrganizationService(idOrg, idService, body) {
-    await put(`/organizations/${idOrg}/services/${idService}`, body)
-}
-
-async function deleteOrganizationService(idOrg, idService) {
-    await del(`/organizations/${idOrg}/services/${idService}`)
+function deleteOrganization(idOrg) {
+    return del(`/organizations/${idOrg}`)
 }
 
 
-async function getServices() {
-    await get(`/services`)
+function getOrganizationService(idOrg, idService) {
+    return get(`/organizations/${idOrg}/services/${idService}`)
 }
 
-async function getService(idService) {
-    await get(`/services/${idService}`)
+function createOrganizationService(idOrg, idService, body) {
+    return post(`/organizations/${idOrg}/services/${idService}`, body)
+}
+
+function updateOrganizationService(idOrg, idService, body) {
+    return put(`/organizations/${idOrg}/services/${idService}`, body)
+}
+
+function deleteOrganizationService(idOrg, idService) {
+    return del(`/organizations/${idOrg}/services/${idService}`)
+}
+
+
+function getServices() {
+    return get(`/services`)
+}
+
+function getService(idService) {
+    return get(`/services/${idService}`)
 }
 
 module.exports = {

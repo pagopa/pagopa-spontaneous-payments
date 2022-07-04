@@ -29,7 +29,7 @@ Feature: All about Organizations
     Given the organization "777777" with the service "service-1"
     When the organization changes the service IBAN with "ABCD"
     Then the organization gets the status code 200
-    And the service is listed in the organization's details with IBAN "ABCD"
+    And the service for the organization has the IBAN "ABCD"
 
   Scenario: An organization is disabled
     Given the organization "777777"
