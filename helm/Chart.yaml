@@ -1,0 +1,10 @@
+apiVersion: v2
+name: pagopa-spontaneous-payments-service
+description: Microservice that handles spontaneous payments for pagoPA
+type: application
+version: 1.0.0
+appVersion: 1.0.0
+dependencies:
+- name: microservice-chart
+  version: 1.19.0
+  repository: "https://pagopa.github.io/aks-microservice-chart-blueprint"
