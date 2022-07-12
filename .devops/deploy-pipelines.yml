@@ -60,8 +60,6 @@ stages:
   # Create a release on GitHub
   - stage: release_service
     condition: ne('${{ parameters.SEMVER }}', 'skip')
-    pool:
-      vmImage: "ubuntu-latest"
     jobs:
       - job: releaseService
         steps:
@@ -250,8 +248,6 @@ stages:
   - stage: test
     # run this stage only if 'test' is enabled
     condition: and(not(failed('deployJava')), eq('${{ parameters.TEST }}', 'true'))
-    pool:
-      vmImage: "ubuntu-latest"
     jobs:
       # is needed to wait for startup of application
       - job: waitStartup
