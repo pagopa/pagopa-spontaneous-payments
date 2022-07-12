@@ -21,6 +21,9 @@ public class ServiceRef {
 
     @NotBlank(message = "iban is required")
     private String iban;
+    
+    @NotBlank
+    private String segregationCode;
 
     private String postalIban;
 
