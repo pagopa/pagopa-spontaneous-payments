@@ -60,6 +60,8 @@ stages:
   # Create a release on GitHub
   - stage: release_service
     condition: ne('${{ parameters.SEMVER }}', 'skip')
+    pool:
+      vmImage: "ubuntu-latest"
     jobs:
       - job: releaseService
         steps:
@@ -194,8 +196,6 @@ stages:
     jobs:
       - job: Serving_helm
         displayName: Serving_helm
-        pool:
-          vmImage: $(vmImageNameDefault)
         steps:
           - task: PublishPipelineArtifact@1
             displayName: 'Publish Artifact manifests'
@@ -211,8 +211,6 @@ stages:
     jobs:
       - deployment: 'Deploy_to_${{ parameters.ENV }}'
         displayName: 'Deploy_to_${{ parameters.ENV }}'
-        pool:
-          vmImage: $(vmImageNameDefault)
         environment: '${{ parameters.ENV }}'
         strategy:
           runOnce:
