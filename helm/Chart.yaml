@@ -1,5 +1,5 @@
 apiVersion: v2
-name: pagopa-spontaneous-payments-service
+name: pagopa-spontaneous-payments
 description: Microservice that handles spontaneous payments for pagoPA
 type: application
 version: 1.0.0
