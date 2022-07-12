@@ -28,33 +28,17 @@ parameters:
     displayName: Run tests
     type: boolean
     default: false
-  - name: 'skipBuild'
-    displayName: 'Check this flag to skip build and proceed to deploy a docker image previously built'
-    type: boolean
-    default: false
 
 variables:
   ${{ if eq(parameters['ENV'], 'dev') }}:
-    AZURE_SUBSCRIPTION: $(DEV_AZURE_SUBSCRIPTION)
-#    RESOURCE_GROUP: $(DEV_WEB_APP_RESOURCE_GROUP_NAME)
-#    APP_NAME: $(DEV_WEB_APP_NAME)
-#    STAGE: "d"
-    dockerRegistryServiceConnection: $(DEV_CONTAINER_REGISTRY)
-#    dockerNamespace: $(DEV_CONTAINER_NAMESPACE)
+    dockerRegistryServiceConnection: $(DEV_CONTAINER_REGISTRY_SERVICE_CONN)
+    kubernetesServiceConnection: '$(DEV_KUBERNETES_SERVICE_CONN)'
   ${{ if eq(parameters['ENV'], 'uat') }}:
-    AZURE_SUBSCRIPTION: $(UAT_AZURE_SUBSCRIPTION)
-#    RESOURCE_GROUP: $(UAT_WEB_APP_RESOURCE_GROUP_NAME)
-#    APP_NAME: $(UAT_WEB_APP_NAME)
-#    STAGE: "u"
-    dockerRegistryServiceConnection: $(UAT_CONTAINER_REGISTRY)
-#    dockerNamespace: $(UAT_CONTAINER_NAMESPACE)
+    dockerRegistryServiceConnection: $(UAT_CONTAINER_REGISTRY_SERVICE_CONN)
+    kubernetesServiceConnection: '$(UAT_KUBERNETES_SERVICE_CONN)'
   ${{ if eq(parameters['ENV'], 'prod') }}:
-    AZURE_SUBSCRIPTION: $(PROD_AZURE_SUBSCRIPTION)
-#    RESOURCE_GROUP: $(PROD_WEB_APP_RESOURCE_GROUP_NAME)
-#    APP_NAME: $(PROD_WEB_APP_NAME)
-#    STAGE: "p"
-    dockerRegistryServiceConnection: $(PROD_CONTAINER_REGISTRY)
-#    dockerNamespace: $(PROD_CONTAINER_NAMESPACE)
+    dockerRegistryServiceConnection: $(PROD_CONTAINER_REGISTRY_SERVICE_CONN)
+    kubernetesServiceConnection: '$(PROD_KUBERNETES_SERVICE_CONN)'
   ${{ if eq(variables['Build.SourceBranchName'], 'merge') }}:
     SOURCE_BRANCH: "main" # force to main branch
   ${{ if ne(variables['Build.SourceBranchName'], 'merge') }}:
@@ -212,7 +196,7 @@ stages:
   - stage: 'Serving_helm'
     displayName: 'Serving_Helm'
     dependsOn: Build
-    condition: or(succeeded(), ${{ parameters.skipBuild }} )
+    condition: or(succeeded(), ne('${{ parameters.SEMVER }}', 'skip') )
     jobs:
       - job: Serving_helm
         displayName: Serving_helm
@@ -229,7 +213,7 @@ stages:
   - stage: 'Deploy'
     displayName: 'Deploy_to_${{ parameters.ENV }}'
     dependsOn: "Serving_helm"
-    condition: or(succeeded(), ${{ parameters.skipBuild }} )
+    condition: or(succeeded(), ne('${{ parameters.SEMVER }}', 'skip') )
     jobs:
       - deployment: 'Deploy_to_${{ parameters.ENV }}'
         displayName: 'Deploy_to_${{ parameters.ENV }}'
@@ -266,7 +250,7 @@ stages:
                     chartPath: $(Pipeline.Workspace)/helm
                     chartName: $(imageRepository)
                     releaseName: $(imageRepository)
-                    valueFile: "$(Pipeline.Workspace)/helm/values-${{ parameters.ENV }}"
+                    valueFile: "$(Pipeline.Workspace)/helm/values-${{ parameters.ENV }}.yaml"
                     install: true
                     waitForExecution: true
                     arguments: "--timeout 5m0s"
