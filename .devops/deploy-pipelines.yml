@@ -92,7 +92,6 @@ stages:
               git commit -m "Bump version [skip ci]"
               git push origin $(SOURCE_BRANCH)
 
-
           - script: |
               HEAD_SHA=$(git rev-parse HEAD)
               TAG="$(pomversion.next)"
