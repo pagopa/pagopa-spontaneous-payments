@@ -217,7 +217,7 @@ stages:
         displayName: 'Deploy_to_${{ parameters.ENV }}'
         pool:
           vmImage: $(vmImageNameDefault)
-        environment: '$(environment)'
+        environment: '${{ parameters.ENV }}'
         strategy:
           runOnce:
             deploy:
