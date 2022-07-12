@@ -135,15 +135,13 @@ stages:
             inputs:
               targetType: 'inline'
               script: |
-                echo "${{ parameters.environment }}"
-                echo "${{ parameters.ENV }}
                 version=$(cat pom.xml | grep '^.*<version>' | sed -n 2p | awk -F'[><]' '{print $3}')
                 branch="$(Build.SourceBranch)"
-                if [[ "$branch" != "refs/heads/master" && ! "$branch" =~ "refs/tags/.*" && "${{ parameters.environment }}" == "prod" ]]; then
+                if [[ "$branch" != "refs/heads/master" && ! "$branch" =~ "refs/tags/.*" && "${{ parameters.ENV }}" == "prod" ]]; then
                    echo "Deploy branch $branch is not allowed."
                    exit 1
                 fi
-                if [[ "$version" == *SNAPSHOT && "${{ parameters.environment }}" == "prod" ]]; then
+                if [[ "$version" == *SNAPSHOT && "${{ parameters.ENV }}" == "prod" ]]; then
                    echo "Version $version is not allowed."
                    exit 1
                 fi
