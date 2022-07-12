@@ -15,6 +15,7 @@ public enum AppError {
     ENTITY_DUPLICATED(HttpStatus.CONFLICT, "Entity with the specified id already exists in the system", "%s"),
     ENROLLMENT_TO_SERVICE_DUPLICATED(HttpStatus.CONFLICT, "An enrollment for the specified id already exists", "Already exists an enrollment between Organization Fiscal Code %s and Service Id %s"),
     ENTITY_VALIDATION_FAIL(HttpStatus.INTERNAL_SERVER_ERROR, "Error during entity validation", "%s"),
+    IUV_ACQUISITION_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "Error during iuv acquisition", "It was not possible to obtain the iuv for loading the debt position [Organization Fiscal Code = %s, Aux Digit = %s; Segregation Code = %s]"),
     UNKNOWN(null, null, null);
 
 

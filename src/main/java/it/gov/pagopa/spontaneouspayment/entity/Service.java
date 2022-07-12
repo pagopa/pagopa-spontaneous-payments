@@ -47,9 +47,11 @@ public class Service {
 
     private Status status;
 
+    @NotBlank
     private String endpoint;
-
+    @NotBlank
     private String basePath;
+    
 
     private List<ServiceProperty> properties;
 
