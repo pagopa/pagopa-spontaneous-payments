@@ -239,7 +239,7 @@ stages:
                     chartType: filepath
                     chartPath: $(Pipeline.Workspace)/helm
                     chartName: $(imageRepository)
-                    releaseName: $(imageRepository)
+#                    releaseName: $(imageRepository)
                     valueFile: "$(Pipeline.Workspace)/helm/values-${{ parameters.ENV }}.yaml"
                     install: true
                     waitForExecution: true
