@@ -22,7 +22,7 @@ public class SwaggerConfig {
     public static final String HEADER_REQUEST_ID = "X-Request-Id";
 
     @Bean
-    public OpenAPI customOpenAPI(@Value("${application.description}") String appDescription, @Value("${application.version}") String appVersion) {
+    public OpenAPI customOpenAPI(@Value("${info.application.description}") String appDescription, @Value("${info.application.version}") String appVersion) {
         return new OpenAPI()
                 .components(new Components()
                         .addSecuritySchemes("ApiKey", new SecurityScheme()
