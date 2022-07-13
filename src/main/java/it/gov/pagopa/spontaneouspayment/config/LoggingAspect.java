@@ -26,13 +26,13 @@ import java.util.stream.StreamSupport;
 @Slf4j
 public class LoggingAspect {
 
-    @Value("${application.name}")
+    @Value("${info.application.name}")
     private String name;
 
-    @Value("${application.version}")
+    @Value("${info.application.version}")
     private String version;
 
-    @Value("${properties.environment}")
+    @Value("${info.properties.environment}")
     private String environment;
 
     @Pointcut("@within(org.springframework.web.bind.annotation.RestController)")
