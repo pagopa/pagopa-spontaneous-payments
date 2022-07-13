@@ -8,3 +8,4 @@ emulatorcert.crt
 **/node_modules/
 **/yarn.lock
 **/application-secret.properties
+helm/charts/*

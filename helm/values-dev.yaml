@@ -1,0 +1,105 @@
+microservice-chart:
+  namespace: "gps"
+  nameOverride: ""
+  fullnameOverride: ""
+
+  image:
+    repository: pagopadcommonacr.azurecr.io/pagopaspontaneouspayments
+    tag: "latest" #improve
+    pullPolicy: Always
+
+  livenessProbe:
+    httpGet:
+      path: /actuator/health/liveness
+      port: 8080
+    initialDelaySeconds: 60
+    failureThreshold: 6
+    periodSeconds: 10
+
+  readinessProbe:
+    httpGet:
+      path: /actuator/health/readiness
+      port: 8080
+    initialDelaySeconds: 60
+    failureThreshold: 6
+    periodSeconds: 10
+
+  deployment:
+    create: true
+
+  service:
+    create: true
+    type: ClusterIP
+    port: 8080
+
+  ingress:
+    create: true
+    host: "weudev.gps.internal.dev.platform.pagopa.it"
+    path: /pagopa-spontaneous-payments-service/(.*)
+
+  serviceAccount:
+    create: false
+    annotations: {}
+    name: ""
+
+  podAnnotations: {}
+
+  podSecurityContext:
+    seccompProfile:
+      type: RuntimeDefault
+
+  securityContext:
+    allowPrivilegeEscalation: false
+
+  resources:
+    requests:
+      memory: "300Mi"
+      cpu: "40m"
+    limits:
+      memory: "300Mi"
+      cpu: "150m"
+
+  autoscaling:
+    minReplica: 1
+    maxReplica: 2
+    pollingInterval: 30 # seconds
+    cooldownPeriod: 300 # seconds
+    triggers:
+      - type: azure-monitor
+        metadata:
+          tenantId: 7788edaf-0346-4068-9d79-c868aed15b3d
+          subscriptionId: bbe47ad4-08b3-4925-94c5-1278e5819b86
+          resourceGroupName: pagopa-d-gps-sec-rg
+          resourceURI: Microsoft.KeyVault/vaults/pagopa-d-gps-kv
+          metricName: ServiceApiHit
+          # metricNamespace: Microsoft.KeyVault/vaults
+          # metricFilter: namespace eq 'default'
+          # metricAggregationInterval: "-1:1:0"
+          metricAggregationType: Count
+          targetValue: "30"
+
+  envConfig:
+    COSMOS_URI: https://pagopa-d-weu-gps-cosmos-account.documents.azure.com:443/
+    COSMOS_DATABASE: "db"
+    COSMOS_QUERY_METRICS: "false"
+    EC_CONTAINER_NAME: "creditor_institutions"
+    SERVICE_CONTAINER_NAME: "services"
+    GPD_HOST: https://api.dev.platform.pagopa.it/gpd/api/v1
+    CONNECTION_TIMEOUT: "1000"
+    RETRY_MAX_ATTEMPTS: "1"
+    RETRY_MAX_DELAY: "200"
+    LOGGING_LEVEL: "INFO"
+
+  envSecret:
+    COSMOS_KEY: cosmos-gps-d-pkey
+
+  keyvault:
+    name: "pagopa-d-gps-kv"
+    tenantId: "7788edaf-0346-4068-9d79-c868aed15b3d"
+
+  nodeSelector: {}
+
+  tolerations: []
+
+  affinity: {}
+
