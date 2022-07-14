@@ -9,7 +9,7 @@ public class FeignConfig {
     static final String HEADER_REQUEST_ID = "X-Request-Id";
 
     @Bean
-    public RequestInterceptor requestIdInterceptor() {
+    RequestInterceptor requestIdInterceptor() {
         return requestTemplate -> requestTemplate.header(HEADER_REQUEST_ID, MDC.get("requestId"));
     }
 }
