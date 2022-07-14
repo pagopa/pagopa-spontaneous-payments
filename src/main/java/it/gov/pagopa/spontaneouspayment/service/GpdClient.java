@@ -14,8 +14,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 @FeignClient(value = "gpd", url = "${service.gpd.host}", configuration = FeignConfig.class)
 public interface GpdClient {
 
-    @Retryable(exclude = FeignException.FeignClientException.class, maxAttemptsExpression = "${retry.maxAttempts}",
-            backoff = @Backoff(delayExpression = "${retry.maxDelay}"))
+    @Retryable(exclude = FeignException.FeignClientException.class, maxAttemptsExpression = "${retry.gpd.maxAttempts}",
+            backoff = @Backoff(delayExpression = "${retry.gpd.maxDelay}"))
     @GetMapping(value = "/organizations/{organizationfiscalcode}/debtpositions")
     PaymentPositionModel createDebtPosition(@PathVariable("organizationfiscalcode") String organizationFiscalCode,
                                             @RequestBody PaymentPositionModel paymentPositionModel);
