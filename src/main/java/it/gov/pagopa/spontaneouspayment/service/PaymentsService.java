@@ -53,9 +53,6 @@ public class PaymentsService {
     private Long auxDigit; 
     
     private String iupdPrefix = "GPS" + Year.now().getValue() + "_"; 
-    
-
-    
 
 
     public PaymentPositionModel createSpontaneousPayment(@NotBlank String organizationFiscalCode, @Valid SpontaneousPaymentModel spontaneousPayment) {
@@ -111,7 +108,6 @@ public class PaymentsService {
         return gpdClient.createDebtPosition(organizationFiscalCode, pp);
     }
     
-
 
 	private PaymentOptionModel callExternalService(it.gov.pagopa.spontaneouspayment.entity.Service serviceConfiguration) {
         //TODO implement business logic
