@@ -16,8 +16,8 @@ import it.gov.pagopa.spontaneouspayment.model.response.IuvGenerationModelRespons
 @FeignClient(value = "iuvgenerator", url = "${service.iuv.generator.host}", configuration = FeignConfig.class)
 public interface IuvGeneratorClient {
 
-    @Retryable(exclude = FeignException.FeignClientException.class, maxAttemptsExpression = "${retry.iuv.generator.maxAttempts}",
-            backoff = @Backoff(delayExpression = "${retry.iuv.generator.maxDelay}"))
+    @Retryable(exclude = FeignException.FeignClientException.class, maxAttemptsExpression = "${retry.iuv-generator.maxAttempts}",
+            backoff = @Backoff(delayExpression = "${retry.iuv-generator.maxDelay}"))
     @GetMapping(value = "/organizations/{organizationfiscalcode}/iuv")
     IuvGenerationModelResponse generateIUV(@PathVariable("organizationfiscalcode") String organizationFiscalCode,
                                             @RequestBody IuvGenerationModel paymentPositionModel);

@@ -22,7 +22,7 @@ public class ServiceRef {
     @NotBlank(message = "iban is required")
     private String iban;
     
-    @NotBlank
+    @NotBlank(message = "segregation code is required")
     private String segregationCode;
 
     private String postalIban;
