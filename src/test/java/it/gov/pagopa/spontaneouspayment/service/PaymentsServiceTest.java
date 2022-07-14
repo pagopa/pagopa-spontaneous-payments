@@ -48,6 +48,7 @@ import it.gov.pagopa.spontaneouspayment.entity.ServiceRef;
 import it.gov.pagopa.spontaneouspayment.exception.AppException;
 import it.gov.pagopa.spontaneouspayment.model.IuvGenerationModel;
 import it.gov.pagopa.spontaneouspayment.model.SpontaneousPaymentModel;
+import it.gov.pagopa.spontaneouspayment.model.enumeration.PropertyType;
 import it.gov.pagopa.spontaneouspayment.model.enumeration.Status;
 import it.gov.pagopa.spontaneouspayment.model.response.IuvGenerationModelResponse;
 import it.gov.pagopa.spontaneouspayment.model.response.PaymentPositionModel;
@@ -121,11 +122,10 @@ class PaymentsServiceTest {
 		Service s1 = new Service();
 		s1.setId("id-servizio-1");
 		s1.setTransferCategory("tassonomia-1");
-		s1.setRemittanceInformation("causale-1");
 		s1.setBasePath("base-path-1");
 		s1.setEndpoint("endpont-1");
 
-		ServiceProperty sp1 = new ServiceProperty("propName1", "number", true);
+		ServiceProperty sp1 = new ServiceProperty("propName1", PropertyType.STRING, true);
 		List<ServiceProperty> properties1 = new ArrayList<>();
 		properties1.add(sp1);
 		s1.setProperties(properties1);
@@ -133,11 +133,10 @@ class PaymentsServiceTest {
 		Service s2 = new Service();
 		s2.setId("id-servizio-2");
 		s2.setTransferCategory("tassonomia-2");
-		s2.setRemittanceInformation("causale-2");
 		s2.setBasePath("base-path-2");
 		s2.setEndpoint("endpont-2");
 
-		ServiceProperty sp2 = new ServiceProperty("propName2", "string", true);
+		ServiceProperty sp2 = new ServiceProperty("propName2", PropertyType.NUMBER, true);
 		List<ServiceProperty> properties2 = new ArrayList<>();
 		properties2.add(sp2);
 		s2.setProperties(properties2);
@@ -145,11 +144,10 @@ class PaymentsServiceTest {
 		Service s3 = new Service();
 		s3.setId("id-servizio-3");
 		s3.setTransferCategory("tassonomia-3");
-		s3.setRemittanceInformation("causale-3");
 		s3.setBasePath("base-path-3");
 		s3.setEndpoint("endpont-3");
 
-		ServiceProperty sp3 = new ServiceProperty("propName3", "url", true);
+		ServiceProperty sp3 = new ServiceProperty("propName3", PropertyType.STRING, true);
 		List<ServiceProperty> properties3 = new ArrayList<>();
 		properties3.add(sp3);
 		s3.setProperties(properties3);
@@ -157,11 +155,10 @@ class PaymentsServiceTest {
 		Service s4 = new Service();
 		s4.setId("id-servizio-4");
 		s4.setTransferCategory("tassonomia-4");
-		s4.setRemittanceInformation("causale-4");
 		s4.setBasePath("base-path-4");
 		s4.setEndpoint("endpont-4");
 
-		ServiceProperty sp4 = new ServiceProperty("propName4", "rule", true);
+		ServiceProperty sp4 = new ServiceProperty("propName4", PropertyType.STRING, true);
 		List<ServiceProperty> properties4 = new ArrayList<>();
 		properties4.add(sp4);
 		s4.setProperties(properties4);
@@ -170,10 +167,12 @@ class PaymentsServiceTest {
 		ref1.setServiceId("id-servizio-1");
 		ref1.setIban("iban-1");
 		ref1.setSegregationCode("47");
+		ref1.setRemittanceInformation("causale-1");
 		ServiceRef ref2 = new ServiceRef();
 		ref2.setServiceId("id-servizio-2");
 		ref2.setIban("iban-2");
 		ref2.setSegregationCode("5");
+		ref2.setRemittanceInformation("causale-2");
 		List<ServiceRef> servicesRef = new ArrayList<>();
 		servicesRef.add(ref1);
 		servicesRef.add(ref2);
@@ -267,6 +266,18 @@ class PaymentsServiceTest {
 		SpontaneousPaymentModel spontaneousPaymentModel_badProperty = TestUtil.getSpontaneousPaymentModel_BadProperty();
 		try {
 			// non-existent in request a configured property in service -> must raise a 400
+			// exception
+			paymentsService.createSpontaneousPayment("organizationTest", spontaneousPaymentModel_badProperty);
+			fail();
+		} catch (AppException e) {
+			assertEquals(HttpStatus.BAD_REQUEST, e.getHttpStatus());
+		} catch (Exception e) {
+			fail();
+		}
+		
+		spontaneousPaymentModel_badProperty = TestUtil.getSpontaneousPaymentModel_BadPropertyType();
+		try {
+			// the request contains a string value but a number was expected -> must raise a 400
 			// exception
 			paymentsService.createSpontaneousPayment("organizationTest", spontaneousPaymentModel_badProperty);
 			fail();

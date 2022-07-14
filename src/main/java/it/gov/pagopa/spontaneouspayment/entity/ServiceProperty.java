@@ -7,6 +7,8 @@ import lombok.Setter;
 
 import javax.validation.constraints.NotBlank;
 
+import it.gov.pagopa.spontaneouspayment.model.enumeration.PropertyType;
+
 
 @Getter
 @Setter
@@ -17,7 +19,7 @@ public class ServiceProperty {
     @NotBlank
     private String name;
 
-    private String type;
+    private PropertyType type;
 
     private boolean isRequired;
 }

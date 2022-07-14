@@ -36,9 +36,6 @@ public class Service {
     @PartitionKey
     private String transferCategory; // tassonomia
 
-    @NotBlank(message = "remittance information is required")
-    private String remittanceInformation; // causale
-
     @CreatedDate
     private LocalDateTime insertedDate;
 

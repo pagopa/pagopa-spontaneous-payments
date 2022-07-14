@@ -3,11 +3,13 @@ package it.gov.pagopa.spontaneouspayment.service;
 import java.time.Year;
 import java.util.Collections;
 import java.util.Optional;
+import java.util.function.Predicate;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
+import org.apache.commons.lang3.math.NumberUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -20,7 +22,9 @@ import it.gov.pagopa.spontaneouspayment.exception.AppError;
 import it.gov.pagopa.spontaneouspayment.exception.AppException;
 import it.gov.pagopa.spontaneouspayment.model.IuvGenerationModel;
 import it.gov.pagopa.spontaneouspayment.model.ServiceModel;
+import it.gov.pagopa.spontaneouspayment.model.ServicePropertyModel;
 import it.gov.pagopa.spontaneouspayment.model.SpontaneousPaymentModel;
+import it.gov.pagopa.spontaneouspayment.model.enumeration.PropertyType;
 import it.gov.pagopa.spontaneouspayment.model.response.IuvGenerationModelResponse;
 import it.gov.pagopa.spontaneouspayment.model.response.PaymentOptionModel;
 import it.gov.pagopa.spontaneouspayment.model.response.PaymentPositionModel;
@@ -79,16 +83,27 @@ public class PaymentsService {
      * @param serviceConfiguration the serviceConfiguration in the DB
      * @throws AppException if a service configuration is not present in the DB
      */
-    private void checkServiceProperties(SpontaneousPaymentModel spontaneousPayment, it.gov.pagopa.spontaneouspayment.entity.Service serviceConfiguration) {
-        for (ServiceProperty confProp : serviceConfiguration.getProperties()) {
-            var isPresent = spontaneousPayment.getService().getProperties()
-                    .parallelStream()
-                    .anyMatch(o -> o.getName().equals(confProp.getName()));
-            if (!isPresent) {
-                throw new AppException(AppError.PROPERTY_MISSING, confProp.getName());
-            }
-        }
-    }
+	private void checkServiceProperties(SpontaneousPaymentModel spontaneousPayment, it.gov.pagopa.spontaneouspayment.entity.Service serviceConfiguration) {
+		for (ServiceProperty confProp : serviceConfiguration.getProperties()) {
+			if (confProp.isRequired()) {
+				Predicate<ServicePropertyModel> checkName = o -> o.getName().equals(confProp.getName());
+				Predicate<ServicePropertyModel> checkType = this.getCheckPropertyType(confProp);
+				var isPresentAndValid = spontaneousPayment.getService().getProperties().parallelStream()
+						.anyMatch(checkName.and(checkType));
+				if (!isPresentAndValid) {
+					throw new AppException(AppError.PROPERTY_MISSING_OR_WRONG, confProp.getName(), confProp.getType());
+				}
+			}
+		}
+	}
+
+	private Predicate<ServicePropertyModel> getCheckPropertyType(ServiceProperty confProp) {
+		if (confProp.getType().equals(PropertyType.NUMBER)) {
+			return o -> NumberUtils.isCreatable (o.getValue());
+		}
+		// Default is always true condition (no check type)
+		return o -> true;
+	}
 
     private PaymentPositionModel createDebtPosition(String organizationFiscalCode, 
     		Organization orgConfiguration, it.gov.pagopa.spontaneouspayment.entity.Service serviceConfiguration, SpontaneousPaymentModel spontaneousPayment) {   	
@@ -146,9 +161,4 @@ public class PaymentsService {
         return orgRepository.findByFiscalCode(organizationFiscalCode)
                 .orElseThrow(() -> new AppException(AppError.ORGANIZATION_NOT_FOUND, organizationFiscalCode));
     }
-
-
-	
-
-
 }
