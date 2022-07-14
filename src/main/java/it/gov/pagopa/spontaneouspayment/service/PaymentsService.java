@@ -54,6 +54,7 @@ public class PaymentsService {
     
     private String iupdPrefix = "GPS" + Year.now().getValue() + "_"; 
     
+
     public PaymentPositionModel createSpontaneousPayment(@NotBlank String organizationFiscalCode, @Valid SpontaneousPaymentModel spontaneousPayment) {
         // check if credit institution exists
         var orgConfiguration = getCreditorInstitution(organizationFiscalCode);
@@ -115,7 +116,7 @@ public class PaymentsService {
     }
 
     private String callIuvGeneratorService(String organizationFiscalCode, Organization orgConfiguration, it.gov.pagopa.spontaneouspayment.entity.Service serviceConfiguration) {
-    	 	
+    	
     	ServiceRef enrollment = Optional.ofNullable(orgConfiguration.getEnrollments()).orElseGet(Collections::emptyList)
         .parallelStream()
         .filter(e -> e.getServiceId().equals(serviceConfiguration.getId()))
