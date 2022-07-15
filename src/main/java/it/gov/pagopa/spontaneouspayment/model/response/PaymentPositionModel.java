@@ -72,6 +72,7 @@ public class PaymentPositionModel implements Serializable {
     @JsonProperty(access = Access.READ_ONLY)
     private DebtPositionStatus status;
 
+    @Builder.Default
     private List<PaymentOptionModel> paymentOption = new ArrayList<>();
 
     public void addPaymentOptions(PaymentOptionModel paymentOpt) {
