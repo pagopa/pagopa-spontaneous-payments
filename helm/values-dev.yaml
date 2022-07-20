@@ -85,9 +85,13 @@ microservice-chart:
     EC_CONTAINER_NAME: "creditor_institutions"
     SERVICE_CONTAINER_NAME: "services"
     GPD_HOST: https://api.dev.platform.pagopa.it/gpd/api/v1
+    IUV_GENERATOR_HOST: https://api.dev.platform.pagopa.it/shared/iuv-generator-service/v1
+    AUX_DIGIT: "3"
     CONNECTION_TIMEOUT: "1000"
-    RETRY_MAX_ATTEMPTS: "1"
-    RETRY_MAX_DELAY: "200"
+    RETRY_GPD_MAX_ATTEMPTS: "1"
+    RETRY_GPD_MAX_DELAY: "200"
+    RETRY_IUV_GENERATOR_MAX_ATTEMPTS: "1"
+    RETRY_IUV_GENERATOR_MAX_DELAY: "200"
     LOGGING_LEVEL: "INFO"
 
   envSecret:
