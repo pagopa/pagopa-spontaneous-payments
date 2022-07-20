@@ -21,6 +21,12 @@ public class ServiceRef {
 
     @NotBlank(message = "iban is required")
     private String iban;
+    
+    @NotBlank(message = "segregation code is required")
+    private String segregationCode;
+    
+    @NotBlank(message = "remittance information is required")
+    private String remittanceInformation; // causale
 
     private String postalIban;
 

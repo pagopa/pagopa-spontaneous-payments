@@ -36,9 +36,6 @@ public class Service {
     @PartitionKey
     private String transferCategory; // tassonomia
 
-    @NotBlank(message = "remittance information is required")
-    private String remittanceInformation; // causale
-
     @CreatedDate
     private LocalDateTime insertedDate;
 
@@ -47,9 +44,11 @@ public class Service {
 
     private Status status;
 
+    @NotBlank
     private String endpoint;
-
+    @NotBlank
     private String basePath;
+    
 
     private List<ServiceProperty> properties;
 

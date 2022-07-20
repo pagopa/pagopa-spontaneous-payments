@@ -125,7 +125,7 @@ public class TestUtil {
 	public static SpontaneousPaymentModel getSpontaneousPaymentModel() {
 
 		List<ServicePropertyModel> props = new ArrayList<>();
-		props.add(ServicePropertyModel.builder().name("propName1").value("1000").build());
+		props.add(ServicePropertyModel.builder().name("propName1").value("string value").build());
 
 		return SpontaneousPaymentModel.builder()
 				.debtor(DebtorModel.builder()
@@ -194,16 +194,35 @@ public class TestUtil {
 				.build();
 	}
 	
+	public static SpontaneousPaymentModel getSpontaneousPaymentModel_BadPropertyType() {
+
+		List<ServicePropertyModel> props = new ArrayList<>();
+		// the type of the property propName2 must be a number but it is a string
+		props.add(ServicePropertyModel.builder().name("propName2").value("string value").build());
+
+		return SpontaneousPaymentModel.builder()
+				.debtor(DebtorModel.builder()
+						.type(Type.F)
+						.fiscalCode("mockFiscalCode")
+						.fullName("mockFullName")
+						.email("mockEmail@mock.it").build())
+				.service(ServiceModel.builder()
+						.id("id-servizio-1")
+						.properties(props)
+						.build())
+				.build();
+	}
+	
 	public static List<Service> getMockServices() {
 		List<Service> services = new ArrayList<>();
-		services.add(Service.builder().id("mockId1").name("mockName1").transferCategory("mockTransferCategory1").remittanceInformation("mockRemittanceInformation1").build());
-		services.add(Service.builder().id("mockId2").name("mockName2").transferCategory("mockTransferCategory2").remittanceInformation("mockRemittanceInformation2").build());
+		services.add(Service.builder().id("mockId1").name("mockName1").transferCategory("mockTransferCategory1").build());
+		services.add(Service.builder().id("mockId2").name("mockName2").transferCategory("mockTransferCategory2").build());
 
 		return  services;
 	}
 	
 	public static Service getMockService() {
-		return Service.builder().id("mockId").name("mockName").transferCategory("mockTransferCategory").remittanceInformation("mockRemittanceInformation").build();
+		return Service.builder().id("mockId").name("mockName").transferCategory("mockTransferCategory").build();
 	}
 	
 }
