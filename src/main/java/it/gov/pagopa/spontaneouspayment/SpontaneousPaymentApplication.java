@@ -16,8 +16,9 @@ import com.azure.spring.data.cosmos.repository.config.EnableCosmosRepositories;
 @EnableRetry
 @DependsOn("expressionResolver")
 public class SpontaneousPaymentApplication {
-
+	
     public static void main(String[] args) {
         SpringApplication.run(SpontaneousPaymentApplication.class, args);
     }
+    
 }

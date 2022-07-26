@@ -1,5 +1,6 @@
 package it.gov.pagopa.spontaneouspayment.service;
 
+import java.net.URI;
 import java.time.Year;
 import java.util.Collections;
 import java.util.Optional;
@@ -10,16 +11,22 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 import org.apache.commons.lang3.math.NumberUtils;
+import org.json.JSONObject;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import it.gov.pagopa.spontaneouspayment.entity.Organization;
 import it.gov.pagopa.spontaneouspayment.entity.ServiceProperty;
 import it.gov.pagopa.spontaneouspayment.entity.ServiceRef;
 import it.gov.pagopa.spontaneouspayment.exception.AppError;
 import it.gov.pagopa.spontaneouspayment.exception.AppException;
+import it.gov.pagopa.spontaneouspayment.mapper.ConvertJsonPOToPaymentOptionModel;
 import it.gov.pagopa.spontaneouspayment.model.IuvGenerationModel;
 import it.gov.pagopa.spontaneouspayment.model.ServiceModel;
 import it.gov.pagopa.spontaneouspayment.model.ServicePropertyModel;
@@ -28,14 +35,17 @@ import it.gov.pagopa.spontaneouspayment.model.enumeration.PropertyType;
 import it.gov.pagopa.spontaneouspayment.model.response.IuvGenerationModelResponse;
 import it.gov.pagopa.spontaneouspayment.model.response.PaymentOptionModel;
 import it.gov.pagopa.spontaneouspayment.model.response.PaymentPositionModel;
+import it.gov.pagopa.spontaneouspayment.model.response.TransferModel;
 import it.gov.pagopa.spontaneouspayment.repository.OrganizationRepository;
 import it.gov.pagopa.spontaneouspayment.repository.ServiceRepository;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @AllArgsConstructor
 @NoArgsConstructor
+@Slf4j
 public class PaymentsService {
 
     @Autowired
@@ -49,6 +59,9 @@ public class PaymentsService {
     
     @Autowired
     private IuvGeneratorClient iuvGeneratorClient;
+    
+    @Autowired
+    private ExternalServiceClient extServiceClient;
     
     @Autowired
     private ModelMapper modelMapper;
@@ -106,17 +119,34 @@ public class PaymentsService {
 	}
 
     private PaymentPositionModel createDebtPosition(String organizationFiscalCode, 
-    		Organization orgConfiguration, it.gov.pagopa.spontaneouspayment.entity.Service serviceConfiguration, SpontaneousPaymentModel spontaneousPayment) {   	
+    		Organization orgConfiguration, it.gov.pagopa.spontaneouspayment.entity.Service serviceConfiguration, SpontaneousPaymentModel spontaneousPayment) {
+    	
+    	// get the enrollment for the service
+    	ServiceRef enrollment = Optional.ofNullable(orgConfiguration.getEnrollments()).orElseGet(Collections::emptyList)
+    	        .parallelStream()
+    	        .filter(e -> e.getServiceId().equals(serviceConfiguration.getId()))
+    	        .findAny()
+    	        .orElseThrow(() -> new AppException(AppError.ENROLLMENT_TO_SERVICE_NOT_FOUND, serviceConfiguration.getId(), organizationFiscalCode));
     	
     	// call the external service to get the PO
-    	PaymentOptionModel po = this.callExternalService(serviceConfiguration);
+    	PaymentOptionModel po = this.callExternalService(spontaneousPayment, serviceConfiguration);
         
     	// generate IUV
-        String iuv = this.callIuvGeneratorService(organizationFiscalCode, orgConfiguration, serviceConfiguration);
+        String iuv = this.callIuvGeneratorService(organizationFiscalCode, enrollment);
+        
+        // integration the informations for the PO
+        po.setIuv(iuv);
+        TransferModel transfer = po.getTransfer().get(0);
+        transfer.setIdTransfer("1");
+        transfer.setRemittanceInformation(enrollment.getRemittanceInformation());
+        transfer.setCategory(serviceConfiguration.getTransferCategory());
+        transfer.setIban(enrollment.getIban());
+        transfer.setPostalIban(enrollment.getPostalIban());
         
         // Payment Position to create
         PaymentPositionModel pp = modelMapper.map(spontaneousPayment.getDebtor(), PaymentPositionModel.class);
         pp.setIupd(iupdPrefix+iuv);
+        pp.setCompanyName(orgConfiguration.getCompanyName());
         pp.addPaymentOptions(po);
         
 
@@ -124,18 +154,44 @@ public class PaymentsService {
     }
     
 
-	private PaymentOptionModel callExternalService(it.gov.pagopa.spontaneouspayment.entity.Service serviceConfiguration) {
-        //TODO implement business logic
-		return new PaymentOptionModel();
-    }
+	private PaymentOptionModel callExternalService(SpontaneousPaymentModel spontaneousPayment,
+			it.gov.pagopa.spontaneouspayment.entity.Service serviceConfiguration) {
 
-    private String callIuvGeneratorService(String organizationFiscalCode, Organization orgConfiguration, it.gov.pagopa.spontaneouspayment.entity.Service serviceConfiguration) {
-    	
-    	ServiceRef enrollment = Optional.ofNullable(orgConfiguration.getEnrollments()).orElseGet(Collections::emptyList)
-        .parallelStream()
-        .filter(e -> e.getServiceId().equals(serviceConfiguration.getId()))
-        .findAny()
-        .orElseThrow(() -> new AppException(AppError.ENROLLMENT_TO_SERVICE_NOT_FOUND, serviceConfiguration.getId(), organizationFiscalCode));
+		PaymentOptionModel po = null;
+
+		try {
+
+			JSONObject properties = new JSONObject();
+
+			for (ServicePropertyModel sp : spontaneousPayment.getService().getProperties()) {
+				properties.put(sp.getName(), sp.getValue());
+			}
+
+			URI runtimeBasePathUri = URI
+					.create(serviceConfiguration.getBasePath() + serviceConfiguration.getEndpoint());
+			String result = extServiceClient.getPaymentOption(runtimeBasePathUri,
+					new JSONObject().put("properties", properties).toString());
+
+			// The payment option has only one element
+			JsonNode orderNode = new ObjectMapper().readTree(result).get("paymentOption").get(0);
+
+			po = new PaymentOptionModel();
+			
+			modelMapper
+			.getTypeMap(JsonNode.class,PaymentOptionModel.class)
+			.setConverter(new ConvertJsonPOToPaymentOptionModel())
+			.map(orderNode, po);
+			
+		} catch (JsonProcessingException e) {
+			log.error("Error during spontaneous payment process", e);
+			throw new AppException(AppError.INTERNAL_ERROR, serviceConfiguration.getId(),
+					spontaneousPayment.getDebtor().getFiscalCode());
+		}
+		
+		return po;
+	}
+
+    private String callIuvGeneratorService(String organizationFiscalCode, ServiceRef enrollment) {
     	
     	Long segregationCode = Long.parseLong(enrollment.getSegregationCode());
     	IuvGenerationModelResponse iuvObj = iuvGeneratorClient.generateIUV(organizationFiscalCode, 

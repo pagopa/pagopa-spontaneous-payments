@@ -20,6 +20,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 
 import it.gov.pagopa.spontaneouspayment.config.TestUtil;
 import it.gov.pagopa.spontaneouspayment.model.SpontaneousPaymentModel;
