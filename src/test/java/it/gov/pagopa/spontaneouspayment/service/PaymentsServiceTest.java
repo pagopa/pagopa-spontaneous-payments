@@ -77,6 +77,9 @@ class PaymentsServiceTest {
 
 	@Mock
 	private IuvGeneratorClient iuvGeneratorClient;
+	
+	@Mock
+	private ExternalServiceClient extServiceClient;
 
 	@Container
 	private static final CosmosDBEmulatorContainer emulator = new CosmosDBEmulatorContainer(
@@ -88,7 +91,7 @@ class PaymentsServiceTest {
 	public void setUp() throws IOException, KeyStoreException, NoSuchAlgorithmException, CertificateException {
 
 		paymentsService = 
-				spy(new PaymentsService(ciRepository, serviceRepository, gpdClient, iuvGeneratorClient, modelMapper, 3L, "IUVTEST_"));
+				spy(new PaymentsService(ciRepository, serviceRepository, gpdClient, iuvGeneratorClient, extServiceClient, modelMapper, 3L, "IUVTEST_"));
 
 		tempFolder.create();
 		Path keyStoreFile = tempFolder.newFile("azure-cosmos-emulator.keystore").toPath();

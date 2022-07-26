@@ -1,5 +1,7 @@
 package it.gov.pagopa.spontaneouspayment.model.response;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -11,6 +13,8 @@ import java.util.List;
 
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class PaymentOptionModel implements Serializable {
 
     /**
@@ -36,6 +40,7 @@ public class PaymentOptionModel implements Serializable {
 
     private long fee;
 
+    @Builder.Default
     private List<TransferModel> transfer = new ArrayList<>();
 
     public void addTransfers(TransferModel trans) {

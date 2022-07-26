@@ -1,5 +1,6 @@
 package it.gov.pagopa.spontaneouspayment.config;
 
+import feign.Logger;
 import feign.RequestInterceptor;
 import org.slf4j.MDC;
 import org.springframework.context.annotation.Bean;
@@ -11,5 +12,10 @@ public class FeignConfig {
     @Bean
     RequestInterceptor requestIdInterceptor() {
         return requestTemplate -> requestTemplate.header(HEADER_REQUEST_ID, MDC.get("requestId"));
+    }
+    
+    @Bean
+    Logger.Level feignLoggerLevel() {
+        return Logger.Level.FULL;
     }
 }
