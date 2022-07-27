@@ -12,7 +12,7 @@ microservice-chart:
     httpGet:
       path: /actuator/health/liveness
       port: 8080
-    initialDelaySeconds: 60
+    initialDelaySeconds: 90
     failureThreshold: 6
     periodSeconds: 10
 
@@ -20,7 +20,7 @@ microservice-chart:
     httpGet:
       path: /actuator/health/readiness
       port: 8080
-    initialDelaySeconds: 60
+    initialDelaySeconds: 90
     failureThreshold: 6
     periodSeconds: 10
 
@@ -53,11 +53,11 @@ microservice-chart:
 
   resources:
     requests:
-      memory: "300Mi"
-      cpu: "40m"
+      memory: "500Mi"
+      cpu: "350m"
     limits:
-      memory: "300Mi"
-      cpu: "150m"
+      memory: "500Mi"
+      cpu: "350m"
 
   autoscaling:
     minReplica: 1
@@ -97,7 +97,7 @@ microservice-chart:
     LOGGING_LEVEL: "INFO"
 
   envSecret:
-    COSMOS_KEY: cosmos-gps-d-pkey
+    COSMOS_KEY: cosmos-gps-weu-d-pkey
 
   keyvault:
     name: "pagopa-d-gps-kv"
