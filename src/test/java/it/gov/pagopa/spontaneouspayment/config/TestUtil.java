@@ -230,5 +230,18 @@ public class TestUtil {
 	public static Service getMockService() {
 		return Service.builder().id("mockId").name("mockName").transferCategory("mockTransferCategory").build();
 	}
+
+	public static PaymentOptionModel getMockPaymentOptionModel(){
+		return PaymentOptionModel.builder()
+				.amount(100)
+				.description("string")
+				.dueDate(LocalDateTime.of(2022, 8, 10, 16 , 47))
+				.retentionDate(LocalDateTime.of(2022, 8, 10, 16 , 47))
+				.isPartialPayment(false)
+				.transfer(List.of(TransferModel.builder()
+						.amount(100)
+						.build()))
+				.build();
+	}
 	
 }

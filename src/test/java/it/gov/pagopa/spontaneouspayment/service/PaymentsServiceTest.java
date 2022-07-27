@@ -15,6 +15,7 @@ import it.gov.pagopa.spontaneouspayment.model.SpontaneousPaymentModel;
 import it.gov.pagopa.spontaneouspayment.model.enumeration.PropertyType;
 import it.gov.pagopa.spontaneouspayment.model.enumeration.Status;
 import it.gov.pagopa.spontaneouspayment.model.response.IuvGenerationModelResponse;
+import it.gov.pagopa.spontaneouspayment.model.response.PaymentOptionModel;
 import it.gov.pagopa.spontaneouspayment.model.response.PaymentOptionsModel;
 import it.gov.pagopa.spontaneouspayment.model.response.PaymentPositionModel;
 import it.gov.pagopa.spontaneouspayment.repository.OrganizationRepository;
@@ -49,6 +50,7 @@ import java.security.cert.CertificateException;
 import java.util.ArrayList;
 import java.util.List;
 
+import static it.gov.pagopa.spontaneouspayment.config.TestUtil.getMockPaymentOptionModel;
 import static it.gov.pagopa.spontaneouspayment.config.TestUtil.readModelFromFile;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -218,9 +220,11 @@ class PaymentsServiceTest {
 				.thenReturn(IuvGenerationModelResponse.builder().iuv("12345678901234567").build());
 		
 		when(gpdClient.createDebtPosition(anyString(), any(PaymentPositionModel.class))).thenReturn(paymentModel);
-		
+
+		ArrayList<PaymentOptionModel> paymentOption = new ArrayList<>();
+		paymentOption.add(getMockPaymentOptionModel());
 		when(extServiceClient.getPaymentOption(any(URI.class), anyString())).thenReturn(PaymentOptionsModel.builder()
-						.paymentOption(new ArrayList<>())
+						.paymentOption(paymentOption)
 				.build());
 
 		PaymentPositionModel ppm = paymentsService.createSpontaneousPayment("organizationTest",
