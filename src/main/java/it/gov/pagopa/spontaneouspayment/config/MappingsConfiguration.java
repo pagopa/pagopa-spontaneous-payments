@@ -6,10 +6,6 @@ import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import com.fasterxml.jackson.databind.JsonNode;
-
-import it.gov.pagopa.spontaneouspayment.model.response.PaymentOptionModel;
-
 @Configuration
 public class MappingsConfiguration {
 
@@ -17,7 +13,6 @@ public class MappingsConfiguration {
     ModelMapper modelMapper() {
         ModelMapper mapper = new ModelMapper();
         mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
-        mapper.createTypeMap(JsonNode.class, PaymentOptionModel.class);
         return mapper;
     }
 

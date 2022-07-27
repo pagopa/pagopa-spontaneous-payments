@@ -15,6 +15,7 @@ import it.gov.pagopa.spontaneouspayment.model.SpontaneousPaymentModel;
 import it.gov.pagopa.spontaneouspayment.model.enumeration.PropertyType;
 import it.gov.pagopa.spontaneouspayment.model.enumeration.Status;
 import it.gov.pagopa.spontaneouspayment.model.response.IuvGenerationModelResponse;
+import it.gov.pagopa.spontaneouspayment.model.response.PaymentOptionsModel;
 import it.gov.pagopa.spontaneouspayment.model.response.PaymentPositionModel;
 import it.gov.pagopa.spontaneouspayment.repository.OrganizationRepository;
 import it.gov.pagopa.spontaneouspayment.repository.ServiceRepository;
@@ -212,22 +213,6 @@ class PaymentsServiceTest {
 		// precondition
 		PaymentPositionModel paymentModel = readModelFromFile("gpd/getPaymentPosition.json",
 				PaymentPositionModel.class);
-		String extServicePOString = "{\r\n"
-				+ "    \"paymentOption\": [\r\n"
-				+ "        {\r\n"
-				+ "            \"amount\": 100,\r\n"
-				+ "            \"description\": \"string\",\r\n"
-				+ "            \"dueDate\": \"2022-08-10T16:47:34.105Z\",\r\n"
-				+ "            \"isPartialPayment\": false,\r\n"
-				+ "            \"retentionDate\": \"2022-08-10T16:47:34.105Z\",\r\n"
-				+ "            \"transfer\": [\r\n"
-				+ "                {\r\n"
-				+ "                    \"amount\": 100\r\n"
-				+ "                }\r\n"
-				+ "            ]\r\n"
-				+ "        }\r\n"
-				+ "    ]\r\n"
-				+ "}";
 		
 		
 		when(iuvGeneratorClient.generateIUV(anyString(), any(IuvGenerationModel.class)))
@@ -235,7 +220,9 @@ class PaymentsServiceTest {
 		
 		when(gpdClient.createDebtPosition(anyString(), any(PaymentPositionModel.class))).thenReturn(paymentModel);
 		
-		when(extServiceClient.getPaymentOption(any(URI.class), anyString())).thenReturn(extServicePOString);
+		when(extServiceClient.getPaymentOption(any(URI.class), anyString())).thenReturn(PaymentOptionsModel.builder()
+						.paymentOption(new ArrayList<>())
+				.build());
 
 		PaymentPositionModel ppm = paymentsService.createSpontaneousPayment("organizationTest",
 				TestUtil.getSpontaneousPaymentModel());
