@@ -8,8 +8,11 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.URI;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
@@ -17,6 +20,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import org.junit.Rule;
 import org.junit.jupiter.api.AfterAll;
@@ -77,6 +81,9 @@ class PaymentsServiceTest {
 
 	@Mock
 	private IuvGeneratorClient iuvGeneratorClient;
+	
+	@Mock
+	private ExternalServiceClient extServiceClient;
 
 	@Container
 	private static final CosmosDBEmulatorContainer emulator = new CosmosDBEmulatorContainer(
@@ -88,7 +95,7 @@ class PaymentsServiceTest {
 	public void setUp() throws IOException, KeyStoreException, NoSuchAlgorithmException, CertificateException {
 
 		paymentsService = 
-				spy(new PaymentsService(ciRepository, serviceRepository, gpdClient, iuvGeneratorClient, modelMapper, 3L, "IUVTEST_"));
+				spy(new PaymentsService(ciRepository, serviceRepository, gpdClient, iuvGeneratorClient, extServiceClient, modelMapper, 3L, "IUVTEST_"));
 
 		tempFolder.create();
 		Path keyStoreFile = tempFolder.newFile("azure-cosmos-emulator.keystore").toPath();
@@ -208,11 +215,16 @@ class PaymentsServiceTest {
 		// precondition
 		PaymentPositionModel paymentModel = MockUtil.readModelFromFile("gpd/getPaymentPosition.json",
 				PaymentPositionModel.class);
+		File file = new File(Objects.requireNonNull(MockUtil.class.getClassLoader().getResource("gpd/getExtServPaymentOption.json")).getPath());
+		String extServicePOString =  Files.readString(file.toPath());
+		
 		
 		when(iuvGeneratorClient.generateIUV(anyString(), any(IuvGenerationModel.class)))
 				.thenReturn(IuvGenerationModelResponse.builder().iuv("12345678901234567").build());
 		
 		when(gpdClient.createDebtPosition(anyString(), any(PaymentPositionModel.class))).thenReturn(paymentModel);
+		
+		when(extServiceClient.getPaymentOption(any(URI.class), anyString())).thenReturn(extServicePOString);
 
 		PaymentPositionModel ppm = paymentsService.createSpontaneousPayment("organizationTest",
 				TestUtil.getSpontaneousPaymentModel());

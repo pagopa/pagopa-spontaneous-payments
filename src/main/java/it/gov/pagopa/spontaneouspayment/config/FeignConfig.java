@@ -1,8 +1,9 @@
 package it.gov.pagopa.spontaneouspayment.config;
 
-import feign.RequestInterceptor;
 import org.slf4j.MDC;
 import org.springframework.context.annotation.Bean;
+
+import feign.RequestInterceptor;
 
 public class FeignConfig {
 
@@ -12,4 +13,5 @@ public class FeignConfig {
     RequestInterceptor requestIdInterceptor() {
         return requestTemplate -> requestTemplate.header(HEADER_REQUEST_ID, MDC.get("requestId"));
     }
+
 }

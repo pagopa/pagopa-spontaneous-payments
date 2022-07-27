@@ -1,0 +1,16 @@
+{
+    "paymentOption": [
+        {
+            "amount": 100,
+            "description": "string",
+            "dueDate": "2022-08-10T16:47:34.105Z",
+            "isPartialPayment": false,
+            "retentionDate": "2022-08-10T16:47:34.105Z",
+            "transfer": [
+                {
+                    "amount": 100
+                }
+            ]
+        }
+    ]
+}
