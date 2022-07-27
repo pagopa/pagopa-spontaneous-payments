@@ -32,7 +32,6 @@ import org.mockito.Mock;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.testcontainers.containers.CosmosDBEmulatorContainer;
 import org.testcontainers.junit.jupiter.Container;
@@ -65,10 +64,10 @@ class PaymentsServiceTest {
 	@Rule
 	public TemporaryFolder tempFolder = new TemporaryFolder();
 
-	@MockBean
+	@Autowired
 	private OrganizationRepository ciRepository;
 
-	@MockBean
+	@Autowired
 	private ServiceRepository serviceRepository;
 	
 	@Autowired

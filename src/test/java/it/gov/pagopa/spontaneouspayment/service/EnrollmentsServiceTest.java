@@ -21,8 +21,8 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.rules.TemporaryFolder;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.testcontainers.containers.CosmosDBEmulatorContainer;
 import org.testcontainers.junit.jupiter.Container;
@@ -50,10 +50,10 @@ class EnrollmentsServiceTest {
 	@Rule
 	public TemporaryFolder tempFolder = new TemporaryFolder();
 
-	@MockBean
+	@Autowired
 	private OrganizationRepository ciRepository;
 
-	@MockBean
+	@Autowired
 	private ServiceRepository serviceRepository;
 
 	@Container
