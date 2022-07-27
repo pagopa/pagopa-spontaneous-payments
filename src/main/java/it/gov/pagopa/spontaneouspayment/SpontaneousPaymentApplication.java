@@ -6,12 +6,7 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.retry.annotation.EnableRetry;
 
-import com.azure.spring.data.cosmos.core.mapping.EnableCosmosAuditing;
-import com.azure.spring.data.cosmos.repository.config.EnableCosmosRepositories;
-
 @SpringBootApplication
-@EnableCosmosRepositories("it.gov.pagopa.spontaneouspayment.repository")
-@EnableCosmosAuditing
 @EnableFeignClients
 @EnableRetry
 @DependsOn("expressionResolver")

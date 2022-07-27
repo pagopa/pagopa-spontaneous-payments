@@ -10,6 +10,9 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
+import it.gov.pagopa.spontaneouspayment.service.client.ExternalServiceClient;
+import it.gov.pagopa.spontaneouspayment.service.client.GpdClient;
+import it.gov.pagopa.spontaneouspayment.service.client.IuvGeneratorClient;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.json.JSONObject;
 import org.modelmapper.ModelMapper;

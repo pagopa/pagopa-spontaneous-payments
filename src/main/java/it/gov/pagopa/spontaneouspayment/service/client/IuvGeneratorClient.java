@@ -1,4 +1,4 @@
-package it.gov.pagopa.spontaneouspayment.service;
+package it.gov.pagopa.spontaneouspayment.service.client;
 
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.retry.annotation.Backoff;

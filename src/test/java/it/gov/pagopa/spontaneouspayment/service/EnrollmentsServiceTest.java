@@ -17,13 +17,12 @@ import it.gov.pagopa.spontaneouspayment.repository.OrganizationRepository;
 import it.gov.pagopa.spontaneouspayment.repository.ServiceRepository;
 import org.junit.Rule;
 import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.rules.TemporaryFolder;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.testcontainers.containers.CosmosDBEmulatorContainer;
 import org.testcontainers.junit.jupiter.Container;
@@ -40,9 +39,7 @@ import java.security.cert.CertificateException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.spy;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -53,10 +50,10 @@ class EnrollmentsServiceTest {
 	@Rule
 	public TemporaryFolder tempFolder = new TemporaryFolder();
 
-	@Autowired
+	@MockBean
 	private OrganizationRepository ciRepository;
 
-	@Autowired
+	@MockBean
 	private ServiceRepository serviceRepository;
 
 	@Container
@@ -85,12 +82,12 @@ class EnrollmentsServiceTest {
 		// creation of the database and containers
 		CosmosDatabaseResponse databaseResponse = client.createDatabaseIfNotExists("db").block();
 
-		Assertions.assertEquals(201, databaseResponse.getStatusCode());
+		assertEquals(201, databaseResponse.getStatusCode());
 		CosmosContainerResponse containerResponse = client.getDatabase("db")
 				.createContainerIfNotExists("creditor_institutions", "/fiscalCode").block();
-		Assertions.assertEquals(201, containerResponse.getStatusCode());
+		assertEquals(201, containerResponse.getStatusCode());
 		containerResponse = client.getDatabase("db").createContainerIfNotExists("services", "/fiscalCode").block();
-		Assertions.assertEquals(201, containerResponse.getStatusCode());
+		assertEquals(201, containerResponse.getStatusCode());
 
 		// loading the database with test data
 		Organization ci = new Organization();
@@ -206,7 +203,7 @@ class EnrollmentsServiceTest {
 		assertTrue(emulator.isRunning());
 		ServiceRef enrollment = enrollmentsService.getSingleEnrollment("organizationTest", "id-servizio-1");
 		assertEquals("id-servizio-1", enrollment.getServiceId());
-		assertEquals(null, enrollment.getOfficeName());
+		assertNull(enrollment.getOfficeName());
 		assertEquals("iban-1", enrollment.getIban());
 	}
 	

@@ -1,4 +1,4 @@
-package it.gov.pagopa.spontaneouspayment.service;
+package it.gov.pagopa.spontaneouspayment.service.client;
 
 import java.net.URI;
 
