@@ -9,3 +9,4 @@ emulatorcert.crt
 **/yarn.lock
 **/application-secret.properties
 helm/charts/*
+/.cache_ggshield

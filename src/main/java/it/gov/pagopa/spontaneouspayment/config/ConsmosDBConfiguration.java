@@ -9,6 +9,7 @@ import com.azure.spring.data.cosmos.config.AbstractCosmosConfiguration;
 import com.azure.spring.data.cosmos.config.CosmosConfig;
 import com.azure.spring.data.cosmos.core.ResponseDiagnostics;
 import com.azure.spring.data.cosmos.core.ResponseDiagnosticsProcessor;
+import com.azure.spring.data.cosmos.core.mapping.EnableCosmosAuditing;
 import com.azure.spring.data.cosmos.repository.config.EnableCosmosRepositories;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -17,9 +18,10 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.lang.Nullable;
 
 @Configuration
-@EnableCosmosRepositories
+@EnableCosmosRepositories("it.gov.pagopa.spontaneouspayment.repository")
+@EnableCosmosAuditing
 @Slf4j
-public class AppConfiguration extends AbstractCosmosConfiguration {
+public class ConsmosDBConfiguration extends AbstractCosmosConfiguration {
 
 
     @Value("${azure.cosmos.uri}")

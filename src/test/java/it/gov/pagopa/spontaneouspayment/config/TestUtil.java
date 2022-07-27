@@ -1,23 +1,12 @@
 package it.gov.pagopa.spontaneouspayment.config;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import it.gov.pagopa.spontaneouspayment.entity.Organization;
 import it.gov.pagopa.spontaneouspayment.entity.Service;
 import it.gov.pagopa.spontaneouspayment.entity.ServiceRef;
-import it.gov.pagopa.spontaneouspayment.model.CreateEnrollmentModel;
-import it.gov.pagopa.spontaneouspayment.model.DebtorModel;
-import it.gov.pagopa.spontaneouspayment.model.EnrollmentModel;
-import it.gov.pagopa.spontaneouspayment.model.OrganizationEnrollmentModel;
-import it.gov.pagopa.spontaneouspayment.model.OrganizationModel;
-import it.gov.pagopa.spontaneouspayment.model.ServiceModel;
-import it.gov.pagopa.spontaneouspayment.model.ServicePropertyModel;
-import it.gov.pagopa.spontaneouspayment.model.SpontaneousPaymentModel;
+import it.gov.pagopa.spontaneouspayment.model.*;
 import it.gov.pagopa.spontaneouspayment.model.enumeration.Status;
 import it.gov.pagopa.spontaneouspayment.model.enumeration.Type;
 import it.gov.pagopa.spontaneouspayment.model.response.PaymentOptionModel;
@@ -25,8 +14,25 @@ import it.gov.pagopa.spontaneouspayment.model.response.PaymentPositionModel;
 import it.gov.pagopa.spontaneouspayment.model.response.TransferModel;
 import lombok.experimental.UtilityClass;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+
 @UtilityClass
 public class TestUtil {
+
+	public static <T> T readModelFromFile(String relativePath, Class<T> clazz) throws IOException {
+		ClassLoader classLoader = TestUtil.class.getClassLoader();
+		File file = new File(Objects.requireNonNull(classLoader.getResource(relativePath)).getPath());
+		var content = Files.readString(file.toPath());
+		ObjectMapper objectMapper = new ObjectMapper();
+		objectMapper.registerModule(new JavaTimeModule());
+		return objectMapper.readValue(content, clazz);
+	}
 
 	/**
 	 * @param object to map into the Json string
@@ -223,6 +229,19 @@ public class TestUtil {
 	
 	public static Service getMockService() {
 		return Service.builder().id("mockId").name("mockName").transferCategory("mockTransferCategory").build();
+	}
+
+	public static PaymentOptionModel getMockPaymentOptionModel(){
+		return PaymentOptionModel.builder()
+				.amount(100)
+				.description("string")
+				.dueDate(LocalDateTime.of(2022, 8, 10, 16 , 47))
+				.retentionDate(LocalDateTime.of(2022, 8, 10, 16 , 47))
+				.isPartialPayment(false)
+				.transfer(List.of(TransferModel.builder()
+						.amount(100)
+						.build()))
+				.build();
 	}
 	
 }

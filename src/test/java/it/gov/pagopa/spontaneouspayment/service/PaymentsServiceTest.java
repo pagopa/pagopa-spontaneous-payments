@@ -1,27 +1,28 @@
 package it.gov.pagopa.spontaneouspayment.service;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.when;
-
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.net.URI;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.security.KeyStore;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
-import java.security.cert.CertificateException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-
+import com.azure.cosmos.CosmosAsyncClient;
+import com.azure.cosmos.CosmosClientBuilder;
+import com.azure.cosmos.models.CosmosContainerResponse;
+import com.azure.cosmos.models.CosmosDatabaseResponse;
+import it.gov.pagopa.spontaneouspayment.config.TestUtil;
+import it.gov.pagopa.spontaneouspayment.entity.Organization;
+import it.gov.pagopa.spontaneouspayment.entity.Service;
+import it.gov.pagopa.spontaneouspayment.entity.ServiceProperty;
+import it.gov.pagopa.spontaneouspayment.entity.ServiceRef;
+import it.gov.pagopa.spontaneouspayment.exception.AppException;
+import it.gov.pagopa.spontaneouspayment.model.IuvGenerationModel;
+import it.gov.pagopa.spontaneouspayment.model.SpontaneousPaymentModel;
+import it.gov.pagopa.spontaneouspayment.model.enumeration.PropertyType;
+import it.gov.pagopa.spontaneouspayment.model.enumeration.Status;
+import it.gov.pagopa.spontaneouspayment.model.response.IuvGenerationModelResponse;
+import it.gov.pagopa.spontaneouspayment.model.response.PaymentOptionModel;
+import it.gov.pagopa.spontaneouspayment.model.response.PaymentOptionsModel;
+import it.gov.pagopa.spontaneouspayment.model.response.PaymentPositionModel;
+import it.gov.pagopa.spontaneouspayment.repository.OrganizationRepository;
+import it.gov.pagopa.spontaneouspayment.repository.ServiceRepository;
+import it.gov.pagopa.spontaneouspayment.service.client.ExternalServiceClient;
+import it.gov.pagopa.spontaneouspayment.service.client.GpdClient;
+import it.gov.pagopa.spontaneouspayment.service.client.IuvGeneratorClient;
 import org.junit.Rule;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -38,26 +39,24 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.utility.DockerImageName;
 
-import com.azure.cosmos.CosmosAsyncClient;
-import com.azure.cosmos.CosmosClientBuilder;
-import com.azure.cosmos.models.CosmosContainerResponse;
-import com.azure.cosmos.models.CosmosDatabaseResponse;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.net.URI;
+import java.nio.file.Path;
+import java.security.KeyStore;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.cert.CertificateException;
+import java.util.ArrayList;
+import java.util.List;
 
-import it.gov.pagopa.spontaneouspayment.config.MockUtil;
-import it.gov.pagopa.spontaneouspayment.config.TestUtil;
-import it.gov.pagopa.spontaneouspayment.entity.Organization;
-import it.gov.pagopa.spontaneouspayment.entity.Service;
-import it.gov.pagopa.spontaneouspayment.entity.ServiceProperty;
-import it.gov.pagopa.spontaneouspayment.entity.ServiceRef;
-import it.gov.pagopa.spontaneouspayment.exception.AppException;
-import it.gov.pagopa.spontaneouspayment.model.IuvGenerationModel;
-import it.gov.pagopa.spontaneouspayment.model.SpontaneousPaymentModel;
-import it.gov.pagopa.spontaneouspayment.model.enumeration.PropertyType;
-import it.gov.pagopa.spontaneouspayment.model.enumeration.Status;
-import it.gov.pagopa.spontaneouspayment.model.response.IuvGenerationModelResponse;
-import it.gov.pagopa.spontaneouspayment.model.response.PaymentPositionModel;
-import it.gov.pagopa.spontaneouspayment.repository.OrganizationRepository;
-import it.gov.pagopa.spontaneouspayment.repository.ServiceRepository;
+import static it.gov.pagopa.spontaneouspayment.config.TestUtil.getMockPaymentOptionModel;
+import static it.gov.pagopa.spontaneouspayment.config.TestUtil.readModelFromFile;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.when;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @SpringBootTest
@@ -213,18 +212,20 @@ class PaymentsServiceTest {
 		assertTrue(emulator.isRunning());
 
 		// precondition
-		PaymentPositionModel paymentModel = MockUtil.readModelFromFile("gpd/getPaymentPosition.json",
+		PaymentPositionModel paymentModel = readModelFromFile("gpd/getPaymentPosition.json",
 				PaymentPositionModel.class);
-		File file = new File(Objects.requireNonNull(MockUtil.class.getClassLoader().getResource("gpd/getExtServPaymentOption.json")).getPath());
-		String extServicePOString =  Files.readString(file.toPath());
 		
 		
 		when(iuvGeneratorClient.generateIUV(anyString(), any(IuvGenerationModel.class)))
 				.thenReturn(IuvGenerationModelResponse.builder().iuv("12345678901234567").build());
 		
 		when(gpdClient.createDebtPosition(anyString(), any(PaymentPositionModel.class))).thenReturn(paymentModel);
-		
-		when(extServiceClient.getPaymentOption(any(URI.class), anyString())).thenReturn(extServicePOString);
+
+		ArrayList<PaymentOptionModel> paymentOption = new ArrayList<>();
+		paymentOption.add(getMockPaymentOptionModel());
+		when(extServiceClient.getPaymentOption(any(URI.class), anyString())).thenReturn(PaymentOptionsModel.builder()
+						.paymentOption(paymentOption)
+				.build());
 
 		PaymentPositionModel ppm = paymentsService.createSpontaneousPayment("organizationTest",
 				TestUtil.getSpontaneousPaymentModel());
