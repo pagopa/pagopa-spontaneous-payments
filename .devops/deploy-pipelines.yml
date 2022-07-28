@@ -98,12 +98,8 @@ stages:
               script: |
                 version=$(mvn -f pom.xml help:evaluate -Dexpression=project.version -q -DforceStdout)
                 branch="$(Build.SourceBranch)"
-                if [[ "$branch" != "refs/heads/master" && ! "$branch" =~ "refs/tags/.*" && "${{ parameters.ENV }}" == "prod" ]]; then
+                if [[ "$branch" != "refs/heads/main" && ! "$branch" =~ "refs/tags/.*" && "${{ parameters.ENV }}" == "prod" ]]; then
                    echo "Deploy branch $branch is not allowed."
-                   exit 1
-                fi
-                if [[ "$version" == *SNAPSHOT && "${{ parameters.ENV }}" == "prod" ]]; then
-                   echo "Version $version is not allowed."
                    exit 1
                 fi
               failOnStderr: true
