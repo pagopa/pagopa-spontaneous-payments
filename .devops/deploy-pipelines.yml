@@ -53,7 +53,16 @@ variables:
 
   # Image Repository Name
   imageRepository: '$(IMAGE_REPOSITORY_NAME)'
-  nameSpace : '$(K8S_NAMESPACE)'
+  nameSpace: '$(K8S_NAMESPACE)'
+
+
+resources:
+  repositories:
+    - repository: pagopaCommons
+      type: github
+      name: pagopa/azure-pipeline-templates
+      ref: refs/tags/2.1.0
+      endpoint: 'io-azure-devops-github-ro'
 
 stages:
 
@@ -67,56 +76,13 @@ stages:
             clean: true
             persistCredentials: true
 
-          - script: |
-              git checkout $(SOURCE_BRANCH)
-
-          - script: |
-              git config --global user.name "$(GIT_USERNAME)"
-              git config --global user.email "$(GIT_EMAIL)"
-
-          - template: azure-templates/maven-versioning.yml
+          - template: templates/maven-github-release/template.yaml@pagopaCommons
             parameters:
-              semver: "${{ parameters.SEMVER }}"
-
-          - task: Bash@3
-            name: pomversion
-            inputs:
-              targetType: "inline"
-              script: |
-                version=$(mvn -f pom.xml help:evaluate -Dexpression=project.version -q -DforceStdout)
-                echo "##vso[task.setvariable variable=next;isOutput=true]$version"
-              failOnStderr: true
-
-          - script: |
-              git add pom.xml
-              git commit -m "Bump version [skip ci]"
-              git push origin $(SOURCE_BRANCH)
-
-          - script: |
-              HEAD_SHA=$(git rev-parse HEAD)
-              TAG="$(pomversion.next)"
-              TITLE="Release $(pomversion.next)"
-              echo "##vso[task.setvariable variable=title]$TITLE"
-              echo "##vso[task.setvariable variable=sha]$HEAD_SHA"
-              echo "##vso[task.setvariable variable=tag]$TAG"
-
-          - script: |
-              echo $(tag)
-              echo $(title)
-              echo $(sha)
-
-
-          # create new release
-          - task: GitHubRelease@0
-            inputs:
+              semver: '${{ parameters.SEMVER }}'
+              release_branch: $(SOURCE_BRANCH)
+              gitEmail: $(GIT_EMAIL)
+              gitUsername: $(GIT_USERNAME)
               gitHubConnection: $(GITHUB_CONNECTION)
-              repositoryName: $(Build.Repository.Name)
-              action: create
-              target: $(sha)
-              tagSource: manual
-              tag: $(tag)
-              title: $(title)
-              addChangelog: true
 
   # Deploy on Azure ACR
   - stage: 'Build'
@@ -130,7 +96,7 @@ stages:
             inputs:
               targetType: 'inline'
               script: |
-                version=$(cat pom.xml | grep '^.*<version>' | sed -n 2p | awk -F'[><]' '{print $3}')
+                version=$(mvn -f pom.xml help:evaluate -Dexpression=project.version -q -DforceStdout)
                 branch="$(Build.SourceBranch)"
                 if [[ "$branch" != "refs/heads/master" && ! "$branch" =~ "refs/tags/.*" && "${{ parameters.ENV }}" == "prod" ]]; then
                    echo "Deploy branch $branch is not allowed."
@@ -169,7 +135,7 @@ stages:
             inputs:
               targetType: 'inline'
               script: |
-                version=$(cat pom.xml | grep '^.*<version>' | sed -n 2p | awk -F'[><]' '{print $3}')
+                version=$(mvn -f pom.xml help:evaluate -Dexpression=project.version -q -DforceStdout)
                 echo "##vso[task.setvariable variable=outputpomversion;isOutput=true]$version"
               failOnStderr: true
 
