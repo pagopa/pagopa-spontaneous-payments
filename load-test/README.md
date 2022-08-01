@@ -18,13 +18,13 @@ Call to test the creation of a spontaneous payment:
 On Azure
 
 ```
-k6 run -e BASE_URL=https://api.dev.platform.pagopa.it/gps/spontaneous-payments-service/v1 -e ORGANIZATION_FISCAL_CODE=organizationTest -e GPD_BASE_URL=https://api.dev.platform.pagopa.it/gpd/api/v1 -e DELETE_DEBT_POSITION=true pagopa-spontaneous-payments/k6-test/src/create_spontaneous_payment.js
+...
 ```
 
 On localhost 
 
 ```
-k6 run -e GPS_BASE_URL=http://localhost:8080 -e ORGANIZATION_FISCAL_CODE=organizationTest -e GPD_BASE_URL=http://localhost:8085 -e DELETE_DEBT_POSITION=true pagopa-spontaneous-payments/k6-test/src/create_spontaneous_payment.js
+k6 run --env VARS=local.environment.json --env TEST_TYPE=./test-types/load.json create_spontaneous_payment.js
 ```
 
 where the mean of the environment variables is:
