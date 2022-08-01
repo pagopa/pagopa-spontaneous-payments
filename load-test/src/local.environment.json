@@ -1,0 +1,11 @@
+{
+  "environment": [
+    {
+      "env": "local",
+      "host": "http://localhost:8080",
+      "basePath": "organizations",
+      "gpdBaseUrl": "https://api.dev.platform.pagopa.it/gpd/api/v1",
+      "deleteDebtPosition": true
+    }
+  ]
+}

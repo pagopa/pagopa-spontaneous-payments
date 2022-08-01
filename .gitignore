@@ -7,6 +7,6 @@ emulatorcert.crt
 **/package-lock.json
 **/node_modules/
 **/yarn.lock
-**/application-secret.properties
+**/application-secret*.properties
 helm/charts/*
 /.cache_ggshield
