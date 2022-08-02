@@ -241,6 +241,8 @@ class EnrollmentsServiceTest {
 		ServiceRef ref1 = new ServiceRef();
 		ref1.setServiceId("id-servizio-1");
 		ref1.setIban("iban-1");
+		ref1.setSegregationCode("47");
+		ref1.setRemittanceInformation("remittance-information-1");
 		List<ServiceRef> servicesRef = new ArrayList<>();
 		servicesRef.add(ref1);
 		ci.setEnrollments(servicesRef);
@@ -248,6 +250,8 @@ class EnrollmentsServiceTest {
 		assertEquals("organizationNew", orgCreated.getFiscalCode());
 		assertEquals("Comune di Milano", orgCreated.getCompanyName());
 		assertEquals(1, orgCreated.getEnrollments().size());
+		assertEquals("47", orgCreated.getEnrollments().get(0).getSegregationCode()); 
+		assertEquals("remittance-information-1", orgCreated.getEnrollments().get(0).getRemittanceInformation()); 
 	}
 
 	@Test
@@ -305,12 +309,14 @@ class EnrollmentsServiceTest {
 	void createECEnrollment() {
 		assertTrue(emulator.isRunning());
 		EnrollmentModel enrollment = 
-				EnrollmentModel.builder().iban("iban-3").officeName("Ufficio Tributario").build();
+				EnrollmentModel.builder().iban("iban-3").officeName("Ufficio Tributario").segregationCode("77").remittanceInformation("remittance-information-3").build();
 		Organization org = enrollmentsService.createECEnrollment("organizationTest", "id-servizio-3", enrollment);
 		assertEquals("organizationTest", org.getFiscalCode());
 		assertEquals("Comune di Roma", org.getCompanyName());
 		// added an enrollment -> the size became 3
 		assertEquals(3, org.getEnrollments().size());
+		assertEquals("77", org.getEnrollments().get(2).getSegregationCode());
+		assertEquals("remittance-information-3", org.getEnrollments().get(2).getRemittanceInformation());
 	}
 	
 	@Test
@@ -363,13 +369,15 @@ class EnrollmentsServiceTest {
 	void updateECEnrollment() {
 		assertTrue(emulator.isRunning());
 		EnrollmentModel enrollment = 
-				EnrollmentModel.builder().iban("iban-updated-2").officeName("Ufficio Tributario Updated").build();
+				EnrollmentModel.builder().iban("iban-updated-2").officeName("Ufficio Tributario Updated").segregationCode("69").remittanceInformation("remittance-information-2").build();
 		Organization org = enrollmentsService.updateECEnrollment("organizationTest", "id-servizio-2", enrollment);
 		assertEquals("organizationTest", org.getFiscalCode());
 		assertEquals("Comune di Roma", org.getCompanyName());
 		ServiceRef updatedEnrollment = org.getEnrollments().stream().filter(s -> s.getServiceId().equals("id-servizio-2")).findFirst().get();
 		assertEquals("iban-updated-2", updatedEnrollment.getIban());
 		assertEquals("Ufficio Tributario Updated", updatedEnrollment.getOfficeName());
+		assertEquals("69", updatedEnrollment.getSegregationCode());
+		assertEquals("remittance-information-2", updatedEnrollment.getRemittanceInformation());
 	}
 	
 	@Test
