@@ -107,6 +107,7 @@ class EnrollmentsControllerTest {
                 .andReturn();
         assertNotNull(result.getResponse().getContentAsString());
         assertTrue(result.getResponse().getContentAsString().contains("mockFiscalCode"));
+        assertTrue(result.getResponse().getContentAsString().contains("47"));
     }
 	
 	@Test
