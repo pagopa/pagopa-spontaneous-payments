@@ -6,8 +6,7 @@ import { generateFakeFiscalCode, randomString } from './modules/helpers.js';
 
 import { createCreditorInstitutionEnrollment, getCiCode} from "./modules/gps_client.js";
 
-let myOptions = JSON.parse(open(__ENV.TEST_TYPE));
-export let options = myOptions;
+export let options = JSON.parse(open(__ENV.TEST_TYPE));
 
 // read configuration
 // note: SharedArray can currently only be constructed inside init code
@@ -48,8 +47,22 @@ function precondition() {
 	// no pre conditions
 }
 
-function postcondition() {
-	// no post conditions
+function postcondition(iupd, params) {
+
+	// Delete the newly created debt position.
+	let tag = {
+		gpdMethod: "DeleteDebtPosition",
+	};
+
+	let url = `${gpdUrlBasePath}/organizations/${creditor_institution_code}/debtpositions/${iupd}`;
+
+	let r = http.del(url, params);
+
+	console.log("DeleteDebtPosition call - creditor_institution_code " + creditor_institution_code + ", iupd " + iupd + ", Status " + r.status);
+
+	check(r, {
+		"DeleteDebtPosition status is 200": (_r) => r.status === 200,
+	}, tag);
 }
 
 export default function() {
@@ -59,17 +72,15 @@ export default function() {
 	const phone_number = randomString(10, "0123456789");
 	const amount = randomString(5, "123456789");
 	const description = "ukraine donation";
-    //	getCiCode(__VU);
-
 
 	// Create a new spontaneous payment.
-	var tag = {
+	let tag = {
 		gpsMethod: "CreateSpontaneousPayment",
 	};
 
-	var url = `${rootUrl}/${creditor_institution_code}/spontaneouspayments`;
+	let url = `${rootUrl}/${creditor_institution_code}/spontaneouspayments`;
 
-	var payload = JSON.stringify(
+	let payload = JSON.stringify(
 		{
 			"debtor":
 			{
@@ -99,13 +110,13 @@ export default function() {
 	);
 
 
-	var params = {
+	let params = {
 		headers: {
 			'Content-Type': 'application/json'
 		},
 	};
 
-	var r = http.post(url, payload, params);
+	let r = http.post(url, payload, params);
 
 	console.log("CreateSpontaneousPayment call - creditor_institution_code " + creditor_institution_code + ", Status " + r.status);
 
@@ -113,26 +124,9 @@ export default function() {
 		'CreateSpontaneousPayment status is 201': (_r) => r.status === 201,
 	}, tag);
 
-    // If flag delete_debt_position is set to true the debit position is deleted after being created
+	// If flag delete_debt_position is set to true the debit position is deleted after being created
 	if (r.status === 201 && delete_debt_position === "true") {
-
-		let iupd = r.json().iupd;
-
-		// Delete the newly created debt position.
-		tag = {
-			gpdMethod: "DeleteDebtPosition",
-		};
-
-		url = `${gpdUrlBasePath}/organizations/${creditor_institution_code}/debtpositions/${iupd}`;
-
-		r = http.del(url, params);
-
-		console.log("DeleteDebtPosition call - creditor_institution_code " + creditor_institution_code + ", iupd " + iupd + ", Status " + r.status);
-
-		check(r, {
-			"DeleteDebtPosition status is 200": (_r) => r.status === 200,
-		}, tag);
-
+		postcondition(response.json().iupd, params);
 	}
 
 
