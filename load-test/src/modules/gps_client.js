@@ -13,10 +13,10 @@ export function createCreditorInstitutionEnrollment(rootUrl, params, creditorIns
         "companyName": "Comune di Lorem",
         "enrollments": [
             {
-                "serviceId": "id-servizio-1",
+                "serviceId": "donation-pagopa-svr-id1",
                 "officeName": "office-test",
                 "iban": "iban-1",
-                "segregationCode": "47",
+                "segregationCode": 47,
                 "remittanceInformation": "causale-1",
                 "postalIban": null
             }

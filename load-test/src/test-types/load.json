@@ -25,7 +25,7 @@
   ],
   "thresholds": {
     "http_req_failed": [
-      "rate<0.01"
+      "rate<0.1"
     ],
     "http_req_duration": [
       "p(99)<3000"

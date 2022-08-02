@@ -1,0 +1,19 @@
+{
+  "name": "src",
+  "version": "1.0.0",
+  "description": "",
+  "main": "condig.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "dotenv -e .env node init_gps_db_services.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "dotenv-cli": "^3.1.0"
+  },
+  "dependencies": {
+    "@azure/cosmos": "^3.16.3"
+  }
+}
