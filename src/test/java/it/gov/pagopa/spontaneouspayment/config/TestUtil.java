@@ -48,9 +48,9 @@ public class TestUtil {
 
 		List<ServiceRef> enrollments = new ArrayList<>();
 
-		enrollments.add(ServiceRef.builder().serviceId("mockServiceId1").iban("mockIban1").officeName("mockOfficeName1")
+		enrollments.add(ServiceRef.builder().serviceId("mockServiceId1").iban("mockIban1").officeName("mockOfficeName1").segregationCode("47").remittanceInformation("mockRemittanceInformation1")
 				.build());
-		enrollments.add(ServiceRef.builder().serviceId("mockServiceId2").iban("mockIban2").officeName("mockOfficeName2")
+		enrollments.add(ServiceRef.builder().serviceId("mockServiceId2").iban("mockIban2").officeName("mockOfficeName2").segregationCode("47").remittanceInformation("mockRemittanceInformation2")
 				.build());
 
 		return Organization.builder().companyName("mockCompanyName").fiscalCode("mockFiscalCode").status(Status.ENABLED)
@@ -62,9 +62,9 @@ public class TestUtil {
 		List<CreateEnrollmentModel> enrollments = new ArrayList<>();
 
 		enrollments.add(CreateEnrollmentModel.builder().serviceId("mockServiceId1").iban("mockIban1")
-				.officeName("mockOfficeName1").build());
+				.officeName("mockOfficeName1").segregationCode("47").remittanceInformation("mockRemittanceInformation1").build());
 		enrollments.add(CreateEnrollmentModel.builder().serviceId("mockServiceId2").iban("mockIban2")
-				.officeName("mockOfficeName2").build());
+				.officeName("mockOfficeName2").segregationCode("55").remittanceInformation("mockRemittanceInformation2").build());
 
 		return OrganizationEnrollmentModel.builder().companyName("mockCompanyName").enrollments(enrollments).build();
 	}
@@ -87,6 +87,8 @@ public class TestUtil {
 		return EnrollmentModel.builder()
 				.iban("mockIban")
 				.officeName("mockOfficeName")
+				.segregationCode("47")
+				.remittanceInformation("mockRemittanceInformation")
 				.build();
 	}
 

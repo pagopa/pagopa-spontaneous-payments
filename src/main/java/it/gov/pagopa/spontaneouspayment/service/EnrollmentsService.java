@@ -77,7 +77,12 @@ public class EnrollmentsService {
         enrollments.add(ServiceRef.builder()
                         .serviceId(serviceId)
                         .officeName(enrollmentModel.getOfficeName())
-                        .iban(enrollmentModel.getIban()).build());
+                        .iban(enrollmentModel.getIban())
+                        .segregationCode(enrollmentModel.getSegregationCode())
+                        .remittanceInformation(enrollmentModel.getRemittanceInformation())
+                        .postalIban(enrollmentModel.getPostalIban())
+                        .build());
+        
         orgEntity.setEnrollments(enrollments);
 
         return orgRepository.save(orgEntity);
@@ -102,7 +107,11 @@ public class EnrollmentsService {
                 ServiceRef.builder()
                         .serviceId(serviceId)
                         .officeName(enrollmentModel.getOfficeName())
-                        .iban(enrollmentModel.getIban()).build()
+                        .iban(enrollmentModel.getIban())
+                        .segregationCode(enrollmentModel.getSegregationCode())
+                        .remittanceInformation(enrollmentModel.getRemittanceInformation())
+                        .postalIban(enrollmentModel.getPostalIban())
+                        .build()
         );
 
         return orgRepository.save(orgEntity);
