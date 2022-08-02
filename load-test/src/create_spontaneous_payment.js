@@ -35,9 +35,9 @@ export function setup() {
 
     console.log(`setup ... ${response.status}`);
 
-    check(response, {
-        "status is 201 or 409": (response) => (response.status === 201 || response.status === 409),
-    });
+//    check(response, {
+//        "status is 201 or 409": (response) => (response.status === 201 || response.status === 409),
+//    });
 
 	// precondition is moved to default fn because in this stage
 	// __VU is always 0 and cannot be used to create env properly
@@ -99,7 +99,7 @@ export default function() {
 			},
 			"service":
 			{
-				"id": "id-servizio-1",
+				"id": "donation-pagopa-svr-id1",
 				"properties":
 					[
 						{ "name": "amount", "value": amount },
@@ -126,7 +126,7 @@ export default function() {
 
 	// If flag delete_debt_position is set to true the debit position is deleted after being created
 	if (r.status === 201 && delete_debt_position === "true") {
-		postcondition(response.json().iupd, params);
+		postcondition(r.json().iupd, params);
 	}
 
 
