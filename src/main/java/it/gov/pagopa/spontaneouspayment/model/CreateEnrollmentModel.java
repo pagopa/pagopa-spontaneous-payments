@@ -24,5 +24,10 @@ public class CreateEnrollmentModel implements Serializable {
     @NotBlank(message = "iban is required")
     private String iban;
     private String officeName;
+    @NotBlank(message = "segregation code is required")
+    private String segregationCode;
+    @NotBlank(message = "remittance information is required")
+    private String remittanceInformation;
+    private String postalIban;
 
 }
