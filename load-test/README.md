@@ -15,28 +15,31 @@ To invoke k6 test passing parameter use -e (or --env) flag:
 
 Call to test the creation of a spontaneous payment:
 
-On Azure
-
-```
-...
-```
-
-On localhost 
-
 ```
 k6 run --env VARS=local.environment.json --env TEST_TYPE=./test-types/load.json create_spontaneous_payment.js
 ```
 
 where the mean of the environment variables is:
 
-GPS_BASE_URL: it is the protocol and host of the spontaneous payment (GPS) service.
+```json
+  "environment": [
+    {
+      "env": "local",
+      "host": "http://localhost:8080",
+      "basePath": "organizations",
+      "gpdBaseUrl": "https://api.dev.platform.pagopa.it/gpd/api/v1",
+      "deleteDebtPosition": true
+    }
+  ]
+```
 
-ORGANIZATION_FISCAL_CODE: it is the organization on which the tests will be launched (the organization must have been previously registered on the database and must be associated with the appropriate service).
+`host`: it is the protocol and host of the spontaneous payment (GPS) service.
 
-DELETE_DEBT_POSITION: it is a flag that enables the delete of the debt position after it has been created by the spontaneous payment.
+`basePath`: GPS's basepath service
 
-GPD_BASE_URL: it is the protocol and host of the GPD service. Used if the flag DELETE_DEBT_POSITION is set to true.
+`gpdBaseUrl`: it is the protocol and host of the GPD service. Used if the flag DELETE_DEBT_POSITION is set to true.
 
+`deleteDebtPosition`: it is a flag that enables the delete of the debt position after it has been created by the spontaneous payment.
 
 
 ## 02. Enrollment workflow 
