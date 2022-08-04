@@ -35,20 +35,20 @@ public class Service {
     @NotBlank(message = "transfer category is required")
     @PartitionKey
     private String transferCategory; // tassonomia
+    
+    @NotBlank
+    private String endpoint;
+    
+    @NotBlank
+    private String basePath;
+    
+    private Status status;
 
     @CreatedDate
     private LocalDateTime insertedDate;
 
     @LastModifiedDate
     private LocalDateTime lastUpdatedDate;
-
-    private Status status;
-
-    @NotBlank
-    private String endpoint;
-    @NotBlank
-    private String basePath;
-    
 
     private List<ServiceProperty> properties;
 
