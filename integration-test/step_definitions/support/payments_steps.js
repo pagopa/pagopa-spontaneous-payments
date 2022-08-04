@@ -52,7 +52,7 @@ When('the organization enrolls the creditor institution on the service {string}'
         serviceId: idService,
         iban: randomIban(),
         officeName: randomName(),
-        segregationCode: randomSegregationCode(),   
+        segregationCode: randomSegregationCode(),
         remittanceInformation: randomRemittanceInformation()
         };
     // call
