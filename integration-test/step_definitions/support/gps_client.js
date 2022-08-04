@@ -46,6 +46,10 @@ function getService(idService) {
     return get(`/services/${idService}`)
 }
 
+function createSpontaneousPayment (idOrg, body){
+	 return post(`/organizations/${idOrg}/spontaneouspayments`, body)
+}
+
 module.exports = {
 	healthCheckInfo,
     getOrganization,
@@ -57,5 +61,6 @@ module.exports = {
     updateOrganizationService,
     deleteOrganizationService,
     getServices,
-    getService
+    getService,
+    createSpontaneousPayment
 }

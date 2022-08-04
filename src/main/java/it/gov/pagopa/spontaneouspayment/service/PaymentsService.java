@@ -1,5 +1,22 @@
 package it.gov.pagopa.spontaneouspayment.service;
 
+import java.net.URI;
+import java.time.Year;
+import java.util.Collections;
+import java.util.Optional;
+import java.util.function.Predicate;
+
+import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+
+import org.apache.commons.lang3.math.NumberUtils;
+import org.json.JSONObject;
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+
 import it.gov.pagopa.spontaneouspayment.entity.Organization;
 import it.gov.pagopa.spontaneouspayment.entity.ServiceProperty;
 import it.gov.pagopa.spontaneouspayment.entity.ServiceRef;
@@ -20,27 +37,10 @@ import it.gov.pagopa.spontaneouspayment.service.client.GpdClient;
 import it.gov.pagopa.spontaneouspayment.service.client.IuvGeneratorClient;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.math.NumberUtils;
-import org.json.JSONObject;
-import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
-
-import javax.validation.Valid;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import java.net.URI;
-import java.time.Year;
-import java.util.Collections;
-import java.util.Optional;
-import java.util.function.Predicate;
 
 @Service
 @AllArgsConstructor
 @NoArgsConstructor
-@Slf4j
 public class PaymentsService {
 
     @Autowired
