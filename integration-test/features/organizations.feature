@@ -42,3 +42,7 @@ Feature: All about Organizations
     When the organization set the status to "DISABLED"
     Then the organization gets the status code 200
     And the status is "DISABLED" in the organization's details
+    
+  Scenario: An organization try to create an enrollment to a service without some mandatory parameters
+    Given the organization "777777" with the service "service-1" without mandatory parameters
+    Then the organization gets the status code 400
