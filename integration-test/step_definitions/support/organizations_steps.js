@@ -57,13 +57,6 @@ Given('the organization {string} with the service {string} without mandatory par
         segregationCode: randomSegregationCode(),   
         remittanceInformation: randomRemittanceInformation()
     };
-    // call
-    responseToCheck = await createOrganization(idOrg, {
-        companyName: idOrg,
-        enrollments: [service]
-    });
-    // save data
-    organization = responseToCheck.data;
 });
 
 
@@ -111,6 +104,17 @@ When('the organization set the status to {string}', async function (status) {
     // save data
     organization = responseToCheck.data
 });
+
+When('the organization {string} creates a creditor institution with enrollment to service', async function (idOrg) {
+    // call
+    responseToCheck = await createOrganization(idOrg, {
+        companyName: idOrg,
+        enrollments: [service]
+    });
+    // save data
+    organization = responseToCheck.data;
+});
+
 
 // Then
 

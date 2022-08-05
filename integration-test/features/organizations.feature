@@ -45,4 +45,5 @@ Feature: All about Organizations
     
   Scenario: An organization try to create an enrollment to a service without some mandatory parameters
     Given the organization "777777" with the service "service-1" without mandatory parameters
+    When the organization "777777" creates a creditor institution with enrollment to service
     Then the organization gets the status code 400
