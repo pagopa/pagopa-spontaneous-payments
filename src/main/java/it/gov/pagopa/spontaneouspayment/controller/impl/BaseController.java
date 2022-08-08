@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -28,15 +27,6 @@ public class BaseController {
 
     @Value("${info.properties.environment}")
     private String environment;
-
-    /**
-     * @return 200 OK
-     */
-    @Hidden
-    @GetMapping("")
-    @ResponseStatus(HttpStatus.OK)
-    public void home() { throw new UnsupportedOperationException(); }
-
 
     @Operation(summary = "health check", description = "Return OK if application is started", security = {@SecurityRequirement(name = "ApiKey"), @SecurityRequirement(name = "Authorization")}, tags = {"Home"})
     @ApiResponses(value = {

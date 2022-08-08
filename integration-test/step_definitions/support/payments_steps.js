@@ -1,7 +1,7 @@
 const assert = require('assert')
 const {Given, When, Then} = require('@cucumber/cucumber')
 const {randomIban, randomName, randomSegregationCode, randomRemittanceInformation} = require("./common");
-const {createSpontaneousPayment, deleteOrganization, createOrganization} = require("./gps_client");
+const {createSpontaneousPayment, deleteOrganization, createOrganization, createOrganizationService} = require("./gps_client");
 
 let responseToCheck;
 let organization;

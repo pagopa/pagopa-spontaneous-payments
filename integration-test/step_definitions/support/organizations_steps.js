@@ -46,6 +46,19 @@ Given('the organization {string} with the service {string}', async function (idO
     organization = responseToCheck.data;
 });
 
+Given('the organization {string} with the service {string} without mandatory parameters', async function (idOrg, idService) {
+    // precondition
+    await deleteOrganization(idOrg);
+
+    // service without mandatory parameter iban
+    service = {
+        serviceId: idService,
+        officeName: randomName(),
+        segregationCode: randomSegregationCode(),   
+        remittanceInformation: randomRemittanceInformation()
+    };
+});
+
 
 // When
 When('the organization enrolls in the service {string}', async function (idService) {
@@ -91,6 +104,17 @@ When('the organization set the status to {string}', async function (status) {
     // save data
     organization = responseToCheck.data
 });
+
+When('the organization {string} creates a creditor institution with enrollment to service', async function (idOrg) {
+    // call
+    responseToCheck = await createOrganization(idOrg, {
+        companyName: idOrg,
+        enrollments: [service]
+    });
+    // save data
+    organization = responseToCheck.data;
+});
+
 
 // Then
 
