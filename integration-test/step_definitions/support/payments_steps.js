@@ -27,6 +27,10 @@ Given('the organization {string} with an enrollment to service {string}', async 
         companyName: idOrg,
         enrollments: [service]
     });
+<<<<<<< HEAD
+=======
+    assert.strictEqual(responseToCheck.status, 201);
+>>>>>>> 7ee4dae ([PPD-251] gps integration test: added create spontaneous payment test)
     // save data
     organization = responseToCheck.data;
 });
@@ -59,6 +63,7 @@ When('the organization creates a spontaneous payment', async function () {
     responseToCheck = await createSpontaneousPayment(organization.fiscalCode, payment);
 });
 
+<<<<<<< HEAD
 When('the organization creates a spontaneous payment with a not configured property in the request', async function () {
 	let payment = {
 		"debtor": {
@@ -87,6 +92,8 @@ When('the organization creates a spontaneous payment with a not configured prope
 
 
 
+=======
+>>>>>>> 7ee4dae ([PPD-251] gps integration test: added create spontaneous payment test)
 
 // Then
 
