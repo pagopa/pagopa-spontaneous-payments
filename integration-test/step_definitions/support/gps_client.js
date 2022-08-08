@@ -1,5 +1,9 @@
 const {post, get, put, del} = require("./common");
 
+function healthCheckInfo() {
+    return get(`/info`)
+}
+
 function getOrganization(code) {
     return get(`/organizations/${code}`)
 }
@@ -43,6 +47,7 @@ function getService(idService) {
 }
 
 module.exports = {
+	healthCheckInfo,
     getOrganization,
     createOrganization,
     updateOrganization,
@@ -52,5 +57,5 @@ module.exports = {
     updateOrganizationService,
     deleteOrganizationService,
     getServices,
-    getService,
+    getService
 }

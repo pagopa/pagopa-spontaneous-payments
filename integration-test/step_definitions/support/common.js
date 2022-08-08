@@ -54,4 +54,12 @@ function randomName() {
     return "Name_" + Math.floor(Math.random() * 100);
 }
 
-module.exports = {get, post, put, del, randomIban, randomName}
+function randomSegregationCode() {
+    return ""+Math.floor(Math.random() * 99);
+}
+
+function randomRemittanceInformation() {
+    return "Causale_" + Math.floor(Math.random() * 100);
+}
+
+module.exports = {get, post, put, del, randomIban, randomName, randomSegregationCode, randomRemittanceInformation}
