@@ -1,12 +1,24 @@
 const assert = require('assert')
 const {Given, When, Then} = require('@cucumber/cucumber')
 const {randomIban, randomName, randomSegregationCode, randomRemittanceInformation} = require("./common");
-const {createSpontaneousPayment, deleteOrganization, createOrganization} = require("./gps_client");
+const {createSpontaneousPayment, deleteOrganization, createOrganization, createOrganizationService} = require("./gps_client");
 
 let responseToCheck;
 let organization;
 let service
 
+
+// Given -> create the organization 777777
+Given('the organization creates the creditor institution {string}', async function (idOrg) {
+    // precondition
+    await deleteOrganization(idOrg);
+
+    responseToCheck = await createOrganization(idOrg, {companyName: idOrg});
+    assert.strictEqual(responseToCheck.status, 201);
+    // save data
+    organization = responseToCheck.data;
+    organization.code = idOrg;
+});
 
 
 // Given -> create the organization 777777 with an enrollment to service service-1
@@ -33,6 +45,21 @@ Given('the organization {string} with an enrollment to service {string}', async 
 
 
 // When
+
+When('the organization enrolls the creditor institution on the service {string}', async function (idService) {
+    // save data
+    service = {
+        serviceId: idService,
+        iban: randomIban(),
+        officeName: randomName(),
+        segregationCode: randomSegregationCode(),   
+        remittanceInformation: randomRemittanceInformation()
+        };
+    // call
+    responseToCheck = await createOrganizationService(organization.fiscalCode, idService, service);
+    // save data
+    organization = responseToCheck.data;
+});
 
 When('the organization creates a spontaneous payment', async function () {
 	let payment = {
