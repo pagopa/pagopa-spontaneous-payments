@@ -8,6 +8,18 @@ let organization;
 let service
 
 
+// Given -> create the organization 777777
+Given('the organization creates the creditor institution {string}', async function (idOrg) {
+    // precondition
+    await deleteOrganization(idOrg);
+
+    responseToCheck = await createOrganization(idOrg, {companyName: idOrg});
+    assert.strictEqual(responseToCheck.status, 201);
+    // save data
+    organization = responseToCheck.data;
+    organization.code = idOrg;
+});
+
 
 // Given -> create the organization 777777 with an enrollment to service service-1
 
@@ -27,16 +39,27 @@ Given('the organization {string} with an enrollment to service {string}', async 
         companyName: idOrg,
         enrollments: [service]
     });
-<<<<<<< HEAD
-=======
-    assert.strictEqual(responseToCheck.status, 201);
->>>>>>> 7ee4dae ([PPD-251] gps integration test: added create spontaneous payment test)
     // save data
     organization = responseToCheck.data;
 });
 
 
 // When
+
+When('the organization enrolls the creditor institution on the service {string}', async function (idService) {
+    // save data
+    service = {
+        serviceId: idService,
+        iban: randomIban(),
+        officeName: randomName(),
+        segregationCode: randomSegregationCode(),   
+        remittanceInformation: randomRemittanceInformation()
+        };
+    // call
+    responseToCheck = await createOrganizationService(organization.fiscalCode, idService, service);
+    // save data
+    organization = responseToCheck.data;
+});
 
 When('the organization creates a spontaneous payment', async function () {
 	let payment = {
@@ -63,7 +86,6 @@ When('the organization creates a spontaneous payment', async function () {
     responseToCheck = await createSpontaneousPayment(organization.fiscalCode, payment);
 });
 
-<<<<<<< HEAD
 When('the organization creates a spontaneous payment with a not configured property in the request', async function () {
 	let payment = {
 		"debtor": {
@@ -92,8 +114,6 @@ When('the organization creates a spontaneous payment with a not configured prope
 
 
 
-=======
->>>>>>> 7ee4dae ([PPD-251] gps integration test: added create spontaneous payment test)
 
 // Then
 
