@@ -1,7 +1,7 @@
 const assert = require('assert')
 const {Given, When, Then} = require('@cucumber/cucumber')
 const {randomIban, randomName, randomSegregationCode, randomRemittanceInformation} = require("./common");
-const {createSpontaneousPayment, deleteOrganization, createOrganization} = require("./gps_client");
+const {createSpontaneousPayment, deleteOrganization, createOrganization, createOrganizationService} = require("./gps_client");
 
 let responseToCheck;
 let organization;
@@ -42,6 +42,23 @@ Given('the organization {string} with an enrollment to service {string}', async 
     // save data
     organization = responseToCheck.data;
 });
+
+Given('the organization tries to enroll the {string} on a not registered creditor institution {string}', async function (idService,idOrg) {
+    // precondition -> if already exist delete the org 
+    await deleteOrganization(idOrg);
+
+    service = {
+        serviceId: idService,
+        iban: randomIban(),
+        officeName: randomName(),
+        segregationCode: randomSegregationCode(),   
+        remittanceInformation: randomRemittanceInformation()
+    };
+    // save data
+    organization.fiscalCode = idOrg;
+});
+
+
 
 
 // When
@@ -86,7 +103,7 @@ When('the organization creates a spontaneous payment', async function () {
     responseToCheck = await createSpontaneousPayment(organization.fiscalCode, payment);
 });
 
-When('the organization creates a spontaneous payment with a not configured property in the request', async function () {
+When('the organization tries to create a spontaneous payment with a property {string} not configured to service', async function (propName) {
 	let payment = {
 		"debtor": {
 			"type": "F",
@@ -105,7 +122,7 @@ When('the organization creates a spontaneous payment with a not configured prope
 		"service": {
 			"id": service.serviceId,
 			"properties":
-				[{ "name": "property-not-found", "value": "1000" }]
+				[{ "name": propName, "value": "1000" }]
 		}
 	}
     responseToCheck = await createSpontaneousPayment(organization.fiscalCode, payment);
