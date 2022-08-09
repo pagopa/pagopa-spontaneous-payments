@@ -1,6 +1,6 @@
 const assert = require('assert')
 const {Given, When, Then} = require('@cucumber/cucumber')
-const {randomIban, randomName} = require("./common");
+const {randomIban, randomName, randomSegregationCode, randomRemittanceInformation} = require("./common");
 const {
     createOrganization, createOrganizationService, getOrganization, deleteOrganizationService,
     getOrganizationService, updateOrganization, updateOrganizationService, deleteOrganization
@@ -32,7 +32,9 @@ Given('the organization {string} with the service {string}', async function (idO
     service = {
         serviceId: idService,
         iban: randomIban(),
-        officeName: randomName()
+        officeName: randomName(),
+        segregationCode: randomSegregationCode(),   
+        remittanceInformation: randomRemittanceInformation()
     };
     // call
     responseToCheck = await createOrganization(idOrg, {
@@ -51,8 +53,10 @@ When('the organization enrolls in the service {string}', async function (idServi
     service = {
         serviceId: idService,
         iban: randomIban(),
-        officeName: randomName()
-    };
+        officeName: randomName(),
+        segregationCode: randomSegregationCode(),   
+        remittanceInformation: randomRemittanceInformation()
+        };
     // call
     responseToCheck = await createOrganizationService(organization.fiscalCode, idService, service);
     // save data
@@ -69,7 +73,9 @@ When('the organization deletes the service {string}', async function (idService)
 When('the organization changes the service IBAN with {string}', async function (iban) {
     responseToCheck = await updateOrganizationService(organization.fiscalCode, service.serviceId, {
         iban: iban,
-        officeName: service.officeName
+        officeName: service.officeName,
+        segregationCode: service.segregationCode,
+        remittanceInformation: service.remittanceInformation
     })
     assert.strictEqual(responseToCheck.status, 200);
     // save data
@@ -85,6 +91,31 @@ When('the organization set the status to {string}', async function (status) {
     // save data
     organization = responseToCheck.data
 });
+
+When('the organization {string} creates a creditor institution with enrollment to service', async function (idOrg) {
+    // call
+    responseToCheck = await createOrganization(idOrg, {
+        companyName: idOrg,
+        enrollments: [service]
+    });
+    // save data
+    organization = responseToCheck.data;
+});
+
+When('the organization enrolls to service {string} without mandatory parameters', async function (idService) {
+    // service without mandatory parameter iban
+    service = {
+        serviceId: idService,
+        officeName: randomName(),
+        segregationCode: randomSegregationCode(),   
+        remittanceInformation: randomRemittanceInformation()
+    };
+    // call
+    responseToCheck = await createOrganizationService(organization.fiscalCode, idService, service);
+    // save data
+    organization = responseToCheck.data;
+});
+
 
 // Then
 
