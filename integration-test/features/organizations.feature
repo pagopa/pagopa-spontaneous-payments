@@ -1,4 +1,5 @@
 Feature: All about Organizations
+
   Background:
     Given GPS running
 
@@ -25,36 +26,22 @@ Feature: All about Organizations
     Then the organization gets the status code 200
     And the service for the organization has the IBAN "ABCD"
 
-  Scenario: An organization change the IBAN
-    Given the organization "777777" with the service "service-1"
-    When the organization changes the service IBAN with "ABCD"
-    Then the organization gets the status code 200
-    And the service for the organization has the IBAN "ABCD"
-
   Scenario: An organization is disabled
     Given the organization "777777"
     When the organization set the status to "DISABLED"
     Then the organization gets the status code 200
     And the status is "DISABLED" in the organization's details
 
-  Scenario: An organization is disabled
-    Given the organization "777777"
-    When the organization set the status to "DISABLED"
-    Then the organization gets the status code 200
-    And the status is "DISABLED" in the organization's details
-    
   Scenario: An organization try to create an enrollment to a service without some mandatory parameters
     Given the organization "777777"
     When the organization enrolls to service "service-1" without mandatory parameters
     Then the organization gets the status code 400
-    
-  
-  Scenario Outline: An organization creates the enrollment to several services
-  Given the organization <organization>
-  When the organization enrolls in the service <service>
-  Then the organization gets the status code <result>
 
-  Examples:
-    | organization |  service    | result |
-    |  "7777777"   | "service-1" |   201  |
-    |  "7777777"   | "service-2" |   404  |
+  Scenario Outline: An organization creates the enrollment to several services
+    Given the organization <organization>
+    When the organization enrolls in the service <service>
+    Then the organization gets the status code <result>
+    Examples:
+      | organization | service     | result |
+      | "7777777"    | "service-1" | 201    |
+      | "7777777"    | "service-2" | 404    |

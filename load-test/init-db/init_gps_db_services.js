@@ -7,7 +7,7 @@ const dbContext = require("./databaseContext");
 
 //  <DefineNewItem>
 const newServiceItem = {
-    "id": "donation-pagopa-svr-id1",
+    "id": "service-1",
     "name": "Donation pagoPA service",
     "description": "Donation pagoPA service",
     "transferCategory": "tassonomia-1",
