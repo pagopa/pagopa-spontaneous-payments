@@ -3,7 +3,7 @@
   "license": "MIT",
   "version": "1.0.0",
   "scripts": {
-    "test": "npx cucumber-js -r step_definitions"
+    "test": "npx cucumber-js --publish -r step_definitions"
   },
   "dependencies": {
     "@cucumber/cucumber": "^8.4.0",

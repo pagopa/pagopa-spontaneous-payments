@@ -92,6 +92,31 @@ When('the organization set the status to {string}', async function (status) {
     organization = responseToCheck.data
 });
 
+When('the organization {string} creates a creditor institution with enrollment to service', async function (idOrg) {
+    // call
+    responseToCheck = await createOrganization(idOrg, {
+        companyName: idOrg,
+        enrollments: [service]
+    });
+    // save data
+    organization = responseToCheck.data;
+});
+
+When('the organization enrolls to service {string} without mandatory parameters', async function (idService) {
+    // service without mandatory parameter iban
+    service = {
+        serviceId: idService,
+        officeName: randomName(),
+        segregationCode: randomSegregationCode(),   
+        remittanceInformation: randomRemittanceInformation()
+    };
+    // call
+    responseToCheck = await createOrganizationService(organization.fiscalCode, idService, service);
+    // save data
+    organization = responseToCheck.data;
+});
+
+
 // Then
 
 Then(/^the service is listed in the organization's details$/, async function () {
