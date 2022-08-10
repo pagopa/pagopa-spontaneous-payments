@@ -84,6 +84,7 @@ microservice-chart:
     LOGGING_LEVEL: "INFO"
   envSecret:
     COSMOS_KEY: cosmos-gps-weu-d-pkey
+    APPLICATIONINSIGHTS_CONNECTION_STRING: ai-connection-string
   keyvault:
     name: "pagopa-d-gps-kv"
     tenantId: "7788edaf-0346-4068-9d79-c868aed15b3d"
