@@ -4,7 +4,7 @@
     "level": "INFO"
   },
   "role": {
-    "name": "pagopa-spontaneous-payments-nm",
-    "instance": "pagopa-spontaneous-payments-is"
+    "name": "pagopa-spontaneous-payments",
+    "instance": "pagopa-spontaneous-payments"
   }
 }
