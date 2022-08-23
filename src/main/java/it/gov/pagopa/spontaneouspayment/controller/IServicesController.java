@@ -81,6 +81,7 @@ public interface IServicesController {
             produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = MediaType.APPLICATION_JSON_VALUE)
     ResponseEntity<ServiceDetailModelResponse> updateService(
+    		@Parameter(description = "The service id to update.", required = true) @NotBlank @PathVariable("serviceId") String serviceId,
             @Valid @RequestBody ServiceDetailUpdModel serviceUpdateModel);
     
     @Operation(summary = "The user deletes a service.", security = {@SecurityRequirement(name = "ApiKey"), @SecurityRequirement(name = "Authorization")}, operationId = "deleteService")
@@ -91,5 +92,5 @@ public interface IServicesController {
             @ApiResponse(responseCode = "500", description = "Service unavailable.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ProblemJson.class)))})
     @DeleteMapping(value = "/services/{serviceId}",
             produces = MediaType.APPLICATION_JSON_VALUE)
-    ResponseEntity<String> deleteService();
+    ResponseEntity<String> deleteService(@Parameter(description = "The service id to delete.", required = true) @NotBlank @PathVariable("serviceId") String serviceId);
 }
