@@ -1,19 +1,5 @@
 package it.gov.pagopa.spontaneouspayment.config;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import it.gov.pagopa.spontaneouspayment.entity.Organization;
-import it.gov.pagopa.spontaneouspayment.entity.Service;
-import it.gov.pagopa.spontaneouspayment.entity.ServiceRef;
-import it.gov.pagopa.spontaneouspayment.model.*;
-import it.gov.pagopa.spontaneouspayment.model.enumeration.Status;
-import it.gov.pagopa.spontaneouspayment.model.enumeration.Type;
-import it.gov.pagopa.spontaneouspayment.model.response.PaymentOptionModel;
-import it.gov.pagopa.spontaneouspayment.model.response.PaymentPositionModel;
-import it.gov.pagopa.spontaneouspayment.model.response.TransferModel;
-import lombok.experimental.UtilityClass;
-
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -21,6 +7,31 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+
+import it.gov.pagopa.spontaneouspayment.entity.Organization;
+import it.gov.pagopa.spontaneouspayment.entity.Service;
+import it.gov.pagopa.spontaneouspayment.entity.ServiceRef;
+import it.gov.pagopa.spontaneouspayment.model.CreateEnrollmentModel;
+import it.gov.pagopa.spontaneouspayment.model.DebtorModel;
+import it.gov.pagopa.spontaneouspayment.model.EnrollmentModel;
+import it.gov.pagopa.spontaneouspayment.model.OrganizationEnrollmentModel;
+import it.gov.pagopa.spontaneouspayment.model.OrganizationModel;
+import it.gov.pagopa.spontaneouspayment.model.ServiceConfigPropertyModel;
+import it.gov.pagopa.spontaneouspayment.model.ServiceDetailModel;
+import it.gov.pagopa.spontaneouspayment.model.ServiceDetailUpdModel;
+import it.gov.pagopa.spontaneouspayment.model.ServiceModel;
+import it.gov.pagopa.spontaneouspayment.model.ServicePropertyModel;
+import it.gov.pagopa.spontaneouspayment.model.SpontaneousPaymentModel;
+import it.gov.pagopa.spontaneouspayment.model.enumeration.Status;
+import it.gov.pagopa.spontaneouspayment.model.enumeration.Type;
+import it.gov.pagopa.spontaneouspayment.model.response.PaymentOptionModel;
+import it.gov.pagopa.spontaneouspayment.model.response.PaymentPositionModel;
+import it.gov.pagopa.spontaneouspayment.model.response.TransferModel;
+import lombok.experimental.UtilityClass;
 
 @UtilityClass
 public class TestUtil {
@@ -243,6 +254,62 @@ public class TestUtil {
 				.transfer(List.of(TransferModel.builder()
 						.amount(100)
 						.build()))
+				.build();
+	}
+	
+	public static ServiceDetailModel getMockServiceDetailModel() {
+		ServiceConfigPropertyModel property = 
+				ServiceConfigPropertyModel.builder().name("mockProp1").build();
+		return ServiceDetailModel.builder()
+				.id("mockId")
+				.name("mockName")
+				.description("mockDescription")
+				.transferCategory("mockTransferCategory")
+				.endpoint("mockEndpoint")
+				.basePath("mockBasePath")
+				.status(Status.ENABLED)
+				.properties(List.of(property))
+				.build();
+	}
+	
+	public static ServiceDetailModel getMockServiceDetailModel_NoRequiredField() {
+		ServiceConfigPropertyModel property = 
+				ServiceConfigPropertyModel.builder().name("mockProp1").build();
+		// lack of the required fields endpoint and basePath
+		return ServiceDetailModel.builder()
+				.id("mockId")
+				.name("mockName")
+				.description("mockDescription")
+				.transferCategory("mockTransferCategory")
+				.status(Status.ENABLED)
+				.properties(List.of(property))
+				.build();
+	}
+	
+	public static ServiceDetailUpdModel getMockServiceDetailUpdModel() {
+		ServiceConfigPropertyModel property = 
+				ServiceConfigPropertyModel.builder().name("mockProp1").build();
+		return ServiceDetailUpdModel.builder()
+				.name("mockName")
+				.description("mockDescription")
+				.transferCategory("mockTransferCategory")
+				.endpoint("mockEndpoint")
+				.basePath("mockBasePath")
+				.status(Status.ENABLED)
+				.properties(List.of(property))
+				.build();
+	}
+	
+	public static ServiceDetailUpdModel getMockServiceDetailUpdModel_NoRequiredField() {
+		ServiceConfigPropertyModel property = 
+				ServiceConfigPropertyModel.builder().name("mockProp1").build();
+		// lack of the required fields endpoint and basePath
+		return ServiceDetailUpdModel.builder()
+				.name("mockName")
+				.description("mockDescription")
+				.transferCategory("mockTransferCategory")
+				.status(Status.ENABLED)
+				.properties(List.of(property))
 				.build();
 	}
 	

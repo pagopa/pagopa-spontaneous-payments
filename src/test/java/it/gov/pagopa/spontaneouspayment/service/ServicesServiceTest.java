@@ -37,6 +37,8 @@ import java.security.cert.CertificateException;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.junit.Assert.assertThrows;
+import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.spy;
 
@@ -178,7 +180,7 @@ class ServicesServiceTest {
 	void getServices() {
 		assertTrue(emulator.isRunning());
 		List<Service> services = servicesService.getServices();
-		assertEquals(4, services.size());
+		assertTrue("A value greater or equal than <3> was expected", services.size() >= 3);
 	}
 	
 	@Test
@@ -204,4 +206,97 @@ class ServicesServiceTest {
 			fail();
 		}
 	}
+	
+	@Test
+	void createService() {
+		assertTrue(emulator.isRunning());
+		ServiceProperty sp5 = new ServiceProperty("propName5", PropertyType.STRING, true);
+		Service s5 = new Service();
+		s5.setId("id-servizio-5");
+		s5.setName("name-5");
+		s5.setDescription("description-5");
+		s5.setTransferCategory("tassonomia-5");
+		s5.setBasePath("base-path-5");
+		s5.setEndpoint("endpont-5");
+		s5.setStatus(Status.ENABLED);
+		s5.setProperties(List.of(sp5));
+		Service s = servicesService.createService(s5);
+		assertEquals("id-servizio-5", s.getId());
+		assertEquals(1, s.getProperties().size());
+	}
+	
+	@Test
+	void createService_409() {
+		assertTrue(emulator.isRunning());
+		ServiceProperty sp2 = new ServiceProperty("propName2", PropertyType.STRING, true);
+		Service s5 = new Service();
+		s5.setId("id-servizio-2");
+		s5.setName("name-2");
+		s5.setDescription("description-2");
+		s5.setTransferCategory("tassonomia-2");
+		s5.setBasePath("base-path-2");
+		s5.setEndpoint("endpont-2");
+		s5.setStatus(Status.ENABLED);
+		s5.setProperties(List.of(sp2));
+		AppException thrown = assertThrows(AppException.class,
+	            ()->{
+	            	servicesService.createService(s5);
+	            });
+		assertTrue(thrown.getMessage().contains("Already exists an entity with id id-servizio-2"));
+	}
+	
+	@Test
+	void updateService() {
+		assertTrue(emulator.isRunning());
+		Service s = servicesService.getServiceDetails("id-servizio-1");
+		s.setDescription("description-1 UPD");
+		Service updServ = servicesService.updateService(s);
+		assertEquals("id-servizio-1", updServ.getId());
+		assertEquals("description-1 UPD", updServ.getDescription());
+	}
+	
+	@Test
+	void updateService_404() {
+		assertTrue(emulator.isRunning());
+		ServiceProperty sp6 = new ServiceProperty("propName5", PropertyType.STRING, true);
+		Service s6 = new Service();
+		s6.setId("id-servizio-6");
+		s6.setName("name-6");
+		s6.setDescription("description-6");
+		s6.setTransferCategory("tassonomia-6");
+		s6.setBasePath("base-path-6");
+		s6.setEndpoint("endpont-6");
+		s6.setStatus(Status.ENABLED);
+		s6.setProperties(List.of(sp6));
+		AppException thrown = assertThrows(AppException.class,
+	            ()->{
+	            	servicesService.updateService(s6);
+	            });
+		assertTrue(thrown.getMessage().contains("Not found a service configuration for Service Id id-servizio-6"));
+	}
+	
+	@Test
+	void deleteService() {
+		assertTrue(emulator.isRunning());
+		servicesService.deleteService("id-servizio-1");
+		// This line means the call was successful
+		assertTrue(true);
+		AppException thrown = assertThrows(AppException.class,
+	            ()->{
+	            	servicesService.getServiceDetails("id-servizio-1");
+	            });
+		assertTrue(thrown.getMessage().contains("Not found a service configuration for Service Id id-servizio-1"));
+	}
+	
+	@Test
+	void deleteService_404() {
+		assertTrue(emulator.isRunning());
+		AppException thrown = assertThrows(AppException.class,
+	            ()->{
+	            	servicesService.deleteService("id-servizio-6");
+	            });
+		assertTrue(thrown.getMessage().contains("Not found a service configuration for Service Id id-servizio-6"));
+	}
+	
+	
 }
