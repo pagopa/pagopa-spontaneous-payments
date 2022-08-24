@@ -313,4 +313,17 @@ public class TestUtil {
 				.build();
 	}
 	
+	public static Service getMockServiceById (String id) {
+		Service s = new Service();
+		s.setId(id);
+		s.setName("name_"+id);
+		s.setDescription("description_"+id);
+		s.setTransferCategory("tassonomia_"+id);
+		s.setBasePath("base-path_"+id);
+		s.setEndpoint("endpont_"+id);
+		s.setStatus(Status.ENABLED);
+		
+		return s;
+	}
+	
 }

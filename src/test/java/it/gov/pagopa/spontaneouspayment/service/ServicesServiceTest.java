@@ -4,6 +4,8 @@ import com.azure.cosmos.CosmosAsyncClient;
 import com.azure.cosmos.CosmosClientBuilder;
 import com.azure.cosmos.models.CosmosContainerResponse;
 import com.azure.cosmos.models.CosmosDatabaseResponse;
+
+import it.gov.pagopa.spontaneouspayment.config.TestUtil;
 import it.gov.pagopa.spontaneouspayment.entity.Organization;
 import it.gov.pagopa.spontaneouspayment.entity.Service;
 import it.gov.pagopa.spontaneouspayment.entity.ServiceProperty;
@@ -95,44 +97,28 @@ class ServicesServiceTest {
 		ci.setCompanyName("Comune di Roma");
 		ci.setStatus(Status.ENABLED);
 
-		Service s1 = new Service();
-		s1.setId("id-servizio-1");
-		s1.setTransferCategory("tassonomia-1");
-		s1.setBasePath("base-path-1");
-		s1.setEndpoint("endpont-1");
+		Service s1 = TestUtil.getMockServiceById("id-servizio-1");
 
 		ServiceProperty sp1 = new ServiceProperty("propName1", PropertyType.STRING, true);
 		List<ServiceProperty> properties1 = new ArrayList<>();
 		properties1.add(sp1);
 		s1.setProperties(properties1);
 
-		Service s2 = new Service();
-		s2.setId("id-servizio-2");
-		s2.setTransferCategory("tassonomia-2");
-		s2.setBasePath("base-path-2");
-		s2.setEndpoint("endpont-2");
+		Service s2 = TestUtil.getMockServiceById("id-servizio-2");
 
 		ServiceProperty sp2 = new ServiceProperty("propName2", PropertyType.STRING, true);
 		List<ServiceProperty> properties2 = new ArrayList<>();
 		properties2.add(sp2);
 		s2.setProperties(properties2);
 		
-		Service s3 = new Service();
-		s3.setId("id-servizio-3");
-		s3.setTransferCategory("tassonomia-3");
-		s3.setBasePath("base-path-3");
-		s3.setEndpoint("endpont-3");
+		Service s3 = TestUtil.getMockServiceById("id-servizio-3");
 
 		ServiceProperty sp3 = new ServiceProperty("propName3", PropertyType.STRING, true);
 		List<ServiceProperty> properties3 = new ArrayList<>();
 		properties3.add(sp3);
 		s3.setProperties(properties3);
 		
-		Service s4 = new Service();
-		s4.setId("id-servizio-4");
-		s4.setTransferCategory("tassonomia-4");
-		s4.setBasePath("base-path-4");
-		s4.setEndpoint("endpont-4");
+		Service s4 = TestUtil.getMockServiceById("id-servizio-4");
 
 		ServiceProperty sp4 = new ServiceProperty("propName4", PropertyType.STRING, true);
 		List<ServiceProperty> properties4 = new ArrayList<>();
@@ -188,9 +174,9 @@ class ServicesServiceTest {
 		assertTrue(emulator.isRunning());
 		Service s = servicesService.getServiceDetails("id-servizio-1");
 		assertEquals("id-servizio-1", s.getId());
-		assertEquals("tassonomia-1", s.getTransferCategory());
-		assertEquals("base-path-1", s.getBasePath());
-		assertEquals("endpont-1", s.getEndpoint());
+		assertEquals("tassonomia_id-servizio-1", s.getTransferCategory());
+		assertEquals("base-path_id-servizio-1", s.getBasePath());
+		assertEquals("endpont_id-servizio-1", s.getEndpoint());
 	}
 	
 	@Test
@@ -211,14 +197,7 @@ class ServicesServiceTest {
 	void createService() {
 		assertTrue(emulator.isRunning());
 		ServiceProperty sp5 = new ServiceProperty("propName5", PropertyType.STRING, true);
-		Service s5 = new Service();
-		s5.setId("id-servizio-5");
-		s5.setName("name-5");
-		s5.setDescription("description-5");
-		s5.setTransferCategory("tassonomia-5");
-		s5.setBasePath("base-path-5");
-		s5.setEndpoint("endpont-5");
-		s5.setStatus(Status.ENABLED);
+		Service s5 = TestUtil.getMockServiceById("id-servizio-5");
 		s5.setProperties(List.of(sp5));
 		Service s = servicesService.createService(s5);
 		assertEquals("id-servizio-5", s.getId());
@@ -229,14 +208,7 @@ class ServicesServiceTest {
 	void createService_409() {
 		assertTrue(emulator.isRunning());
 		ServiceProperty sp2 = new ServiceProperty("propName2", PropertyType.STRING, true);
-		Service s5 = new Service();
-		s5.setId("id-servizio-2");
-		s5.setName("name-2");
-		s5.setDescription("description-2");
-		s5.setTransferCategory("tassonomia-2");
-		s5.setBasePath("base-path-2");
-		s5.setEndpoint("endpont-2");
-		s5.setStatus(Status.ENABLED);
+		Service s5 = TestUtil.getMockServiceById("id-servizio-2");
 		s5.setProperties(List.of(sp2));
 		AppException thrown = assertThrows(AppException.class,
 	            ()->{
@@ -259,14 +231,7 @@ class ServicesServiceTest {
 	void updateService_404() {
 		assertTrue(emulator.isRunning());
 		ServiceProperty sp6 = new ServiceProperty("propName5", PropertyType.STRING, true);
-		Service s6 = new Service();
-		s6.setId("id-servizio-6");
-		s6.setName("name-6");
-		s6.setDescription("description-6");
-		s6.setTransferCategory("tassonomia-6");
-		s6.setBasePath("base-path-6");
-		s6.setEndpoint("endpont-6");
-		s6.setStatus(Status.ENABLED);
+		Service s6 = TestUtil.getMockServiceById("id-servizio-6");
 		s6.setProperties(List.of(sp6));
 		AppException thrown = assertThrows(AppException.class,
 	            ()->{
@@ -297,6 +262,9 @@ class ServicesServiceTest {
 	            });
 		assertTrue(thrown.getMessage().contains("Not found a service configuration for Service Id id-servizio-6"));
 	}
+	
+	
+	
 	
 	
 }
