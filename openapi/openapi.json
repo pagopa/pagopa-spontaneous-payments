@@ -13,6 +13,7 @@
 		}
 	],
 	"paths": {
+<<<<<<< HEAD
 		"/info": {
 			"get": {
 				"tags": [
@@ -130,6 +131,8 @@
 				}
 			]
 		},
+=======
+>>>>>>> branch 'PPD-275-create-upd-service' of https://github.com/pagopa/pagopa-spontaneous-payments
 		"/organizations/{organizationFiscalCode}": {
 			"get": {
 				"tags": [
@@ -2312,6 +2315,7 @@
 						"type": "string"
 					},
 					"description": {
+<<<<<<< HEAD
 						"type": "string"
 					}
 				}
@@ -2326,6 +2330,8 @@
 						"type": "string"
 					},
 					"environment": {
+=======
+>>>>>>> branch 'PPD-275-create-upd-service' of https://github.com/pagopa/pagopa-spontaneous-payments
 						"type": "string"
 					}
 				}
