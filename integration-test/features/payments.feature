@@ -1,10 +1,11 @@
 Feature: Create a spontaneous payment
   Background:
     Given GPS running
+    And creates the service with id "service-for-payments"
 
   # Case OK
   Scenario: An organization creates a spontaneous payment
-    Given the organization "777777" with an enrollment to service "service-1"
+    Given the organization "777777" with an enrollment to service "service-for-payments"
     When the organization creates a spontaneous payment
     Then the organization gets the created status code 201
     And the organization gets the created Payment Position

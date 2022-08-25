@@ -37,6 +37,17 @@ function deleteOrganizationService(idOrg, idService) {
     return del(`/organizations/${idOrg}/services/${idService}`)
 }
 
+function createService(body) {
+	return post(`/services`, body)
+}
+
+function updateService(idService, body) {
+	return put(`/services/${idService}`, body)
+}
+
+function deleteService(idService) {
+	return del(`/services/${idService}`)
+}
 
 function getServices() {
     return get(`/services`)
@@ -60,6 +71,9 @@ module.exports = {
     createOrganizationService,
     updateOrganizationService,
     deleteOrganizationService,
+    createService,
+    updateService,
+    deleteService,
     getServices,
     getService,
     createSpontaneousPayment
