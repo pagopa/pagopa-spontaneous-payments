@@ -63,6 +63,7 @@ public interface IServicesController {
             @ApiResponse(responseCode = "201", description = "Request created.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(name = "ServiceDetailModelResponse", implementation = ServiceDetailModelResponse.class))),
             @ApiResponse(responseCode = "400", description = "Malformed request.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ProblemJson.class))),
             @ApiResponse(responseCode = "401", description = "Wrong or missing function key.", content = @Content(schema = @Schema())),
+            @ApiResponse(responseCode = "409", description = "The service to create already exists.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ProblemJson.class))),
             @ApiResponse(responseCode = "500", description = "Service unavailable.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ProblemJson.class)))})
     @PostMapping(value = "/services",
             produces = MediaType.APPLICATION_JSON_VALUE,
@@ -81,6 +82,7 @@ public interface IServicesController {
             produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = MediaType.APPLICATION_JSON_VALUE)
     ResponseEntity<ServiceDetailModelResponse> updateService(
+    		@Parameter(description = "The service id to update.", required = true) @NotBlank @PathVariable("serviceId") String serviceId,
             @Valid @RequestBody ServiceDetailUpdModel serviceUpdateModel);
     
     @Operation(summary = "The user deletes a service.", security = {@SecurityRequirement(name = "ApiKey"), @SecurityRequirement(name = "Authorization")}, operationId = "deleteService")
@@ -91,5 +93,5 @@ public interface IServicesController {
             @ApiResponse(responseCode = "500", description = "Service unavailable.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ProblemJson.class)))})
     @DeleteMapping(value = "/services/{serviceId}",
             produces = MediaType.APPLICATION_JSON_VALUE)
-    ResponseEntity<String> deleteService();
+    ResponseEntity<String> deleteService(@Parameter(description = "The service id to delete.", required = true) @NotBlank @PathVariable("serviceId") String serviceId);
 }

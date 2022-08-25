@@ -1,16 +1,19 @@
 package it.gov.pagopa.spontaneouspayment.model;
 
-import it.gov.pagopa.spontaneouspayment.model.enumeration.Status;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import java.io.Serializable;
+import java.util.List;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import java.io.Serializable;
-import java.util.List;
 
+import it.gov.pagopa.spontaneouspayment.model.enumeration.Status;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Builder
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

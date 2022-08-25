@@ -54,15 +54,21 @@ public class ServicesController implements IServicesController {
 	}
 
 	@Override
-	public ResponseEntity<ServiceDetailModelResponse> updateService(@Valid ServiceDetailUpdModel serviceUpdateModel) {
-		// TODO Auto-generated method stub
-		return null;
+	public ResponseEntity<ServiceDetailModelResponse> updateService(@NotBlank String serviceId, @Valid ServiceDetailUpdModel serviceUpdateModel) {
+		// flip model to entity
+		Service serviceEntity = modelMapper.map(serviceUpdateModel, Service.class);
+		serviceEntity.setId(serviceId);
+		return new ResponseEntity<>(
+                modelMapper.map(servicesService.updateService(serviceEntity), ServiceDetailModelResponse.class),
+                HttpStatus.OK);
 	}
 
 	@Override
-	public ResponseEntity<String> deleteService() {
-		// TODO Auto-generated method stub
-		return null;
+	public ResponseEntity<String> deleteService(@NotBlank String serviceId) {
+		servicesService.deleteService(serviceId);
+        return new ResponseEntity<>(
+                "\"The service with id " + serviceId + " was successfully removed\"",
+                HttpStatus.OK);
 	}
 
 }
