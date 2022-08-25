@@ -20,7 +20,6 @@ public class ServicePropertyModelResponse implements Serializable {
      */
     private static final long serialVersionUID = 7156317962327532355L;
 
-    @NotBlank
     private String name;
 
     private String type;

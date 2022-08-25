@@ -68,7 +68,7 @@ public interface IEnrollmentsController {
             @NotBlank @PathVariable("serviceId") String serviceId,
             @Valid @RequestBody EnrollmentModel enrollmentModel);
     
-    @Operation(summary = "The organization update an enrollment to a service for the creditor institution.", security = {@SecurityRequirement(name = "ApiKey"), @SecurityRequirement(name = "Authorization")}, operationId = "updateECEnrollment")
+    @Operation(summary = "The organization updates an enrollment to a service for the creditor institution.", security = {@SecurityRequirement(name = "ApiKey"), @SecurityRequirement(name = "Authorization")}, operationId = "updateECEnrollment")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Request updated.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(name = "OrganizationModelResponse", implementation = OrganizationModelResponse.class))),
             @ApiResponse(responseCode = "400", description = "Malformed request.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ProblemJson.class))),
