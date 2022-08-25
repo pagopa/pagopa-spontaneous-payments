@@ -1,12 +1,11 @@
 package it.gov.pagopa.spontaneouspayment.model.response;
 
+import java.io.Serializable;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import javax.validation.constraints.NotBlank;
-import java.io.Serializable;
 
 
 @Getter
@@ -20,7 +19,6 @@ public class ServicePropertyModelResponse implements Serializable {
      */
     private static final long serialVersionUID = 7156317962327532355L;
 
-    @NotBlank
     private String name;
 
     private String type;

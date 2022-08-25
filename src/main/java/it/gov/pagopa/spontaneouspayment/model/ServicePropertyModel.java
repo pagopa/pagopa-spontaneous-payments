@@ -19,7 +19,7 @@ public class ServicePropertyModel implements Serializable {
      */
     private static final long serialVersionUID = -4881284106551118200L;
 
-    @NotBlank
+    @NotBlank(message = "name is required")
     private String name;
 
     private String value;
