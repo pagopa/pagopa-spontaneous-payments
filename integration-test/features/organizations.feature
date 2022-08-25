@@ -44,4 +44,4 @@ Feature: All about Organizations
     Examples:
       | organization | service     | result |
       | "7777777"    | "service-1" | 201    |
-      | "7777777"    | "service-2" | 404    |
+      | "7777777"    | "service-5" | 404    |

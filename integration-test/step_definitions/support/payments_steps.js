@@ -1,11 +1,15 @@
 const assert = require('assert')
 const {Given, When, Then} = require('@cucumber/cucumber')
 const {randomIban, randomName, randomSegregationCode, randomRemittanceInformation} = require("./common");
-const {createSpontaneousPayment, deleteOrganization, createOrganization, createOrganizationService} = require("./gps_client");
+const {createSpontaneousPayment, deleteOrganization, createOrganization, createOrganizationService, createService, deleteService} = require("./gps_client");
+const fs = require("fs");
 
 let responseToCheck;
 let organization;
 let service
+let rawdata = fs.readFileSync('./config/properties.json');
+let properties = JSON.parse(rawdata);
+const donation_host = properties.donation_host;
 
 
 // Given -> create the organization 777777
@@ -18,6 +22,31 @@ Given('the organization creates the creditor institution {string}', async functi
     // save data
     organization = responseToCheck.data;
     organization.code = idOrg;
+});
+
+// Given -> create the service
+Given('creates the service with id {string}', async function (serviceId) {
+    // precondition
+    await deleteService(serviceId);
+	
+    service = {
+        "id": serviceId,
+        "name": "name_"+serviceId,
+        "description": "description_"+serviceId,
+        "transferCategory": "transferCategory_"+serviceId,
+        "status": "ENABLED",
+        "endpoint": donation_host,
+        "basePath": "/donations/paymentoptions",
+        "properties": [
+            {
+                "name": "amount",
+                "type": "NUMBER",
+                "required": true
+            }
+        ]
+    };
+    responseToCheck = await createService(service);
+    assert.strictEqual(responseToCheck.status, 201);
 });
 
 
