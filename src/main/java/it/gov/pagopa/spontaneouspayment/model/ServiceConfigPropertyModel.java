@@ -6,11 +6,12 @@ import javax.validation.constraints.NotBlank;
 
 import it.gov.pagopa.spontaneouspayment.model.enumeration.PropertyType;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-
+@Builder
 @Getter
 @Setter
 @NoArgsConstructor
@@ -25,7 +26,9 @@ public class ServiceConfigPropertyModel implements Serializable {
     @NotBlank(message = "name is required")
     private String name;
 
-    private PropertyType type;
+    @Builder.Default
+    private PropertyType type = PropertyType.STRING;
 
+    @Builder.Default
     private boolean isRequired = true;
 }

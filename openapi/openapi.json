@@ -4,7 +4,7 @@
 		"title": "PagoPA API Spontaneous Payment",
 		"description": "Progetto Gestione Pagamenti Spontanei",
 		"termsOfService": "https://www.pagopa.gov.it/",
-		"version": "0.0.3-19"
+		"version": "0.0.3-21"
 	},
 	"servers": [
 		{
@@ -13,123 +13,6 @@
 		}
 	],
 	"paths": {
-		"/info": {
-			"get": {
-				"tags": [
-					"Home"
-				],
-				"summary": "health check",
-				"description": "Return OK if application is started",
-				"operationId": "healthCheck",
-				"responses": {
-					"200": {
-						"description": "OK",
-						"headers": {
-							"X-Request-Id": {
-								"description": "This header identifies the call",
-								"schema": {
-									"type": "string"
-								}
-							}
-						},
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/AppInfo"
-								}
-							}
-						}
-					},
-					"400": {
-						"description": "Bad Request",
-						"headers": {
-							"X-Request-Id": {
-								"description": "This header identifies the call",
-								"schema": {
-									"type": "string"
-								}
-							}
-						},
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/ProblemJson"
-								}
-							}
-						}
-					},
-					"401": {
-						"description": "Unauthorized",
-						"headers": {
-							"X-Request-Id": {
-								"description": "This header identifies the call",
-								"schema": {
-									"type": "string"
-								}
-							}
-						}
-					},
-					"403": {
-						"description": "Forbidden",
-						"headers": {
-							"X-Request-Id": {
-								"description": "This header identifies the call",
-								"schema": {
-									"type": "string"
-								}
-							}
-						}
-					},
-					"429": {
-						"description": "Too many requests",
-						"headers": {
-							"X-Request-Id": {
-								"description": "This header identifies the call",
-								"schema": {
-									"type": "string"
-								}
-							}
-						}
-					},
-					"500": {
-						"description": "Service unavailable",
-						"headers": {
-							"X-Request-Id": {
-								"description": "This header identifies the call",
-								"schema": {
-									"type": "string"
-								}
-							}
-						},
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/ProblemJson"
-								}
-							}
-						}
-					}
-				},
-				"security": [
-					{
-						"ApiKey": []
-					},
-					{
-						"Authorization": []
-					}
-				]
-			},
-			"parameters": [
-				{
-					"name": "X-Request-Id",
-					"in": "header",
-					"description": "This header identifies the call, if not passed it is self-generated. This ID is returned in the response.",
-					"schema": {
-						"type": "string"
-					}
-				}
-			]
-		},
 		"/organizations/{organizationFiscalCode}": {
 			"get": {
 				"tags": [
@@ -677,7 +560,7 @@
 				"tags": [
 					"Enrollments API"
 				],
-				"summary": "The organization update an enrollment to a service for the creditor institution.",
+				"summary": "The organization updates an enrollment to a service for the creditor institution.",
 				"operationId": "updateECEnrollment",
 				"parameters": [
 					{
@@ -1265,6 +1148,116 @@
 					}
 				]
 			},
+			"post": {
+				"tags": [
+					"Services API"
+				],
+				"summary": "The user creates a service.",
+				"operationId": "createService",
+				"requestBody": {
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/ServiceDetailModel"
+							}
+						}
+					},
+					"required": true
+				},
+				"responses": {
+					"201": {
+						"description": "Request created.",
+						"headers": {
+							"X-Request-Id": {
+								"description": "This header identifies the call",
+								"schema": {
+									"type": "string"
+								}
+							}
+						},
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ServiceDetailModelResponse"
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "Malformed request.",
+						"headers": {
+							"X-Request-Id": {
+								"description": "This header identifies the call",
+								"schema": {
+									"type": "string"
+								}
+							}
+						},
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ProblemJson"
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Wrong or missing function key.",
+						"headers": {
+							"X-Request-Id": {
+								"description": "This header identifies the call",
+								"schema": {
+									"type": "string"
+								}
+							}
+						}
+					},
+					"409": {
+						"description": "The service to create already exists.",
+						"headers": {
+							"X-Request-Id": {
+								"description": "This header identifies the call",
+								"schema": {
+									"type": "string"
+								}
+							}
+						},
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ProblemJson"
+								}
+							}
+						}
+					},
+					"500": {
+						"description": "Service unavailable.",
+						"headers": {
+							"X-Request-Id": {
+								"description": "This header identifies the call",
+								"schema": {
+									"type": "string"
+								}
+							}
+						},
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ProblemJson"
+								}
+							}
+						}
+					}
+				},
+				"security": [
+					{
+						"ApiKey": []
+					},
+					{
+						"Authorization": []
+					}
+				]
+			},
 			"parameters": [
 				{
 					"name": "X-Request-Id",
@@ -1370,6 +1363,220 @@
 					}
 				]
 			},
+			"put": {
+				"tags": [
+					"Services API"
+				],
+				"summary": "The user updates a service.",
+				"operationId": "updateService",
+				"parameters": [
+					{
+						"name": "serviceId",
+						"in": "path",
+						"description": "The service id to update.",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"requestBody": {
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/ServiceDetailUpdModel"
+							}
+						}
+					},
+					"required": true
+				},
+				"responses": {
+					"200": {
+						"description": "Request updated.",
+						"headers": {
+							"X-Request-Id": {
+								"description": "This header identifies the call",
+								"schema": {
+									"type": "string"
+								}
+							}
+						},
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ServiceDetailModelResponse"
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "Malformed request.",
+						"headers": {
+							"X-Request-Id": {
+								"description": "This header identifies the call",
+								"schema": {
+									"type": "string"
+								}
+							}
+						},
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ProblemJson"
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Wrong or missing function key.",
+						"headers": {
+							"X-Request-Id": {
+								"description": "This header identifies the call",
+								"schema": {
+									"type": "string"
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "Not found.",
+						"headers": {
+							"X-Request-Id": {
+								"description": "This header identifies the call",
+								"schema": {
+									"type": "string"
+								}
+							}
+						},
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ProblemJson"
+								}
+							}
+						}
+					},
+					"500": {
+						"description": "Service unavailable.",
+						"headers": {
+							"X-Request-Id": {
+								"description": "This header identifies the call",
+								"schema": {
+									"type": "string"
+								}
+							}
+						},
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ProblemJson"
+								}
+							}
+						}
+					}
+				},
+				"security": [
+					{
+						"ApiKey": []
+					},
+					{
+						"Authorization": []
+					}
+				]
+			},
+			"delete": {
+				"tags": [
+					"Services API"
+				],
+				"summary": "The user deletes a service.",
+				"operationId": "deleteService",
+				"parameters": [
+					{
+						"name": "serviceId",
+						"in": "path",
+						"description": "The service id to delete.",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Request deleted.",
+						"headers": {
+							"X-Request-Id": {
+								"description": "This header identifies the call",
+								"schema": {
+									"type": "string"
+								}
+							}
+						},
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "string"
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Wrong or missing function key.",
+						"headers": {
+							"X-Request-Id": {
+								"description": "This header identifies the call",
+								"schema": {
+									"type": "string"
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "Not found.",
+						"headers": {
+							"X-Request-Id": {
+								"description": "This header identifies the call",
+								"schema": {
+									"type": "string"
+								}
+							}
+						},
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ProblemJson"
+								}
+							}
+						}
+					},
+					"500": {
+						"description": "Service unavailable.",
+						"headers": {
+							"X-Request-Id": {
+								"description": "This header identifies the call",
+								"schema": {
+									"type": "string"
+								}
+							}
+						},
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ProblemJson"
+								}
+							}
+						}
+					}
+				},
+				"security": [
+					{
+						"ApiKey": []
+					},
+					{
+						"Authorization": []
+					}
+				]
+			},
 			"parameters": [
 				{
 					"name": "X-Request-Id",
@@ -1384,10 +1591,50 @@
 	},
 	"components": {
 		"schemas": {
-			"OrganizationModel": {
+			"ServiceConfigPropertyModel": {
+				"required": [
+					"name"
+				],
 				"type": "object",
 				"properties": {
-					"companyName": {
+					"name": {
+						"type": "string"
+					},
+					"type": {
+						"type": "string",
+						"enum": [
+							"STRING",
+							"NUMBER"
+						]
+					},
+					"required": {
+						"type": "boolean"
+					}
+				}
+			},
+			"ServiceDetailUpdModel": {
+				"required": [
+					"description",
+					"endpoint",
+					"name",
+					"status",
+					"transferCategory"
+				],
+				"type": "object",
+				"properties": {
+					"name": {
+						"type": "string"
+					},
+					"description": {
+						"type": "string"
+					},
+					"transferCategory": {
+						"type": "string"
+					},
+					"endpoint": {
+						"type": "string"
+					},
+					"basePath": {
 						"type": "string"
 					},
 					"status": {
@@ -1396,6 +1643,62 @@
 							"ENABLED",
 							"DISABLED"
 						]
+					},
+					"properties": {
+						"type": "array",
+						"items": {
+							"$ref": "#/components/schemas/ServiceConfigPropertyModel"
+						}
+					}
+				}
+			},
+			"ServiceDetailModelResponse": {
+				"type": "object",
+				"properties": {
+					"id": {
+						"type": "string"
+					},
+					"name": {
+						"type": "string"
+					},
+					"description": {
+						"type": "string"
+					},
+					"transferCategory": {
+						"type": "string"
+					},
+					"endpoint": {
+						"type": "string"
+					},
+					"basePath": {
+						"type": "string"
+					},
+					"status": {
+						"type": "string",
+						"enum": [
+							"ENABLED",
+							"DISABLED"
+						]
+					},
+					"properties": {
+						"type": "array",
+						"items": {
+							"$ref": "#/components/schemas/ServicePropertyModelResponse"
+						}
+					}
+				}
+			},
+			"ServicePropertyModelResponse": {
+				"type": "object",
+				"properties": {
+					"name": {
+						"type": "string"
+					},
+					"type": {
+						"type": "string"
+					},
+					"required": {
+						"type": "boolean"
 					}
 				}
 			},
@@ -1418,6 +1721,21 @@
 						"type": "string",
 						"description": "A human readable explanation specific to this occurrence of the problem.",
 						"example": "There was an error processing the request"
+					}
+				}
+			},
+			"OrganizationModel": {
+				"type": "object",
+				"properties": {
+					"companyName": {
+						"type": "string"
+					},
+					"status": {
+						"type": "string",
+						"enum": [
+							"ENABLED",
+							"DISABLED"
+						]
 					}
 				}
 			},
@@ -1501,6 +1819,51 @@
 					},
 					"postalIban": {
 						"type": "string"
+					}
+				}
+			},
+			"ServiceDetailModel": {
+				"required": [
+					"basePath",
+					"description",
+					"endpoint",
+					"id",
+					"name",
+					"status",
+					"transferCategory"
+				],
+				"type": "object",
+				"properties": {
+					"id": {
+						"type": "string"
+					},
+					"name": {
+						"type": "string"
+					},
+					"description": {
+						"type": "string"
+					},
+					"transferCategory": {
+						"type": "string"
+					},
+					"endpoint": {
+						"type": "string"
+					},
+					"basePath": {
+						"type": "string"
+					},
+					"status": {
+						"type": "string",
+						"enum": [
+							"ENABLED",
+							"DISABLED"
+						]
+					},
+					"properties": {
+						"type": "array",
+						"items": {
+							"$ref": "#/components/schemas/ServiceConfigPropertyModel"
+						}
 					}
 				}
 			},
@@ -1832,76 +2195,6 @@
 						"type": "string"
 					},
 					"description": {
-						"type": "string"
-					}
-				}
-			},
-			"ServiceDetailModelResponse": {
-				"required": [
-					"id",
-					"remittanceInformation",
-					"status",
-					"transferCategory"
-				],
-				"type": "object",
-				"properties": {
-					"id": {
-						"type": "string"
-					},
-					"name": {
-						"type": "string"
-					},
-					"description": {
-						"type": "string"
-					},
-					"transferCategory": {
-						"type": "string"
-					},
-					"remittanceInformation": {
-						"type": "string"
-					},
-					"status": {
-						"type": "string",
-						"enum": [
-							"ENABLED",
-							"DISABLED"
-						]
-					},
-					"properties": {
-						"type": "array",
-						"items": {
-							"$ref": "#/components/schemas/ServicePropertyModelResponse"
-						}
-					}
-				}
-			},
-			"ServicePropertyModelResponse": {
-				"required": [
-					"name"
-				],
-				"type": "object",
-				"properties": {
-					"name": {
-						"type": "string"
-					},
-					"type": {
-						"type": "string"
-					},
-					"required": {
-						"type": "boolean"
-					}
-				}
-			},
-			"AppInfo": {
-				"type": "object",
-				"properties": {
-					"name": {
-						"type": "string"
-					},
-					"version": {
-						"type": "string"
-					},
-					"environment": {
 						"type": "string"
 					}
 				}

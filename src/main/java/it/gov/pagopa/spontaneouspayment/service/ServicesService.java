@@ -41,4 +41,23 @@ public class ServicesService {
         }
         return serviceRepository.save(serviceEntity);
     }
+    
+    public it.gov.pagopa.spontaneouspayment.entity.Service updateService(it.gov.pagopa.spontaneouspayment.entity.Service serviceEntity) {
+    	this.checkServiceExistence(serviceEntity.getId());
+        return serviceRepository.save(serviceEntity);
+    }
+    
+    public void deleteService(String serviceId) {
+    	it.gov.pagopa.spontaneouspayment.entity.Service s = this.checkServiceExistence(serviceId);
+        serviceRepository.delete(s);
+    }
+    
+    private it.gov.pagopa.spontaneouspayment.entity.Service checkServiceExistence(String serviceId) {
+        return serviceRepository.findById(serviceId)
+                .orElseThrow(() -> new AppException(AppError.SERVICE_NOT_FOUND, serviceId));
+    }
+    
+    
+    
+    
 }
