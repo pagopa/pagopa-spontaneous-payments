@@ -89,6 +89,13 @@ class PaymentsServiceTest {
 			DockerImageName.parse("mcr.microsoft.com/cosmosdb/linux/azure-cosmos-emulator:latest"));
 
 	private static PaymentsService paymentsService;
+	
+	private Organization ci;
+	
+	private Service s1;
+	private Service s2;
+	private Service s3;
+	private Service s4;
 
 	@BeforeAll
 	public void setUp() throws IOException, KeyStoreException, NoSuchAlgorithmException, CertificateException {
@@ -120,49 +127,53 @@ class PaymentsServiceTest {
 		assertEquals(201, containerResponse.getStatusCode());
 
 		// loading the database with test data
-		Organization ci = new Organization();
+		ci = new Organization();
 		ci.setFiscalCode("organizationTest");
 		ci.setCompanyName("Comune di Roma");
 		ci.setStatus(Status.ENABLED);
 
-		Service s1 = new Service();
+		s1 = new Service();
 		s1.setId("id-servizio-1");
 		s1.setTransferCategory("tassonomia-1");
 		s1.setBasePath("base-path-1");
 		s1.setEndpoint("endpont-1");
+		s1.setStatus(Status.ENABLED);
 
 		ServiceProperty sp1 = new ServiceProperty("propName1", PropertyType.STRING, true);
 		List<ServiceProperty> properties1 = new ArrayList<>();
 		properties1.add(sp1);
 		s1.setProperties(properties1);
 
-		Service s2 = new Service();
+		s2 = new Service();
 		s2.setId("id-servizio-2");
 		s2.setTransferCategory("tassonomia-2");
 		s2.setBasePath("base-path-2");
 		s2.setEndpoint("endpont-2");
+		s2.setStatus(Status.ENABLED);
 
 		ServiceProperty sp2 = new ServiceProperty("propName2", PropertyType.NUMBER, true);
 		List<ServiceProperty> properties2 = new ArrayList<>();
 		properties2.add(sp2);
 		s2.setProperties(properties2);
 
-		Service s3 = new Service();
+		s3 = new Service();
 		s3.setId("id-servizio-3");
 		s3.setTransferCategory("tassonomia-3");
 		s3.setBasePath("base-path-3");
 		s3.setEndpoint("endpont-3");
+		s3.setStatus(Status.ENABLED);
 
 		ServiceProperty sp3 = new ServiceProperty("propName3", PropertyType.STRING, true);
 		List<ServiceProperty> properties3 = new ArrayList<>();
 		properties3.add(sp3);
 		s3.setProperties(properties3);
 
-		Service s4 = new Service();
+		s4 = new Service();
 		s4.setId("id-servizio-4");
 		s4.setTransferCategory("tassonomia-4");
 		s4.setBasePath("base-path-4");
 		s4.setEndpoint("endpont-4");
+		s4.setStatus(Status.ENABLED);
 
 		ServiceProperty sp4 = new ServiceProperty("propName4", PropertyType.STRING, true);
 		List<ServiceProperty> properties4 = new ArrayList<>();
@@ -185,9 +196,7 @@ class PaymentsServiceTest {
 
 		ci.setEnrollments(servicesRef);
 
-		ciRepository.deleteAll();
 		ciRepository.save(ci);
-		serviceRepository.deleteAll();
 		serviceRepository.save(s1);
 		serviceRepository.save(s2);
 		serviceRepository.save(s3);
@@ -196,6 +205,13 @@ class PaymentsServiceTest {
 
 	@AfterAll
 	void teardown() {
+		ciRepository.delete(ci);
+		
+		serviceRepository.delete(s1);
+		serviceRepository.delete(s2);
+		serviceRepository.delete(s3);
+		serviceRepository.delete(s4);
+		
 		CosmosAsyncClient client = new CosmosClientBuilder().gatewayMode().endpointDiscoveryEnabled(false)
 				.endpoint(emulator.getEmulatorEndpoint()).key(emulator.getEmulatorKey()).buildAsyncClient();
 		client.getDatabase("db").delete();

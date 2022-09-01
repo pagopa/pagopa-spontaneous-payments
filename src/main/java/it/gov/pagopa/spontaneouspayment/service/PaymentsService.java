@@ -35,6 +35,7 @@ import it.gov.pagopa.spontaneouspayment.repository.ServiceRepository;
 import it.gov.pagopa.spontaneouspayment.service.client.ExternalServiceClient;
 import it.gov.pagopa.spontaneouspayment.service.client.GpdClient;
 import it.gov.pagopa.spontaneouspayment.service.client.IuvGeneratorClient;
+import it.gov.pagopa.spontaneouspayment.model.enumeration.Status;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
@@ -70,6 +71,9 @@ public class PaymentsService {
     public PaymentPositionModel createSpontaneousPayment(@NotBlank String organizationFiscalCode, @Valid SpontaneousPaymentModel spontaneousPayment) {
         // check if credit institution exists
         var orgConfiguration = getCreditorInstitution(organizationFiscalCode);
+        
+        // check if the credit institution's status is suitable for the creation of the debt position
+        checkOrganizationStatus(orgConfiguration);
 
         // check if service exists
         var serviceConfiguration = getServiceDetails(spontaneousPayment.getService());
@@ -77,10 +81,22 @@ public class PaymentsService {
         // check if the relationship between organization and enrollment to service exists
         checkServiceOrganization(organizationFiscalCode, serviceConfiguration);
 
-        // checks if the request contains the properties required by the configured service
-        checkServiceProperties(spontaneousPayment, serviceConfiguration);
+        // checks if the service is in suitable state and the request contains the properties required by the configured service
+        checkServiceConfiguration(spontaneousPayment, serviceConfiguration);
 
         return createDebtPosition(organizationFiscalCode, orgConfiguration, serviceConfiguration, spontaneousPayment);
+    }
+    
+    /**
+     * check if the credit institution's status is ENABLED
+     *
+     * @param orgConfiguration   the Organization entity to check
+     * @throws AppException if the status is not suitable for the creation of the debt position
+     */
+    private void checkOrganizationStatus(Organization orgConfiguration) {
+    	if (orgConfiguration.getStatus().equals(Status.DISABLED)){
+    		throw new AppException(AppError.ORGANIZATION_NOT_ENABLED, orgConfiguration.getFiscalCode(), orgConfiguration.getStatus());
+    	}
     }
 
 
@@ -91,7 +107,12 @@ public class PaymentsService {
      * @param serviceConfiguration the serviceConfiguration in the DB
      * @throws AppException if a service configuration is not present in the DB
      */
-    private void checkServiceProperties(SpontaneousPaymentModel spontaneousPayment, it.gov.pagopa.spontaneouspayment.entity.Service serviceConfiguration) {
+    private void checkServiceConfiguration(SpontaneousPaymentModel spontaneousPayment, it.gov.pagopa.spontaneouspayment.entity.Service serviceConfiguration) {
+    	
+    	if (serviceConfiguration.getStatus().equals(Status.DISABLED)) {
+    		throw new AppException(AppError.SERVICE_NOT_ENABLED, serviceConfiguration.getId(), serviceConfiguration.getStatus());
+    	}
+    	
         for (ServiceProperty confProp : serviceConfiguration.getProperties()) {
             if (confProp.isRequired()) {
                 Predicate<ServicePropertyModel> checkName = o -> o.getName().equals(confProp.getName());

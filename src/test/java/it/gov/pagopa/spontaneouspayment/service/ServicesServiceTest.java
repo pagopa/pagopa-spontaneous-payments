@@ -63,6 +63,14 @@ class ServicesServiceTest {
 			DockerImageName.parse("mcr.microsoft.com/cosmosdb/linux/azure-cosmos-emulator:latest"));
 
 	private static ServicesService servicesService;
+	
+    private Organization ci;
+	
+	private Service s1;
+	private Service s2;
+	private Service s3;
+	private Service s4;
+	private Service s5;
 
 	@BeforeAll
 	public void setUp() throws IOException, KeyStoreException, NoSuchAlgorithmException, CertificateException {
@@ -92,33 +100,33 @@ class ServicesServiceTest {
 		assertEquals(201, containerResponse.getStatusCode());
 
 		// loading the database with test data
-		Organization ci = new Organization();
+		ci = new Organization();
 		ci.setFiscalCode("organizationTest");
 		ci.setCompanyName("Comune di Roma");
 		ci.setStatus(Status.ENABLED);
 
-		Service s1 = TestUtil.getMockServiceById("id-servizio-1");
+		s1 = TestUtil.getMockServiceById("id-servizio-1");
 
 		ServiceProperty sp1 = new ServiceProperty("propName1", PropertyType.STRING, true);
 		List<ServiceProperty> properties1 = new ArrayList<>();
 		properties1.add(sp1);
 		s1.setProperties(properties1);
 
-		Service s2 = TestUtil.getMockServiceById("id-servizio-2");
+		s2 = TestUtil.getMockServiceById("id-servizio-2");
 
 		ServiceProperty sp2 = new ServiceProperty("propName2", PropertyType.STRING, true);
 		List<ServiceProperty> properties2 = new ArrayList<>();
 		properties2.add(sp2);
 		s2.setProperties(properties2);
 		
-		Service s3 = TestUtil.getMockServiceById("id-servizio-3");
+		s3 = TestUtil.getMockServiceById("id-servizio-3");
 
 		ServiceProperty sp3 = new ServiceProperty("propName3", PropertyType.STRING, true);
 		List<ServiceProperty> properties3 = new ArrayList<>();
 		properties3.add(sp3);
 		s3.setProperties(properties3);
 		
-		Service s4 = TestUtil.getMockServiceById("id-servizio-4");
+		s4 = TestUtil.getMockServiceById("id-servizio-4");
 
 		ServiceProperty sp4 = new ServiceProperty("propName4", PropertyType.STRING, true);
 		List<ServiceProperty> properties4 = new ArrayList<>();
@@ -139,9 +147,9 @@ class ServicesServiceTest {
 
 		ci.setEnrollments(servicesRef);
 
-		ciRepository.deleteAll();
+		
 		ciRepository.save(ci);
-		serviceRepository.deleteAll();
+		
 		serviceRepository.save(s1);
 		serviceRepository.save(s2);
 		serviceRepository.save(s3);
@@ -150,6 +158,13 @@ class ServicesServiceTest {
 	
 	@AfterAll
 	void teardown() {
+        ciRepository.delete(ci);
+		
+		serviceRepository.delete(s2);
+		serviceRepository.delete(s3);
+		serviceRepository.delete(s4);
+		serviceRepository.delete(s5);
+		
 		CosmosAsyncClient client = new CosmosClientBuilder().gatewayMode().endpointDiscoveryEnabled(false)
 				.endpoint(emulator.getEmulatorEndpoint()).key(emulator.getEmulatorKey()).buildAsyncClient();
 		client.getDatabase("db").delete();
@@ -197,7 +212,7 @@ class ServicesServiceTest {
 	void createService() {
 		assertTrue(emulator.isRunning());
 		ServiceProperty sp5 = new ServiceProperty("propName5", PropertyType.STRING, true);
-		Service s5 = TestUtil.getMockServiceById("id-servizio-5");
+		s5 = TestUtil.getMockServiceById("id-servizio-5");
 		s5.setProperties(List.of(sp5));
 		Service s = servicesService.createService(s5);
 		assertEquals("id-servizio-5", s.getId());
