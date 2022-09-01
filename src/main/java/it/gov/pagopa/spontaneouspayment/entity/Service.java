@@ -42,7 +42,8 @@ public class Service {
     @NotBlank
     private String basePath;
     
-    private Status status;
+    @Builder.Default
+    private Status status = Status.ENABLED;
 
     @CreatedDate
     private LocalDateTime insertedDate;
