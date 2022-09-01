@@ -33,10 +33,10 @@ To run a single _feature_ or single _Scenario_ typing
 
 Ex. single _features_ `organizations.feature`
 ```sh
-npx cucumber-js -r step_definitions features/organizations.feature:46
+npx cucumber-js -r step_definitions features/organizations.feature
 ```
 
-Ex. single _Scenario_ `organizations.feature` ( add source line )
+Ex. single _Scenario_ into `organizations.feature` ( add source line )
 ```sh
 npx cucumber-js -r step_definitions features/organizations.feature:46
 ```
