@@ -201,6 +201,7 @@ class EnrollmentsServiceTest {
 		ref5.setRemittanceInformation("causale-5");
 		List<ServiceRef> servicesRef5 = new ArrayList<>();
 		servicesRef5.add(ref5);
+		servicesRef5.add(ref2);
 		
 		ci3.setEnrollments(servicesRef5);
 
@@ -246,6 +247,7 @@ class EnrollmentsServiceTest {
 		Organization org = enrollmentsService.getECEnrollments("organizationTest");
 		assertEquals("organizationTest", org.getFiscalCode());
 		assertEquals("Comune di Roma", org.getCompanyName());
+		assertEquals(Status.ENABLED, org.getStatus());
 	}
 	
 	@Test
@@ -263,17 +265,13 @@ class EnrollmentsServiceTest {
 	}
 	
 	@Test
-	void getECEnrollments_422() {
+	void getECEnrollments_disabledOrg_OK() {
 		assertTrue(emulator.isRunning());
-		try {
-			// disabled organization -> must raise a 422 exception
-			enrollmentsService.getECEnrollments("organizationTest3");
-			fail();
-		} catch (AppException e) {
-			assertEquals(HttpStatus.UNPROCESSABLE_ENTITY, e.getHttpStatus());
-		} catch (Exception e) {
-			fail();
-		}
+		Organization org = enrollmentsService.getECEnrollments("organizationTest3");
+		assertEquals("organizationTest3", org.getFiscalCode());
+		assertEquals("Comune di Napoli", org.getCompanyName());
+		assertEquals(Status.DISABLED, org.getStatus());
+		assertTrue(emulator.isRunning());
 	}
 
 	@Test
@@ -310,17 +308,12 @@ class EnrollmentsServiceTest {
 	}
 	
 	@Test
-	void getSingleEnrollment_422() {
+	void getSingleEnrollment_disabledOrg_OK() {
 		assertTrue(emulator.isRunning());
-		try {
-			//  disabled organization -> must raise a 422 exception
-			enrollmentsService.getSingleEnrollment("organizationTest3", "id-servizio-5");
-			fail();
-		} catch (AppException e) {
-			assertEquals(HttpStatus.UNPROCESSABLE_ENTITY, e.getHttpStatus());
-		} catch (Exception e) {
-			fail();
-		}
+
+		// disabled organization -> the operation is allowed
+		ServiceRef enrollment = enrollmentsService.getSingleEnrollment("organizationTest3", "id-servizio-2");
+		assertEquals("id-servizio-2", enrollment.getServiceId());
 	}
 
 	@Test
@@ -490,18 +483,15 @@ class EnrollmentsServiceTest {
 		EnrollmentModel enrollment = 
 				EnrollmentModel.builder().iban("iban-3").officeName("Ufficio Tributario").build();
 		
-		try {
-			// enrollment to disabled organization -> must raise a 422 exception
-			enrollmentsService.createECEnrollment("organizationTest3", "id-servizio-1", enrollment);
-			fail();
-		} catch (AppException e) {
-			assertEquals(HttpStatus.UNPROCESSABLE_ENTITY, e.getHttpStatus());
-		} catch (Exception e) {
-			fail();
-		}
+		// enrollment to a disabled organization -> the operation is allowed
+		Organization org = enrollmentsService.createECEnrollment("organizationTest3", "id-servizio-1", enrollment);
+		assertEquals("organizationTest3", org.getFiscalCode());
+		assertEquals("Comune di Napoli", org.getCompanyName());
+		// added an enrollment -> the size became 3
+		assertEquals(3, org.getEnrollments().size());
 		
 		try {
-			// enrollment to disabled service -> must raise a 422 exception
+			// enrollment to a disabled service -> must raise a 422 exception
 			enrollmentsService.createECEnrollment("organizationTest", "id-servizio-5", enrollment);
 			fail();
 		} catch (AppException e) {
@@ -553,19 +543,19 @@ class EnrollmentsServiceTest {
 	}
 	
 	@Test
-	void updateECEnrollment_422() {
+	void updateECEnrollment_disabledOrg_OK() {
 		assertTrue(emulator.isRunning());
-		EnrollmentModel enrollment = 
-				EnrollmentModel.builder().iban("iban-updated-2").officeName("Ufficio Tributario Updated").build();
-		try {
-			// disabled organization -> must raise a 422 exception
-			enrollmentsService.updateECEnrollment("organizationTest3", "id-servizio-2", enrollment);
-			fail();
-		} catch (AppException e) {
-			assertEquals(HttpStatus.UNPROCESSABLE_ENTITY, e.getHttpStatus());
-		} catch (Exception e) {
-			fail();
-		}
+		EnrollmentModel enrollment = EnrollmentModel.builder().iban("iban-updated-2")
+				.officeName("Ufficio Tributario Updated").build();
+
+		// disabled organization -> the operation is allowed
+		Organization org = enrollmentsService.updateECEnrollment("organizationTest3", "id-servizio-2", enrollment);
+		assertEquals("organizationTest3", org.getFiscalCode());
+		assertEquals("Comune di Napoli", org.getCompanyName());
+		ServiceRef updatedEnrollment = org.getEnrollments().stream()
+				.filter(s -> s.getServiceId().equals("id-servizio-2")).findFirst().get();
+		assertEquals("iban-updated-2", updatedEnrollment.getIban());
+		assertEquals("Ufficio Tributario Updated", updatedEnrollment.getOfficeName());
 	}
 	
 	@Test 
@@ -638,17 +628,13 @@ class EnrollmentsServiceTest {
 	}
 	
 	@Test
-	void deleteECEnrollment_422() {
+	void deleteECEnrollment_disabledOrg_OK() {
 		assertTrue(emulator.isRunning());
-		try {
-			// disabled organization -> must raise a 422 exception
-			enrollmentsService.deleteECEnrollment("organizationTest3", "id-servizio-5");
-			fail();
-		} catch (AppException e) {
-			assertEquals(HttpStatus.UNPROCESSABLE_ENTITY, e.getHttpStatus());
-		} catch (Exception e) {
-			fail();
-		}
+		// disabled organization -> the operation is allowed
+		enrollmentsService.deleteECEnrollment("organizationTest3", "id-servizio-5");
+		// This line means the call was successful
+	    assertTrue(true);
+		
 	}
 	
 	@Test 

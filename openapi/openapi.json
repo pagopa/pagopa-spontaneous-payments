@@ -438,6 +438,24 @@
 							}
 						}
 					},
+					"422": {
+						"description": "Unprocessable request.",
+						"headers": {
+							"X-Request-Id": {
+								"description": "This header identifies the call",
+								"schema": {
+									"type": "string"
+								}
+							}
+						},
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ProblemJson"
+								}
+							}
+						}
+					},
 					"500": {
 						"description": "Service unavailable.",
 						"headers": {
@@ -923,6 +941,24 @@
 							}
 						}
 					},
+					"422": {
+						"description": "Unprocessable request.",
+						"headers": {
+							"X-Request-Id": {
+								"description": "This header identifies the call",
+								"schema": {
+									"type": "string"
+								}
+							}
+						},
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ProblemJson"
+								}
+							}
+						}
+					},
 					"500": {
 						"description": "Service unavailable.",
 						"headers": {
@@ -1142,6 +1178,24 @@
 					},
 					"409": {
 						"description": "Conflict: duplicate debt position found.",
+						"headers": {
+							"X-Request-Id": {
+								"description": "This header identifies the call",
+								"schema": {
+									"type": "string"
+								}
+							}
+						},
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ProblemJson"
+								}
+							}
+						}
+					},
+					"422": {
+						"description": "Unprocessable request.",
 						"headers": {
 							"X-Request-Id": {
 								"description": "This header identifies the call",
