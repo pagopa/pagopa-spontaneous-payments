@@ -105,7 +105,7 @@ public class PaymentsService {
      *
      * @param spontaneousPayment   the spontaneousPayment to check
      * @param serviceConfiguration the serviceConfiguration in the DB
-     * @throws AppException if a service configuration is not present in the DB
+     * @throws AppException if there is no service configuration in the DB or the service is disabled 
      */
     private void checkServiceConfiguration(SpontaneousPaymentModel spontaneousPayment, it.gov.pagopa.spontaneouspayment.entity.Service serviceConfiguration) {
     	

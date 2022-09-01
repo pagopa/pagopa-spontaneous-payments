@@ -61,8 +61,6 @@ public class EnrollmentsService {
     	
     	// check if the organization fiscal code exists
         Organization orgEntity = this.checkOrganizationFiscalCode(organizationFiscalCode);
-        // check the organization status
-        if (orgEntity.getStatus().equals(Status.DISABLED)) {throw new AppException(AppError.ORGANIZATION_NOT_ENABLED, orgEntity.getFiscalCode(), orgEntity.getStatus());}
     	
         Iterable<it.gov.pagopa.spontaneouspayment.entity.Service> allServices = serviceRepository.findAll();
 
@@ -103,8 +101,6 @@ public class EnrollmentsService {
 
         // check if the organization fiscal code exists
         Organization orgEntity = this.checkOrganizationFiscalCode(organizationFiscalCode);
-        // check the organization status
-        if (orgEntity.getStatus().equals(Status.DISABLED)) {throw new AppException(AppError.ORGANIZATION_NOT_ENABLED, orgEntity.getFiscalCode(), orgEntity.getStatus());}
 
         // check if the enroll to service exist for the organization fiscal code
         ServiceRef enrollToUpdate = orgEntity.getEnrollments().stream().filter(s -> s.getServiceId().equals(serviceId)).findFirst()
@@ -133,7 +129,7 @@ public class EnrollmentsService {
 
         // check if the organization fiscal code exists
         Organization orgEntity = this.checkOrganizationFiscalCode(organizationFiscalCode);
-     
+
         // update EC info
         orgEntity.setCompanyName(organizationModel.getCompanyName());
         orgEntity.setStatus(organizationModel.getStatus());
@@ -147,8 +143,6 @@ public class EnrollmentsService {
                                    String serviceId) {
         // check if the organization fiscal code exists
         Organization orgEntity = this.checkOrganizationFiscalCode(organizationFiscalCode);
-        // check the organization status
-        if (orgEntity.getStatus().equals(Status.DISABLED)) {throw new AppException(AppError.ORGANIZATION_NOT_ENABLED, orgEntity.getFiscalCode(), orgEntity.getStatus());}
 
         // check if the enroll to service exist for the organization fiscal code
         ServiceRef enrollToRemove = orgEntity.getEnrollments().stream().filter(s -> s.getServiceId().equals(serviceId)).findFirst()
@@ -163,6 +157,7 @@ public class EnrollmentsService {
     public void deleteEC(String organizationFiscalCode) {
         // check if the organization fiscal code exists
         Organization orgEntity = this.checkOrganizationFiscalCode(organizationFiscalCode);
+
         orgRepository.delete(orgEntity);
     }
 
@@ -171,8 +166,6 @@ public class EnrollmentsService {
                                           String serviceId) {
         // check if the organization fiscal code exists
         Organization orgEntity = this.checkOrganizationFiscalCode(organizationFiscalCode);
-        // check the organization status
-        if (orgEntity.getStatus().equals(Status.DISABLED)) {throw new AppException(AppError.ORGANIZATION_NOT_ENABLED, orgEntity.getFiscalCode(), orgEntity.getStatus());}
 
         // if the enroll to service exists is returned
         return orgEntity.getEnrollments().stream().filter(s -> s.getServiceId().equals(serviceId)).findFirst()
@@ -181,11 +174,8 @@ public class EnrollmentsService {
     }
 
     public Organization getECEnrollments(String organizationFiscalCode) {
-    	// check if the organization fiscal code exists
-        Organization orgEntity = this.checkOrganizationFiscalCode(organizationFiscalCode);
-        // check the organization status
-        if (orgEntity.getStatus().equals(Status.DISABLED)) {throw new AppException(AppError.ORGANIZATION_NOT_ENABLED, orgEntity.getFiscalCode(), orgEntity.getStatus());}
-        return orgEntity;
+        return orgRepository.findByFiscalCode(organizationFiscalCode)
+                .orElseThrow(() -> new AppException(AppError.ORGANIZATION_NOT_FOUND, organizationFiscalCode));
     }
 
 
