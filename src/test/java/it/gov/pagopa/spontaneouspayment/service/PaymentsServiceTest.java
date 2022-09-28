@@ -1,15 +1,47 @@
 package it.gov.pagopa.spontaneouspayment.service;
 
+import static it.gov.pagopa.spontaneouspayment.config.TestUtil.getMockPaymentOptionModel;
+import static it.gov.pagopa.spontaneouspayment.config.TestUtil.readModelFromFile;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.when;
+
+import java.io.IOException;
+import java.net.URI;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.cert.CertificateException;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
+import org.mockito.Mock;
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpStatus;
+import org.springframework.test.context.ContextConfiguration;
+import org.testcontainers.containers.CosmosDBEmulatorContainer;
+
 import com.azure.cosmos.CosmosAsyncClient;
 import com.azure.cosmos.CosmosClientBuilder;
 import com.azure.cosmos.models.CosmosContainerResponse;
 import com.azure.cosmos.models.CosmosDatabaseResponse;
+
 import it.gov.pagopa.spontaneouspayment.config.TestUtil;
 import it.gov.pagopa.spontaneouspayment.entity.Organization;
 import it.gov.pagopa.spontaneouspayment.entity.Service;
 import it.gov.pagopa.spontaneouspayment.entity.ServiceProperty;
 import it.gov.pagopa.spontaneouspayment.entity.ServiceRef;
 import it.gov.pagopa.spontaneouspayment.exception.AppException;
+import it.gov.pagopa.spontaneouspayment.initializer.Initializer;
 import it.gov.pagopa.spontaneouspayment.model.IuvGenerationModel;
 import it.gov.pagopa.spontaneouspayment.model.SpontaneousPaymentModel;
 import it.gov.pagopa.spontaneouspayment.model.enumeration.PropertyType;
@@ -23,54 +55,19 @@ import it.gov.pagopa.spontaneouspayment.repository.ServiceRepository;
 import it.gov.pagopa.spontaneouspayment.service.client.ExternalServiceClient;
 import it.gov.pagopa.spontaneouspayment.service.client.GpdClient;
 import it.gov.pagopa.spontaneouspayment.service.client.IuvGeneratorClient;
-import org.junit.Rule;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
-import org.junit.rules.TemporaryFolder;
-import org.mockito.Mock;
-import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.HttpStatus;
-import org.testcontainers.containers.CosmosDBEmulatorContainer;
-import org.testcontainers.junit.jupiter.Container;
-import org.testcontainers.junit.jupiter.Testcontainers;
-import org.testcontainers.utility.DockerImageName;
-
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.net.URI;
-import java.nio.file.Path;
-import java.security.KeyStore;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
-import java.security.cert.CertificateException;
-import java.util.ArrayList;
-import java.util.List;
-
-import static it.gov.pagopa.spontaneouspayment.config.TestUtil.getMockPaymentOptionModel;
-import static it.gov.pagopa.spontaneouspayment.config.TestUtil.readModelFromFile;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.when;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @SpringBootTest
-@Testcontainers
+@ContextConfiguration(initializers = {Initializer.class})
 class PaymentsServiceTest {
-
-	@Rule
-	public TemporaryFolder tempFolder = new TemporaryFolder();
 
 	@Autowired
 	private OrganizationRepository ciRepository;
 
 	@Autowired
 	private ServiceRepository serviceRepository;
+	
+    private static final CosmosDBEmulatorContainer emulator = Initializer.getEmulator();
 	
 	@Autowired
     private ModelMapper modelMapper;
@@ -83,10 +80,6 @@ class PaymentsServiceTest {
 	
 	@Mock
 	private ExternalServiceClient extServiceClient;
-
-	@Container
-	private static final CosmosDBEmulatorContainer emulator = new CosmosDBEmulatorContainer(
-			DockerImageName.parse("mcr.microsoft.com/cosmosdb/linux/azure-cosmos-emulator:latest"));
 
 	private static PaymentsService paymentsService;
 	
@@ -103,28 +96,19 @@ class PaymentsServiceTest {
 		paymentsService = 
 				spy(new PaymentsService(ciRepository, serviceRepository, gpdClient, iuvGeneratorClient, extServiceClient, modelMapper, 3L, "IUVTEST_"));
 
-		tempFolder.create();
-		Path keyStoreFile = tempFolder.newFile("azure-cosmos-emulator.keystore").toPath();
-		KeyStore keyStore = emulator.buildNewKeyStore();
-		keyStore.store(new FileOutputStream(keyStoreFile.toFile()), emulator.getEmulatorKey().toCharArray());
-
-		System.setProperty("javax.net.ssl.trustStore", keyStoreFile.toString());
-		System.setProperty("javax.net.ssl.trustStorePassword", emulator.getEmulatorKey());
-		System.setProperty("javax.net.ssl.trustStoreType", "PKCS12");
-
 		CosmosAsyncClient client = new CosmosClientBuilder().gatewayMode().endpointDiscoveryEnabled(false)
 				.endpoint(emulator.getEmulatorEndpoint()).key(emulator.getEmulatorKey()).buildAsyncClient();
 
 		// creation of the database and containers
 		CosmosDatabaseResponse databaseResponse = client.createDatabaseIfNotExists("db").block();
 
-		assertEquals(201, databaseResponse.getStatusCode());
+		assertTrue(201 == databaseResponse.getStatusCode() || 200 == databaseResponse.getStatusCode());
 		CosmosContainerResponse containerResponse = client.getDatabase("db")
 				.createContainerIfNotExists("creditor_institutions", "/fiscalCode").block();
-		assertEquals(201, containerResponse.getStatusCode());
+		assertTrue(201 == containerResponse.getStatusCode() || 200 == containerResponse.getStatusCode());
 		containerResponse = client.getDatabase("db").createContainerIfNotExists("services", "/transferCategory")
 				.block();
-		assertEquals(201, containerResponse.getStatusCode());
+		assertTrue(201 == containerResponse.getStatusCode() || 200 == containerResponse.getStatusCode());
 
 		// loading the database with test data
 		ci = new Organization();
@@ -212,15 +196,26 @@ class PaymentsServiceTest {
 		serviceRepository.delete(s3);
 		serviceRepository.delete(s4);
 		
+		/*
 		CosmosAsyncClient client = new CosmosClientBuilder().gatewayMode().endpointDiscoveryEnabled(false)
 				.endpoint(emulator.getEmulatorEndpoint()).key(emulator.getEmulatorKey()).buildAsyncClient();
 		client.getDatabase("db").delete();
-		client.close();
-		emulator.stop();
-		emulator.close();
-		System.clearProperty("javax.net.ssl.trustStore");
-		System.clearProperty("javax.net.ssl.trustStorePassword");
-		System.clearProperty("javax.net.ssl.trustStoreType");
+		//client.close();
+		
+		//System.clearProperty("javax.net.ssl.trustStore");
+		//System.clearProperty("javax.net.ssl.trustStorePassword");
+		//System.clearProperty("javax.net.ssl.trustStoreType");
+		
+		/*
+		// TCP proxy workaround for Cosmos DB Emulator bug, see: https://github.com/testcontainers/testcontainers-java/issues/5518
+		for (TcpProxy proxy: startedProxies) {
+			proxy.shutdown();
+		}
+		
+		if (emulator.isRunning()) {
+			emulator.stop();
+			emulator.close();
+		}*/
 	}
 
 	@Test

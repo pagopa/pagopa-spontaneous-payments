@@ -16,17 +16,20 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 
 import it.gov.pagopa.spontaneouspayment.config.TestUtil;
+import it.gov.pagopa.spontaneouspayment.initializer.Initializer;
 import it.gov.pagopa.spontaneouspayment.model.SpontaneousPaymentModel;
 import it.gov.pagopa.spontaneouspayment.service.PaymentsService;
 
 @SpringBootTest
 @AutoConfigureMockMvc
+@ContextConfiguration(initializers = {Initializer.class})
 class PaymentsControllerTest {
 	
 	@Autowired
@@ -34,11 +37,13 @@ class PaymentsControllerTest {
 	
 	@MockBean
     private PaymentsService paymentsService;
+	
 
 	@BeforeEach
     void setUp() {
 		when(paymentsService.createSpontaneousPayment(anyString(), any(SpontaneousPaymentModel.class))).thenReturn(TestUtil.getPaymentPositionModel());
 	}
+	
 	
 	@Test
 	void createSpontaneousPayment() throws JsonProcessingException, Exception {

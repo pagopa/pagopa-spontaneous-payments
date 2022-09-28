@@ -20,19 +20,22 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
 import it.gov.pagopa.spontaneouspayment.config.TestUtil;
 import it.gov.pagopa.spontaneouspayment.entity.Organization;
+import it.gov.pagopa.spontaneouspayment.initializer.Initializer;
 import it.gov.pagopa.spontaneouspayment.model.EnrollmentModel;
 import it.gov.pagopa.spontaneouspayment.model.OrganizationModel;
 import it.gov.pagopa.spontaneouspayment.service.EnrollmentsService;
 
 @SpringBootTest
 @AutoConfigureMockMvc
+@ContextConfiguration(initializers = {Initializer.class})
 class EnrollmentsControllerTest {
-	
+		
 	@Autowired
     private MockMvc mvc;
 	
@@ -48,7 +51,7 @@ class EnrollmentsControllerTest {
         when(enrollmentsService.updateECEnrollment(anyString(), anyString(), any(EnrollmentModel.class))).thenReturn(TestUtil.getMockOrganization());
         when(enrollmentsService.updateEC(anyString(), any(OrganizationModel.class))).thenReturn(TestUtil.getMockOrganization());
     }
-	
+
 	@Test
     void getECEnrollments() throws Exception {
         String url = "/organizations/mockOrganization1";
