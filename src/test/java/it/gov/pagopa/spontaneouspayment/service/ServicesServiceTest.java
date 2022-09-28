@@ -1,5 +1,28 @@
 package it.gov.pagopa.spontaneouspayment.service;
 
+import static org.junit.Assert.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
+import static org.mockito.Mockito.spy;
+
+import java.io.IOException;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.cert.CertificateException;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpStatus;
+import org.springframework.test.context.ContextConfiguration;
+import org.testcontainers.containers.CosmosDBEmulatorContainer;
+
 import com.azure.cosmos.CosmosAsyncClient;
 import com.azure.cosmos.CosmosClientBuilder;
 import com.azure.cosmos.models.CosmosContainerResponse;
@@ -11,56 +34,24 @@ import it.gov.pagopa.spontaneouspayment.entity.Service;
 import it.gov.pagopa.spontaneouspayment.entity.ServiceProperty;
 import it.gov.pagopa.spontaneouspayment.entity.ServiceRef;
 import it.gov.pagopa.spontaneouspayment.exception.AppException;
+import it.gov.pagopa.spontaneouspayment.initializer.Initializer;
 import it.gov.pagopa.spontaneouspayment.model.enumeration.PropertyType;
 import it.gov.pagopa.spontaneouspayment.model.enumeration.Status;
 import it.gov.pagopa.spontaneouspayment.repository.OrganizationRepository;
 import it.gov.pagopa.spontaneouspayment.repository.ServiceRepository;
-import org.junit.Rule;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
-import org.junit.rules.TemporaryFolder;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.HttpStatus;
-import org.testcontainers.containers.CosmosDBEmulatorContainer;
-import org.testcontainers.junit.jupiter.Container;
-import org.testcontainers.junit.jupiter.Testcontainers;
-import org.testcontainers.utility.DockerImageName;
-
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.nio.file.Path;
-import java.security.KeyStore;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
-import java.security.cert.CertificateException;
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.junit.Assert.assertThrows;
-import static org.junit.Assert.assertTrue;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.spy;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @SpringBootTest
-@Testcontainers
+@ContextConfiguration(initializers = {Initializer.class})
 class ServicesServiceTest {
-
-	@Rule
-	public TemporaryFolder tempFolder = new TemporaryFolder();
-
+	
 	@Autowired
 	private OrganizationRepository ciRepository;
 
 	@Autowired
 	private ServiceRepository serviceRepository;
 
-	@Container
-	private static final CosmosDBEmulatorContainer emulator = new CosmosDBEmulatorContainer(
-			DockerImageName.parse("mcr.microsoft.com/cosmosdb/linux/azure-cosmos-emulator:latest"));
+	private static final CosmosDBEmulatorContainer emulator = Initializer.getEmulator();
 
 	private static ServicesService servicesService;
 	
@@ -71,33 +62,26 @@ class ServicesServiceTest {
 	private Service s3;
 	private Service s4;
 	private Service s5;
-
+		
 	@BeforeAll
 	public void setUp() throws IOException, KeyStoreException, NoSuchAlgorithmException, CertificateException {
 
 		servicesService = spy(new ServicesService(serviceRepository));
-
-		tempFolder.create();
-		Path keyStoreFile = tempFolder.newFile("azure-cosmos-emulator.keystore").toPath();
-		KeyStore keyStore = emulator.buildNewKeyStore();
-		keyStore.store(new FileOutputStream(keyStoreFile.toFile()), emulator.getEmulatorKey().toCharArray());
-
-		System.setProperty("javax.net.ssl.trustStore", keyStoreFile.toString());
-		System.setProperty("javax.net.ssl.trustStorePassword", emulator.getEmulatorKey());
-		System.setProperty("javax.net.ssl.trustStoreType", "PKCS12");
-
-		CosmosAsyncClient client = new CosmosClientBuilder().gatewayMode().endpointDiscoveryEnabled(false)
+		
+		CosmosAsyncClient client = new CosmosClientBuilder().directMode().endpointDiscoveryEnabled(false)
 				.endpoint(emulator.getEmulatorEndpoint()).key(emulator.getEmulatorKey()).buildAsyncClient();
 
-		// creation of the database and containers
+		//creation of the database and containers
 		CosmosDatabaseResponse databaseResponse = client.createDatabaseIfNotExists("db").block();
 
-		assertEquals(201, databaseResponse.getStatusCode());
+		assertTrue(201 == databaseResponse.getStatusCode() || 200 == databaseResponse.getStatusCode());
 		CosmosContainerResponse containerResponse = client.getDatabase("db")
 				.createContainerIfNotExists("creditor_institutions", "/fiscalCode").block();
-		assertEquals(201, containerResponse.getStatusCode());
+		assertTrue(201 == containerResponse.getStatusCode() || 200 == containerResponse.getStatusCode());
 		containerResponse = client.getDatabase("db").createContainerIfNotExists("services", "/fiscalCode").block();
-		assertEquals(201, containerResponse.getStatusCode());
+		assertTrue(201 == containerResponse.getStatusCode() || 200 == containerResponse.getStatusCode());
+		
+		
 
 		// loading the database with test data
 		ci = new Organization();
@@ -164,16 +148,6 @@ class ServicesServiceTest {
 		serviceRepository.delete(s3);
 		serviceRepository.delete(s4);
 		serviceRepository.delete(s5);
-		
-		CosmosAsyncClient client = new CosmosClientBuilder().gatewayMode().endpointDiscoveryEnabled(false)
-				.endpoint(emulator.getEmulatorEndpoint()).key(emulator.getEmulatorKey()).buildAsyncClient();
-		client.getDatabase("db").delete();
-		client.close();
-		emulator.stop();
-		emulator.close();
-		System.clearProperty("javax.net.ssl.trustStore");
-		System.clearProperty("javax.net.ssl.trustStorePassword");
-		System.clearProperty("javax.net.ssl.trustStoreType");
 	}
 	
 
@@ -181,9 +155,9 @@ class ServicesServiceTest {
 	void getServices() {
 		assertTrue(emulator.isRunning());
 		List<Service> services = servicesService.getServices();
-		assertTrue("A value greater or equal than <3> was expected", services.size() >= 3);
+		org.junit.Assert.assertTrue("A value greater or equal than <3> was expected", services.size() >= 3);
 	}
-	
+
 	@Test
 	void getServiceDetails() {
 		assertTrue(emulator.isRunning());
@@ -277,9 +251,5 @@ class ServicesServiceTest {
 	            });
 		assertTrue(thrown.getMessage().contains("Not found a service configuration for Service Id id-servizio-6"));
 	}
-	
-	
-	
-	
 	
 }

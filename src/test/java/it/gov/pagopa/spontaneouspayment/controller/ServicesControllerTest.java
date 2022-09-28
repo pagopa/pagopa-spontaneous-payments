@@ -19,15 +19,18 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
 import it.gov.pagopa.spontaneouspayment.config.TestUtil;
 import it.gov.pagopa.spontaneouspayment.entity.Service;
+import it.gov.pagopa.spontaneouspayment.initializer.Initializer;
 import it.gov.pagopa.spontaneouspayment.service.ServicesService;
 
 @SpringBootTest
 @AutoConfigureMockMvc
+@ContextConfiguration(initializers = {Initializer.class})
 class ServicesControllerTest {
 	
 	@Autowired
@@ -43,6 +46,7 @@ class ServicesControllerTest {
         when(servicesService.createService(any(Service.class))).thenReturn(TestUtil.getMockService());
         when(servicesService.updateService(any(Service.class))).thenReturn(TestUtil.getMockService());
     }
+	
 	
 	@Test
     void getServices() throws Exception {

@@ -6,29 +6,22 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.Mockito.spy;
 
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.nio.file.Path;
-import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.Rule;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
-import org.junit.rules.TemporaryFolder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
+import org.springframework.test.context.ContextConfiguration;
 import org.testcontainers.containers.CosmosDBEmulatorContainer;
-import org.testcontainers.junit.jupiter.Container;
-import org.testcontainers.junit.jupiter.Testcontainers;
-import org.testcontainers.utility.DockerImageName;
 
 import com.azure.cosmos.CosmosAsyncClient;
 import com.azure.cosmos.CosmosClientBuilder;
@@ -40,6 +33,7 @@ import it.gov.pagopa.spontaneouspayment.entity.Service;
 import it.gov.pagopa.spontaneouspayment.entity.ServiceProperty;
 import it.gov.pagopa.spontaneouspayment.entity.ServiceRef;
 import it.gov.pagopa.spontaneouspayment.exception.AppException;
+import it.gov.pagopa.spontaneouspayment.initializer.Initializer;
 import it.gov.pagopa.spontaneouspayment.model.EnrollmentModel;
 import it.gov.pagopa.spontaneouspayment.model.OrganizationModel;
 import it.gov.pagopa.spontaneouspayment.model.enumeration.PropertyType;
@@ -49,21 +43,16 @@ import it.gov.pagopa.spontaneouspayment.repository.ServiceRepository;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @SpringBootTest
-@Testcontainers
+@ContextConfiguration(initializers = {Initializer.class})
 class EnrollmentsServiceTest {
-
-	@Rule
-	public TemporaryFolder tempFolder = new TemporaryFolder();
 
 	@Autowired
 	private OrganizationRepository ciRepository;
 
 	@Autowired
 	private ServiceRepository serviceRepository;
-
-	@Container
-	private static final CosmosDBEmulatorContainer emulator = new CosmosDBEmulatorContainer(
-			DockerImageName.parse("mcr.microsoft.com/cosmosdb/linux/azure-cosmos-emulator:latest"));
+	
+    private static final CosmosDBEmulatorContainer emulator = Initializer.getEmulator();
 
 	private static EnrollmentsService enrollmentsService;
 	
@@ -82,27 +71,18 @@ class EnrollmentsServiceTest {
 
 		enrollmentsService = spy(new EnrollmentsService(ciRepository, serviceRepository));
 
-		tempFolder.create();
-		Path keyStoreFile = tempFolder.newFile("azure-cosmos-emulator.keystore").toPath();
-		KeyStore keyStore = emulator.buildNewKeyStore();
-		keyStore.store(new FileOutputStream(keyStoreFile.toFile()), emulator.getEmulatorKey().toCharArray());
-
-		System.setProperty("javax.net.ssl.trustStore", keyStoreFile.toString());
-		System.setProperty("javax.net.ssl.trustStorePassword", emulator.getEmulatorKey());
-		System.setProperty("javax.net.ssl.trustStoreType", "PKCS12");
-
 		CosmosAsyncClient client = new CosmosClientBuilder().gatewayMode().endpointDiscoveryEnabled(false)
 				.endpoint(emulator.getEmulatorEndpoint()).key(emulator.getEmulatorKey()).buildAsyncClient();
 
 		// creation of the database and containers
 		CosmosDatabaseResponse databaseResponse = client.createDatabaseIfNotExists("db").block();
 
-		assertEquals(201, databaseResponse.getStatusCode());
+		assertTrue(201 == databaseResponse.getStatusCode() || 200 == databaseResponse.getStatusCode());
 		CosmosContainerResponse containerResponse = client.getDatabase("db")
 				.createContainerIfNotExists("creditor_institutions", "/fiscalCode").block();
-		assertEquals(201, containerResponse.getStatusCode());
+		assertTrue(201 == containerResponse.getStatusCode() || 200 == containerResponse.getStatusCode());
 		containerResponse = client.getDatabase("db").createContainerIfNotExists("services", "/fiscalCode").block();
-		assertEquals(201, containerResponse.getStatusCode());
+		assertTrue(201 == containerResponse.getStatusCode() || 200 == containerResponse.getStatusCode());
 
 		// loading the database with test data
 		ci = new Organization();
@@ -229,15 +209,26 @@ class EnrollmentsServiceTest {
 		serviceRepository.delete(s4);
 		serviceRepository.delete(s5);
 		
+		/*
 		CosmosAsyncClient client = new CosmosClientBuilder().gatewayMode().endpointDiscoveryEnabled(false)
 				.endpoint(emulator.getEmulatorEndpoint()).key(emulator.getEmulatorKey()).buildAsyncClient();
 		client.getDatabase("db").delete();
-		client.close();
-		emulator.stop();
-		emulator.close();
-		System.clearProperty("javax.net.ssl.trustStore");
-		System.clearProperty("javax.net.ssl.trustStorePassword");
-		System.clearProperty("javax.net.ssl.trustStoreType");
+		//client.close();
+		
+		//System.clearProperty("javax.net.ssl.trustStore");
+		//System.clearProperty("javax.net.ssl.trustStorePassword");
+		//System.clearProperty("javax.net.ssl.trustStoreType");
+		
+		/*
+		// TCP proxy workaround for Cosmos DB Emulator bug, see: https://github.com/testcontainers/testcontainers-java/issues/5518
+		for (TcpProxy proxy: startedProxies) {
+			proxy.shutdown();
+		}
+		
+		if (emulator.isRunning()) {
+			emulator.stop();
+			emulator.close();
+		}*/
 	}
 	
 

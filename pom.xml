@@ -29,6 +29,13 @@
 	</properties>
 
 	<dependencies>
+		<!-- workaround for Cosmos DB Emulator bug, see: https://github.com/testcontainers/testcontainers-java/issues/5518 -->
+		<dependency>
+    		<groupId>com.github.terma</groupId>
+    		<artifactId>javaniotcpproxy</artifactId>
+    		<version>1.6</version>
+		</dependency>
+		<!-- END workaround for Cosmos DB Emulator bug, see: https://github.com/testcontainers/testcontainers-java/issues/5518 -->
 		<dependency>
 			<groupId>com.azure</groupId>
 			<artifactId>azure-spring-data-cosmos</artifactId>
@@ -98,6 +105,12 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
+			<exclusions>
+				<exclusion>
+					<groupId>com.vaadin.external.google</groupId>
+					<artifactId>android-json</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>org.testcontainers</groupId>
@@ -112,7 +125,7 @@
 		<dependency>
 			<groupId>com.fasterxml.jackson.datatype</groupId>
 			<artifactId>jackson-datatype-jsr310</artifactId>
-		</dependency>
+		</dependency>		
 	</dependencies>
 	<dependencyManagement>
 		<dependencies>
