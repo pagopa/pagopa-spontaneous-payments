@@ -8,7 +8,7 @@
   },
   "servers": [
     {
-      "url": "https://api.dev.platform.pagopa.it/gps/spontaneous-payments-service/v1",
+      "url": "https://api.uat.platform.pagopa.it/gps/spontaneous-payments-service/v1",
       "description": "Generated server url"
     }
   ],
