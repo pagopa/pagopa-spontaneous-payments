@@ -22,48 +22,48 @@ const gpdUrlBasePath = `${vars.gpdBaseUrl}`;
 
 const creditor_institution_code = `organizationNew`;
 
-export function setup() {
-	// 2. setup code (once)
-	// The setup code runs, setting up the test environment (optional) and generating data
-	// used to reuse code for the same VU
-	const params = {
-		headers: {
-			'Content-Type': 'application/json'
-		},
-	};
-	const response = createCreditorInstitutionEnrollment(rootUrl, params, creditor_institution_code);
-
-    console.log(`setup ... ${response.status}`);
-
-//    check(response, {
-//        "status is 201 or 409": (response) => (response.status === 201 || response.status === 409),
-//    });
-
-	// precondition is moved to default fn because in this stage
-	// __VU is always 0 and cannot be used to create env properly
-}
+//export function setup() {
+//	// 2. setup code (once)
+//	// The setup code runs, setting up the test environment (optional) and generating data
+//	// used to reuse code for the same VU
+//	const params = {
+//		headers: {
+//			'Content-Type': 'application/json'
+//		},
+//	};
+//	const response = createCreditorInstitutionEnrollment(rootUrl, params, creditor_institution_code);
+//
+//    console.log(`setup ... ${response.status}`);
+//
+////    check(response, {
+////        "status is 201 or 409": (response) => (response.status === 201 || response.status === 409),
+////    });
+//
+//	// precondition is moved to default fn because in this stage
+//	// __VU is always 0 and cannot be used to create env properly
+//}
 
 function precondition() {
 	// no pre conditions
 }
 
-function postcondition(iupd, params) {
-
-	// Delete the newly created debt position.
-	let tag = {
-		gpdMethod: "DeleteDebtPosition",
-	};
-
-	let url = `${gpdUrlBasePath}/organizations/${creditor_institution_code}/debtpositions/${iupd}`;
-
-	let r = http.del(url, params);
-
-	console.log("DeleteDebtPosition call - creditor_institution_code " + creditor_institution_code + ", iupd " + iupd + ", Status " + r.status);
-
-	check(r, {
-		"DeleteDebtPosition status is 200": (_r) => r.status === 200,
-	}, tag);
-}
+//function postcondition(iupd, params) {
+//
+//	// Delete the newly created debt position.
+//	let tag = {
+//		gpdMethod: "DeleteDebtPosition",
+//	};
+//
+//	let url = `${gpdUrlBasePath}/organizations/${creditor_institution_code}/debtpositions/${iupd}`;
+//
+//	let r = http.del(url, params);
+//
+//	console.log("DeleteDebtPosition call - creditor_institution_code " + creditor_institution_code + ", iupd " + iupd + ", Status " + r.status);
+//
+//	check(r, {
+//		"DeleteDebtPosition status is 200": (_r) => r.status === 200,
+//	}, tag);
+//}
 
 export default function() {
 
@@ -99,7 +99,7 @@ export default function() {
 			},
 			"service":
 			{
-				"id": "donation-pagopa-svr-id1",
+				"id": "12345",
 				"properties":
 					[
 						{ "name": "amount", "value": amount },
@@ -125,9 +125,9 @@ export default function() {
 	}, tag);
 
 	// If flag delete_debt_position is set to true the debit position is deleted after being created
-	if (r.status === 201 && delete_debt_position === "true") {
-		postcondition(r.json().iupd, params);
-	}
+//	if (r.status === 201 && delete_debt_position === "true") {
+//		postcondition(r.json().iupd, params);
+//	}
 
 
 }
