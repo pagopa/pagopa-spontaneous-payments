@@ -11,6 +11,7 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.json.JSONObject;
 import org.modelmapper.ModelMapper;
@@ -43,6 +44,7 @@ import lombok.NoArgsConstructor;
 @Service
 @AllArgsConstructor
 @NoArgsConstructor
+@Slf4j
 public class PaymentsService {
 
     @Autowired
@@ -83,7 +85,7 @@ public class PaymentsService {
         checkServiceOrganization(organizationFiscalCode, serviceConfiguration);
 
         // checks if the service is in suitable state and the request contains the properties required by the configured service
-//        checkServiceConfiguration(spontaneousPayment, serviceConfiguration);
+        checkServiceConfiguration(spontaneousPayment, serviceConfiguration);
 
         return new PaymentPositionModel(); //createDebtPosition(organizationFiscalCode, orgConfiguration, serviceConfiguration, spontaneousPayment);
         
