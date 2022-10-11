@@ -17,7 +17,7 @@ import javax.validation.constraints.NotBlank;
 import java.time.LocalDateTime;
 import java.util.List;
 
-@Container(containerName = "${azure.cosmos.ec-container-name}", autoCreateContainer = false, ru="1000")
+@Container(containerName = "${azure.cosmos.ec-container-name}", autoCreateContainer = false, ru="1200")
 @Getter
 @Setter
 @NoArgsConstructor
