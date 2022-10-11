@@ -42,6 +42,8 @@ public class CosmosDBConfiguration extends AbstractCosmosConfiguration {
     CosmosClientBuilder getCosmosClientBuilder() {
         AzureKeyCredential azureKeyCredential = new AzureKeyCredential(key);
         DirectConnectionConfig directConnectionConfig = new DirectConnectionConfig();
+        directConnectionConfig.setMaxConnectionsPerEndpoint(300);
+        directConnectionConfig.setMaxRequestsPerConnection(60);
         //GatewayConnectionConfig gatewayConnectionConfig = new GatewayConnectionConfig();
         return new CosmosClientBuilder()
                 .endpoint(uri)
