@@ -199,7 +199,7 @@ public class PaymentsService {
         return Optional.ofNullable(iuvObj).orElseThrow(() -> new AppException(AppError.IUV_ACQUISITION_ERROR, organizationFiscalCode, auxDigit, segregationCode)).getIuv();
     }
 
-    private void checkServiceOrganization(@NotBlank String organizationFiscalCode,
+    public void checkServiceOrganization(@NotBlank String organizationFiscalCode,
                                           @NotNull it.gov.pagopa.spontaneouspayment.entity.Service service) {
         var org = orgRepository.getCreditInstitutionByOrgFiscCodeAndServiceId(organizationFiscalCode, service.getId());
         if (org.isEmpty()) {
