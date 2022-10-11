@@ -1,6 +1,7 @@
 package it.gov.pagopa.spontaneouspayment.service;
 
 import java.net.URI;
+import java.rmi.server.UID;
 import java.time.Year;
 import java.util.Collections;
 import java.util.Optional;
@@ -82,11 +83,10 @@ public class PaymentsService {
         checkServiceOrganization(organizationFiscalCode, serviceConfiguration);
 
         // checks if the service is in suitable state and the request contains the properties required by the configured service
-        //checkServiceConfiguration(spontaneousPayment, serviceConfiguration);
+        checkServiceConfiguration(spontaneousPayment, serviceConfiguration);
 
-        //return createDebtPosition(organizationFiscalCode, orgConfiguration, serviceConfiguration, spontaneousPayment);
+        return createDebtPosition(organizationFiscalCode, orgConfiguration, serviceConfiguration, spontaneousPayment);
         
-        return new PaymentPositionModel();
     }
     
     
@@ -151,9 +151,10 @@ public class PaymentsService {
         PaymentOptionModel po = this.callExternalService(spontaneousPayment, serviceConfiguration);
 
         // generate IUV
-        String iuv = this.callIuvGeneratorService(organizationFiscalCode, enrollment);
+        //String iuv = this.callIuvGeneratorService(organizationFiscalCode, enrollment);
 
         // integration the information for the PO
+        String iuv = new UID().toString();
         po.setIuv(iuv);
         TransferModel transfer = po.getTransfer().get(0);
         transfer.setIdTransfer("1");
