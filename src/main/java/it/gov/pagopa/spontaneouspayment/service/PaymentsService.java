@@ -87,7 +87,7 @@ public class PaymentsService {
         // checks if the service is in suitable state and the request contains the properties required by the configured service
         checkServiceConfiguration(spontaneousPayment, serviceConfiguration);
 
-        return new PaymentPositionModel(); //createDebtPosition(organizationFiscalCode, orgConfiguration, serviceConfiguration, spontaneousPayment);
+        return createDebtPosition(organizationFiscalCode, orgConfiguration, serviceConfiguration, spontaneousPayment);
         
     }
     
