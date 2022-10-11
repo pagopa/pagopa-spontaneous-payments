@@ -97,15 +97,15 @@ public class LoggingAspect {
         long startTime = System.currentTimeMillis();
         Object result = joinPoint.proceed();
         long endTime = System.currentTimeMillis();
-        log.trace("Time taken for Execution of {} is: {}ms", joinPoint.getSignature().toShortString(), (endTime - startTime));
+        log.info("Time taken for Execution of {} is: {}ms", joinPoint.getSignature().toShortString(), (endTime - startTime));
         return result;
     }
 
     @Around(value = "repository() || service()")
     public Object logTrace(ProceedingJoinPoint joinPoint) throws Throwable {
-        log.debug("Call method {} - args: {}", joinPoint.getSignature().toShortString(), joinPoint.getArgs());
+        log.info("Call method {} - args: {}", joinPoint.getSignature().toShortString(), joinPoint.getArgs());
         Object result = joinPoint.proceed();
-        log.debug("Return method {} - result: {}", joinPoint.getSignature().toShortString(), result);
+        log.info("Return method {} - result: {}", joinPoint.getSignature().toShortString(), result);
         return result;
     }
 }

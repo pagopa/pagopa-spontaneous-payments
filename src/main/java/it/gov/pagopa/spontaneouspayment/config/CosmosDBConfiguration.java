@@ -42,11 +42,11 @@ public class CosmosDBConfiguration extends AbstractCosmosConfiguration {
     CosmosClientBuilder getCosmosClientBuilder() {
         AzureKeyCredential azureKeyCredential = new AzureKeyCredential(key);
         DirectConnectionConfig directConnectionConfig = new DirectConnectionConfig();
-        GatewayConnectionConfig gatewayConnectionConfig = new GatewayConnectionConfig();
+        //GatewayConnectionConfig gatewayConnectionConfig = new GatewayConnectionConfig();
         return new CosmosClientBuilder()
                 .endpoint(uri)
                 .credential(azureKeyCredential)
-                .directMode(directConnectionConfig, gatewayConnectionConfig);
+                .directMode(directConnectionConfig);
     }
 
     @Override
