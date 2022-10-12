@@ -175,7 +175,7 @@ public class PaymentsService {
         log.info("[PaymentPositionModel]step-5-{}",sUuid);
 
         PaymentPositionModel p = gpdClient.createDebtPosition(organizationFiscalCode, pp);
-        log.info("[PaymentPositionModel]step-1-{}",sUuid);
+        log.info("[PaymentPositionModel]step-6-{}",sUuid);
         return p;
     }
 
