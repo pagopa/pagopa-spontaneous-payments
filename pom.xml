@@ -13,7 +13,7 @@
 
     <groupId>it.gov.pagopa</groupId>
     <artifactId>spontaneouspayment</artifactId>
-    <version>0.1.0-21</version>
+    <version>0.1.0-22</version>
     <name>Gestione Pagamenti Spontanei</name>
     <description>Progetto Gestione Pagamenti Spontanei</description>
 
