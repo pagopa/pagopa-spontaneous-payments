@@ -87,7 +87,7 @@ public class PaymentsService {
         // checks if the service is in suitable state and the request contains the properties required by the configured service
         checkServiceConfiguration(spontaneousPayment, serviceConfiguration);
 
-        return new PaymentPositionModel(); // createDebtPosition(organizationFiscalCode, orgConfiguration, serviceConfiguration, spontaneousPayment);
+        return createDebtPosition(organizationFiscalCode, orgConfiguration, serviceConfiguration, spontaneousPayment);
         
     }
     
@@ -142,21 +142,23 @@ public class PaymentsService {
     private PaymentPositionModel createDebtPosition(String organizationFiscalCode,
                                                     Organization orgConfiguration, it.gov.pagopa.spontaneouspayment.entity.Service serviceConfiguration, SpontaneousPaymentModel spontaneousPayment) {
 
+        String sUuid = new UID().toString();
         // get the enrollment for the service
+        log.info("[PaymentPositionModel]step-1-{}",sUuid);
         ServiceRef enrollment = Optional.ofNullable(orgConfiguration.getEnrollments()).orElseGet(Collections::emptyList)
                 .parallelStream()
                 .filter(e -> e.getServiceId().equals(serviceConfiguration.getId()))
                 .findAny()
                 .orElseThrow(() -> new AppException(AppError.ENROLLMENT_TO_SERVICE_NOT_FOUND, serviceConfiguration.getId(), organizationFiscalCode));
-
+        log.info("[PaymentPositionModel]step-2-{}",sUuid);
         // call the external service to get the PO
         PaymentOptionModel po = this.callExternalService(spontaneousPayment, serviceConfiguration);
-
+        log.info("[PaymentPositionModel]step-3-{}",sUuid);
         // generate IUV
         //String iuv = this.callIuvGeneratorService(organizationFiscalCode, enrollment);
 
         // integration the information for the PO
-        String iuv = new UID().toString();
+        String iuv = sUuid;
         po.setIuv(iuv);
         TransferModel transfer = po.getTransfer().get(0);
         transfer.setIdTransfer("1");
@@ -164,15 +166,17 @@ public class PaymentsService {
         transfer.setCategory(serviceConfiguration.getTransferCategory());
         transfer.setIban(enrollment.getIban());
         transfer.setPostalIban(enrollment.getPostalIban());
-
+        log.info("[PaymentPositionModel]step-4-{}",sUuid);
         // Payment Position to create
         PaymentPositionModel pp = modelMapper.map(spontaneousPayment.getDebtor(), PaymentPositionModel.class);
         pp.setIupd(iupdPrefix + iuv);
         pp.setCompanyName(orgConfiguration.getCompanyName());
         pp.addPaymentOptions(po);
+        log.info("[PaymentPositionModel]step-5-{}",sUuid);
 
-
-        return gpdClient.createDebtPosition(organizationFiscalCode, pp);
+        PaymentPositionModel p = gpdClient.createDebtPosition(organizationFiscalCode, pp);
+        log.info("[PaymentPositionModel]step-1-{}",sUuid);
+        return p;
     }
 
 
