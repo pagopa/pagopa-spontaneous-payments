@@ -142,7 +142,7 @@ public class PaymentsService {
     private PaymentPositionModel createDebtPosition(String organizationFiscalCode,
                                                     Organization orgConfiguration, it.gov.pagopa.spontaneouspayment.entity.Service serviceConfiguration, SpontaneousPaymentModel spontaneousPayment) {
 
-        String sUuid = new UID().toString();
+        //String sUuid = new UID().toString();
         // get the enrollment for the service
         log.info("[PaymentPositionModel]step-1-{}",sUuid);
         ServiceRef enrollment = Optional.ofNullable(orgConfiguration.getEnrollments()).orElseGet(Collections::emptyList)
@@ -155,10 +155,10 @@ public class PaymentsService {
         PaymentOptionModel po = this.callExternalService(spontaneousPayment, serviceConfiguration);
         log.info("[PaymentPositionModel]step-3-{}",sUuid);
         // generate IUV
-        //String iuv = this.callIuvGeneratorService(organizationFiscalCode, enrollment);
+        String iuv = this.callIuvGeneratorService(organizationFiscalCode, enrollment);
 
         // integration the information for the PO
-        String iuv = sUuid;
+        //String iuv = sUuid;
         po.setIuv(iuv);
         TransferModel transfer = po.getTransfer().get(0);
         transfer.setIdTransfer("1");
