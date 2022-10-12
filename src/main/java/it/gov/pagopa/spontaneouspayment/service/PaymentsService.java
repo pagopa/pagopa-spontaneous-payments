@@ -144,16 +144,16 @@ public class PaymentsService {
 
         //String sUuid = new UID().toString();
         // get the enrollment for the service
-        log.info("[PaymentPositionModel]step-1-{}",sUuid);
+        //log.info("[PaymentPositionModel]step-1-{}",sUuid);
         ServiceRef enrollment = Optional.ofNullable(orgConfiguration.getEnrollments()).orElseGet(Collections::emptyList)
                 .parallelStream()
                 .filter(e -> e.getServiceId().equals(serviceConfiguration.getId()))
                 .findAny()
                 .orElseThrow(() -> new AppException(AppError.ENROLLMENT_TO_SERVICE_NOT_FOUND, serviceConfiguration.getId(), organizationFiscalCode));
-        log.info("[PaymentPositionModel]step-2-{}",sUuid);
+        //log.info("[PaymentPositionModel]step-2-{}",sUuid);
         // call the external service to get the PO
         PaymentOptionModel po = this.callExternalService(spontaneousPayment, serviceConfiguration);
-        log.info("[PaymentPositionModel]step-3-{}",sUuid);
+        //log.info("[PaymentPositionModel]step-3-{}",sUuid);
         // generate IUV
         String iuv = this.callIuvGeneratorService(organizationFiscalCode, enrollment);
 
@@ -166,16 +166,16 @@ public class PaymentsService {
         transfer.setCategory(serviceConfiguration.getTransferCategory());
         transfer.setIban(enrollment.getIban());
         transfer.setPostalIban(enrollment.getPostalIban());
-        log.info("[PaymentPositionModel]step-4-{}",sUuid);
+        //log.info("[PaymentPositionModel]step-4-{}",sUuid);
         // Payment Position to create
         PaymentPositionModel pp = modelMapper.map(spontaneousPayment.getDebtor(), PaymentPositionModel.class);
         pp.setIupd(iupdPrefix + iuv);
         pp.setCompanyName(orgConfiguration.getCompanyName());
         pp.addPaymentOptions(po);
-        log.info("[PaymentPositionModel]step-5-{}",sUuid);
+        //log.info("[PaymentPositionModel]step-5-{}",sUuid);
 
         PaymentPositionModel p = gpdClient.createDebtPosition(organizationFiscalCode, pp);
-        log.info("[PaymentPositionModel]step-6-{}",sUuid);
+        //log.info("[PaymentPositionModel]step-6-{}",sUuid);
         return p;
     }
 
