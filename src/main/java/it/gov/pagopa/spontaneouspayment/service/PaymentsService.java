@@ -1,7 +1,6 @@
 package it.gov.pagopa.spontaneouspayment.service;
 
 import java.net.URI;
-import java.rmi.server.UID;
 import java.time.Year;
 import java.util.Collections;
 import java.util.Optional;
@@ -11,7 +10,6 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
-import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.json.JSONObject;
 import org.modelmapper.ModelMapper;
@@ -29,6 +27,7 @@ import it.gov.pagopa.spontaneouspayment.model.ServiceModel;
 import it.gov.pagopa.spontaneouspayment.model.ServicePropertyModel;
 import it.gov.pagopa.spontaneouspayment.model.SpontaneousPaymentModel;
 import it.gov.pagopa.spontaneouspayment.model.enumeration.PropertyType;
+import it.gov.pagopa.spontaneouspayment.model.enumeration.Status;
 import it.gov.pagopa.spontaneouspayment.model.response.PaymentOptionModel;
 import it.gov.pagopa.spontaneouspayment.model.response.PaymentPositionModel;
 import it.gov.pagopa.spontaneouspayment.model.response.TransferModel;
@@ -37,14 +36,12 @@ import it.gov.pagopa.spontaneouspayment.repository.ServiceRepository;
 import it.gov.pagopa.spontaneouspayment.service.client.ExternalServiceClient;
 import it.gov.pagopa.spontaneouspayment.service.client.GpdClient;
 import it.gov.pagopa.spontaneouspayment.service.client.IuvGeneratorClient;
-import it.gov.pagopa.spontaneouspayment.model.enumeration.Status;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
 @Service
 @AllArgsConstructor
 @NoArgsConstructor
-@Slf4j
 public class PaymentsService {
 
     @Autowired
@@ -82,7 +79,7 @@ public class PaymentsService {
         var serviceConfiguration = getServiceDetails(spontaneousPayment.getService());
 
         // check if the relationship between organization and enrollment to service exists
-        checkServiceOrganization(organizationFiscalCode, serviceConfiguration);
+        checkServiceOrganization(orgConfiguration, serviceConfiguration);
 
         // checks if the service is in suitable state and the request contains the properties required by the configured service
         checkServiceConfiguration(spontaneousPayment, serviceConfiguration);
@@ -142,23 +139,20 @@ public class PaymentsService {
     private PaymentPositionModel createDebtPosition(String organizationFiscalCode,
                                                     Organization orgConfiguration, it.gov.pagopa.spontaneouspayment.entity.Service serviceConfiguration, SpontaneousPaymentModel spontaneousPayment) {
 
-        //String sUuid = new UID().toString();
         // get the enrollment for the service
-        //log.info("[PaymentPositionModel]step-1-{}",sUuid);
         ServiceRef enrollment = Optional.ofNullable(orgConfiguration.getEnrollments()).orElseGet(Collections::emptyList)
                 .parallelStream()
                 .filter(e -> e.getServiceId().equals(serviceConfiguration.getId()))
                 .findAny()
                 .orElseThrow(() -> new AppException(AppError.ENROLLMENT_TO_SERVICE_NOT_FOUND, serviceConfiguration.getId(), organizationFiscalCode));
-        //log.info("[PaymentPositionModel]step-2-{}",sUuid);
+        
         // call the external service to get the PO
         PaymentOptionModel po = this.callExternalService(spontaneousPayment, serviceConfiguration);
-        //log.info("[PaymentPositionModel]step-3-{}",sUuid);
+        
         // generate IUV
         String iuv = this.callIuvGeneratorService(organizationFiscalCode, enrollment);
 
         // integration the information for the PO
-        //String iuv = sUuid;
         po.setIuv(iuv);
         TransferModel transfer = po.getTransfer().get(0);
         transfer.setIdTransfer("1");
@@ -166,17 +160,14 @@ public class PaymentsService {
         transfer.setCategory(serviceConfiguration.getTransferCategory());
         transfer.setIban(enrollment.getIban());
         transfer.setPostalIban(enrollment.getPostalIban());
-        //log.info("[PaymentPositionModel]step-4-{}",sUuid);
+      
         // Payment Position to create
         PaymentPositionModel pp = modelMapper.map(spontaneousPayment.getDebtor(), PaymentPositionModel.class);
         pp.setIupd(iupdPrefix + iuv);
         pp.setCompanyName(orgConfiguration.getCompanyName());
         pp.addPaymentOptions(po);
-        //log.info("[PaymentPositionModel]step-5-{}",sUuid);
-
-        PaymentPositionModel p = gpdClient.createDebtPosition(organizationFiscalCode, pp);
-        //log.info("[PaymentPositionModel]step-6-{}",sUuid);
-        return p;
+        
+        return gpdClient.createDebtPosition(organizationFiscalCode, pp);
     }
 
 
@@ -209,12 +200,13 @@ public class PaymentsService {
         return Optional.ofNullable(iuvObj).orElseThrow(() -> new AppException(AppError.IUV_ACQUISITION_ERROR, organizationFiscalCode, auxDigit, segregationCode)).getIuv();
     }
 
-    public void checkServiceOrganization(@NotBlank String organizationFiscalCode,
-                                          @NotNull it.gov.pagopa.spontaneouspayment.entity.Service service) {
-        var org = orgRepository.getCreditInstitutionByOrgFiscCodeAndServiceId(organizationFiscalCode, service.getId());
-        if (org.isEmpty()) {
-            throw new AppException(AppError.ORGANIZATION_SERVICE_NOT_FOUND, organizationFiscalCode, service.getId());
-        }
+
+    private void checkServiceOrganization(@NotNull Organization organization,
+    		@NotNull it.gov.pagopa.spontaneouspayment.entity.Service service) {
+    	Optional<ServiceRef> enrollment = organization.getEnrollments().stream().filter(e -> e.getServiceId().equals(service.getId())).findAny();
+    	if (enrollment.isEmpty()) {
+    		throw new AppException(AppError.ORGANIZATION_SERVICE_NOT_FOUND, organization.getFiscalCode(), service.getId());
+    	}
     }
 
     private it.gov.pagopa.spontaneouspayment.entity.Service getServiceDetails(@NotNull ServiceModel service) {
