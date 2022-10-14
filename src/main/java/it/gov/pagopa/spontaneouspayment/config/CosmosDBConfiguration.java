@@ -9,7 +9,6 @@ import org.springframework.lang.Nullable;
 import com.azure.core.credential.AzureKeyCredential;
 import com.azure.cosmos.CosmosClientBuilder;
 import com.azure.cosmos.DirectConnectionConfig;
-import com.azure.cosmos.GatewayConnectionConfig;
 import com.azure.spring.data.cosmos.config.AbstractCosmosConfiguration;
 import com.azure.spring.data.cosmos.config.CosmosConfig;
 import com.azure.spring.data.cosmos.core.ResponseDiagnostics;
@@ -42,9 +41,6 @@ public class CosmosDBConfiguration extends AbstractCosmosConfiguration {
     CosmosClientBuilder getCosmosClientBuilder() {
         AzureKeyCredential azureKeyCredential = new AzureKeyCredential(key);
         DirectConnectionConfig directConnectionConfig = new DirectConnectionConfig();
-        directConnectionConfig.setMaxConnectionsPerEndpoint(300);
-        directConnectionConfig.setMaxRequestsPerConnection(60);
-        //GatewayConnectionConfig gatewayConnectionConfig = new GatewayConnectionConfig();
         return new CosmosClientBuilder()
                 .endpoint(uri)
                 .credential(azureKeyCredential)
