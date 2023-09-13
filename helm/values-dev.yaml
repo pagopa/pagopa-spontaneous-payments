@@ -4,7 +4,7 @@ microservice-chart:
   fullnameOverride: ""
   image:
     repository: ghcr.io/pagopa/pagopa-spontaneous-payments
-    tag: "0.1.1" #improve
+    tag: "0.1.1-1-PAGOPA-1211-migrazione-gha-pagopa-spontaneous-payments-testing-flows" #improve
     pullPolicy: Always
   livenessProbe:
     httpGet:
@@ -96,3 +96,5 @@ microservice-chart:
                 operator: In
                 values:
                   - user
+  canaryDelivery:
+    create: false

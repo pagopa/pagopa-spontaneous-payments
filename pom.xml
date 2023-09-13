@@ -13,7 +13,7 @@
 
     <groupId>it.gov.pagopa</groupId>
     <artifactId>spontaneouspayment</artifactId>
-    <version>0.1.1</version>
+    <version>0.1.1-1-PAGOPA-1211-migrazione-gha-pagopa-spontaneous-payments-testing-flows</version>
     <name>Gestione Pagamenti Spontanei</name>
     <description>Progetto Gestione Pagamenti Spontanei</description>
 
