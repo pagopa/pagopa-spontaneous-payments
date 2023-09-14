@@ -1,9 +1,9 @@
 locals {
-  repo_name = "TODO" # TODO add the name of the repository
+  repo_name = "pagopa-spontaneous-payments"
 
-  display_name = "TODO" # TODO
-  description  = "TODO" # TODO
-  path  = "TODO" # TODO add your base path
+  display_name = "pagopa-spontaneous-payments"
+  description  = "App for handling the spontaneous payments"
+  path  = "gps/spontaneous-payments-service/v1"
 
   host         = "api.${var.apim_dns_zone_prefix}.${var.external_domain}"
   hostname     = var.hostname
