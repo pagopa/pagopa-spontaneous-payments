@@ -1,7 +1,7 @@
 <policies>
   <inbound>
     <base />
-    <set-backend-service base-url="https://${hostname}/TODO" /> <!-- TODO your base path-->
+    <set-backend-service base-url="https://${hostname}/gps/spontaneous-payments-service/v1" />
   </inbound>
   <outbound>
     <base />
