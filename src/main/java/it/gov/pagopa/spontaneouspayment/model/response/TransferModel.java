@@ -38,4 +38,6 @@ public class TransferModel implements Serializable {
     private String iban;
 
     private String postalIban;
+
+    private StampModel stamp;
 }
