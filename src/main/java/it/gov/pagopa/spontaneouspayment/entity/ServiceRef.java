@@ -1,6 +1,5 @@
 package it.gov.pagopa.spontaneouspayment.entity;
 
-import it.gov.pagopa.spontaneouspayment.model.response.StampModel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -30,7 +29,4 @@ public class ServiceRef {
     private String remittanceInformation; // causale
 
     private String postalIban;
-
-    private StampModel stamp;
-
 }
