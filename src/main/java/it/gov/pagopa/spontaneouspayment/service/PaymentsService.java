@@ -160,8 +160,7 @@ public class PaymentsService {
         transfer.setCategory(serviceConfiguration.getTransferCategory());
         transfer.setIban(enrollment.getIban());
         transfer.setPostalIban(enrollment.getPostalIban());
-        transfer.setStamp(enrollment.getStamp());
-      
+
         // Payment Position to create
         PaymentPositionModel pp = modelMapper.map(spontaneousPayment.getDebtor(), PaymentPositionModel.class);
         pp.setIupd(iupdPrefix + iuv);
