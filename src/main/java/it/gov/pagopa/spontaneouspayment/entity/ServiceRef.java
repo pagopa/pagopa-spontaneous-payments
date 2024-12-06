@@ -29,4 +29,5 @@ public class ServiceRef {
     private String remittanceInformation; // causale
 
     private String postalIban;
+
 }
