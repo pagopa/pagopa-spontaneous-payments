@@ -82,6 +82,7 @@ microservice-chart:
   envSecret:
     COSMOS_KEY: cosmos-gps-weu-p-pkey
     APPLICATIONINSIGHTS_CONNECTION_STRING: 'ai-p-connection-string'
+    API_KEY_IUV_GENERATOR: "apikey-iuv-generator"
   keyvault:
     name: "pagopa-p-gps-kv"
     tenantId: "7788edaf-0346-4068-9d79-c868aed15b3d"
