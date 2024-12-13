@@ -172,7 +172,11 @@ public class PaymentsService {
         pp.setSwitchToExpired(enrollment.isSwitchToExpired());
         pp.addPaymentOptions(po);
 
-        return gpdClient.createDebtPosition(organizationFiscalCode, pp);
+        PaymentPositionModel gpdResponse = gpdClient.createDebtPosition(organizationFiscalCode, pp);
+        // Forced set fiscal code -> https://editor.swagger.io/?url=https://raw.githubusercontent.com/pagopa/pagopa-debt-position/main/openapi/openapi_internal.json
+        gpdResponse.getPaymentOption().get(0).setOrganizationFiscalCode(organizationFiscalCode);
+
+        return gpdResponse;
     }
 
 
