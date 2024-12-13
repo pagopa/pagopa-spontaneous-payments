@@ -1,22 +1,5 @@
 package it.gov.pagopa.spontaneouspayment.service;
 
-import java.net.URI;
-import java.time.Year;
-import java.util.Collections;
-import java.util.Optional;
-import java.util.function.Predicate;
-
-import javax.validation.Valid;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-
-import org.apache.commons.lang3.math.NumberUtils;
-import org.json.JSONObject;
-import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
-
 import it.gov.pagopa.spontaneouspayment.entity.Organization;
 import it.gov.pagopa.spontaneouspayment.entity.ServiceProperty;
 import it.gov.pagopa.spontaneouspayment.entity.ServiceRef;
@@ -38,6 +21,21 @@ import it.gov.pagopa.spontaneouspayment.service.client.GpdClient;
 import it.gov.pagopa.spontaneouspayment.service.client.IuvGeneratorClient;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import org.apache.commons.lang3.math.NumberUtils;
+import org.json.JSONObject;
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+
+import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import java.net.URI;
+import java.time.Year;
+import java.util.Collections;
+import java.util.Optional;
+import java.util.function.Predicate;
 
 @Service
 @AllArgsConstructor
@@ -71,7 +69,7 @@ public class PaymentsService {
     public PaymentPositionModel createSpontaneousPayment(@NotBlank String organizationFiscalCode, @Valid SpontaneousPaymentModel spontaneousPayment) {
         // check if credit institution exists
         var orgConfiguration = getCreditorInstitution(organizationFiscalCode);
-        
+
         // check if the credit institution's status is suitable for the creation of the debt position
         checkOrganizationStatus(orgConfiguration);
 
@@ -85,20 +83,20 @@ public class PaymentsService {
         checkServiceConfiguration(spontaneousPayment, serviceConfiguration);
 
         return createDebtPosition(organizationFiscalCode, orgConfiguration, serviceConfiguration, spontaneousPayment);
-        
+
     }
-    
-    
+
+
     /**
      * check if the credit institution's status is ENABLED
      *
-     * @param orgConfiguration   the Organization entity to check
+     * @param orgConfiguration the Organization entity to check
      * @throws AppException if the status is not suitable for the creation of the debt position
      */
     private void checkOrganizationStatus(Organization orgConfiguration) {
-    	if (orgConfiguration.getStatus().equals(Status.DISABLED)){
-    		throw new AppException(AppError.ORGANIZATION_NOT_ENABLED, orgConfiguration.getFiscalCode(), orgConfiguration.getStatus());
-    	}
+        if (orgConfiguration.getStatus().equals(Status.DISABLED)) {
+            throw new AppException(AppError.ORGANIZATION_NOT_ENABLED, orgConfiguration.getFiscalCode(), orgConfiguration.getStatus());
+        }
     }
 
 
@@ -107,14 +105,14 @@ public class PaymentsService {
      *
      * @param spontaneousPayment   the spontaneousPayment to check
      * @param serviceConfiguration the serviceConfiguration in the DB
-     * @throws AppException if there is no service configuration in the DB or the service is disabled 
+     * @throws AppException if there is no service configuration in the DB or the service is disabled
      */
     private void checkServiceConfiguration(SpontaneousPaymentModel spontaneousPayment, it.gov.pagopa.spontaneouspayment.entity.Service serviceConfiguration) {
-    	
-    	if (serviceConfiguration.getStatus().equals(Status.DISABLED)) {
-    		throw new AppException(AppError.SERVICE_NOT_ENABLED, serviceConfiguration.getId(), serviceConfiguration.getStatus());
-    	}
-    	
+
+        if (serviceConfiguration.getStatus().equals(Status.DISABLED)) {
+            throw new AppException(AppError.SERVICE_NOT_ENABLED, serviceConfiguration.getId(), serviceConfiguration.getStatus());
+        }
+
         for (ServiceProperty confProp : serviceConfiguration.getProperties()) {
             if (confProp.isRequired()) {
                 Predicate<ServicePropertyModel> checkName = o -> o.getName().equals(confProp.getName());
@@ -145,10 +143,10 @@ public class PaymentsService {
                 .filter(e -> e.getServiceId().equals(serviceConfiguration.getId()))
                 .findAny()
                 .orElseThrow(() -> new AppException(AppError.ENROLLMENT_TO_SERVICE_NOT_FOUND, serviceConfiguration.getId(), organizationFiscalCode));
-        
+
         // call the external service to get the PO
         PaymentOptionModel po = this.callExternalService(spontaneousPayment, serviceConfiguration);
-        
+
         // generate IUV
         String iuv = this.callIuvGeneratorService(organizationFiscalCode, enrollment);
 
@@ -156,17 +154,23 @@ public class PaymentsService {
         po.setIuv(iuv);
         TransferModel transfer = po.getTransfer().get(0);
         transfer.setIdTransfer("1");
-        transfer.setRemittanceInformation(enrollment.getRemittanceInformation());
+        if (enrollment.getRemittanceInformation() != null) {
+            transfer.setRemittanceInformation(enrollment.getRemittanceInformation());
+        }
         transfer.setCategory(serviceConfiguration.getTransferCategory());
-        transfer.setIban(enrollment.getIban());
-        transfer.setPostalIban(enrollment.getPostalIban());
+        if (enrollment.getIban() != null) {
+            transfer.setIban(enrollment.getIban());
+        }
+        if (enrollment.getPostalIban() != null) {
+            transfer.setPostalIban(enrollment.getPostalIban());
+        }
 
         // Payment Position to create
         PaymentPositionModel pp = modelMapper.map(spontaneousPayment.getDebtor(), PaymentPositionModel.class);
         pp.setIupd(iupdPrefix + iuv);
         pp.setCompanyName(orgConfiguration.getCompanyName());
         pp.addPaymentOptions(po);
-        
+
         return gpdClient.createDebtPosition(organizationFiscalCode, pp);
     }
 
@@ -202,11 +206,11 @@ public class PaymentsService {
 
 
     private void checkServiceOrganization(@NotNull Organization organization,
-    		@NotNull it.gov.pagopa.spontaneouspayment.entity.Service service) {
-    	Optional<ServiceRef> enrollment = organization.getEnrollments().stream().filter(e -> e.getServiceId().equals(service.getId())).findAny();
-    	if (enrollment.isEmpty()) {
-    		throw new AppException(AppError.ORGANIZATION_SERVICE_NOT_FOUND, organization.getFiscalCode(), service.getId());
-    	}
+                                          @NotNull it.gov.pagopa.spontaneouspayment.entity.Service service) {
+        Optional<ServiceRef> enrollment = organization.getEnrollments().stream().filter(e -> e.getServiceId().equals(service.getId())).findAny();
+        if (enrollment.isEmpty()) {
+            throw new AppException(AppError.ORGANIZATION_SERVICE_NOT_FOUND, organization.getFiscalCode(), service.getId());
+        }
     }
 
     private it.gov.pagopa.spontaneouspayment.entity.Service getServiceDetails(@NotNull ServiceModel service) {
