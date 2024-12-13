@@ -30,4 +30,7 @@ public class ServiceRef {
 
     private String postalIban;
 
+    @NotBlank(message = "switchToExpired is required")
+    private boolean switchToExpired;
+
 }
