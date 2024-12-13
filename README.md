@@ -42,7 +42,7 @@ or that for `yaml` version
 ---
 
 ## Technology Stack
-- Java 11
+- Java 17
 - Spring Boot
 - Spring Web
 - Hibernate
@@ -81,7 +81,7 @@ mvn spring-boot:run -Dspring-boot.run.profiles=local
 ### Prerequisites
 - git
 - maven
-- jdk-11
+- jdk-17
 - docker
 - cosmosdb emulator
 
