@@ -38,6 +38,8 @@ public class PaymentOptionModel implements Serializable {
 
     private LocalDateTime retentionDate;
 
+    private String organizationFiscalCode;
+
     private long fee;
 
     @Builder.Default
