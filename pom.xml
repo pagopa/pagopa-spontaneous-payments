@@ -18,7 +18,7 @@
     <description>Progetto Gestione Pagamenti Spontanei</description>
 
     <properties>
-        <java.version>11</java.version>
+        <java.version>17</java.version>
         <testcontainers.version>1.17.2</testcontainers.version>
         <springfox-version>3.0.0</springfox-version>
         <springdoc-version>1.6.9</springdoc-version>
