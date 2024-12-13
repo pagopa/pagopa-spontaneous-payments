@@ -40,4 +40,6 @@ public class TransferModel implements Serializable {
     private String postalIban;
 
     private StampModel stamp;
+
+    private String organizationFiscalCode;
 }
