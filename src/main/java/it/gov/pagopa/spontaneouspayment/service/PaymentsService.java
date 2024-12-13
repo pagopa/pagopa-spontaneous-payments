@@ -165,6 +165,7 @@ public class PaymentsService {
         PaymentPositionModel pp = modelMapper.map(spontaneousPayment.getDebtor(), PaymentPositionModel.class);
         pp.setIupd(iupdPrefix + iuv);
         pp.setCompanyName(orgConfiguration.getCompanyName());
+        pp.setSwitchToExpired(enrollment.isSwitchToExpired());
         pp.addPaymentOptions(po);
         
         return gpdClient.createDebtPosition(organizationFiscalCode, pp);
