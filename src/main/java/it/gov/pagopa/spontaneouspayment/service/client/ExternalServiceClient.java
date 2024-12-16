@@ -1,7 +1,7 @@
 package it.gov.pagopa.spontaneouspayment.service.client;
 
 import feign.FeignException;
-import it.gov.pagopa.spontaneouspayment.config.FeignConfig;
+import it.gov.pagopa.spontaneouspayment.config.ExternalServiceConfig;
 import it.gov.pagopa.spontaneouspayment.model.response.PaymentOptionsModel;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import java.net.URI;
 
 
-@FeignClient(value = "externalservice", url = "runtime_url", configuration = FeignConfig.class)
+@FeignClient(value = "externalservice", url = "runtime_url", configuration = ExternalServiceConfig.class)
 public interface ExternalServiceClient {
 
     @Retryable(exclude = FeignException.FeignClientException.class, maxAttemptsExpression = "${retry.ext-service.maxAttempts}",

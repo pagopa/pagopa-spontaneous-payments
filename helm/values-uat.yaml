@@ -4,7 +4,7 @@ microservice-chart:
   fullnameOverride: ""
   image:
     repository: ghcr.io/pagopa/pagopa-spontaneous-payments
-    tag: "0.1.8" #improve
+    tag: "0.1.10" #improve
     pullPolicy: Always
   livenessProbe:
     httpGet:
@@ -82,6 +82,8 @@ microservice-chart:
   envSecret:
     COSMOS_KEY: cosmos-gps-weu-u-pkey
     APPLICATIONINSIGHTS_CONNECTION_STRING: 'ai-u-connection-string'
+    API_KEY_IUV_GENERATOR: "apikey-iuv-generator"
+    API_KEY_EXTERNAL_SERVICE: "apikey-spontaneous-payments-services"
   keyvault:
     name: "pagopa-u-gps-kv"
     tenantId: "7788edaf-0346-4068-9d79-c868aed15b3d"

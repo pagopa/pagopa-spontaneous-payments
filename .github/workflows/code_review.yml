@@ -18,7 +18,7 @@ on:
   workflow_dispatch:
 
 env:
-  PROJECT_KEY: "pagopa-spontaneus-payments"
+  PROJECT_KEY: "pagopa-spontaneous-payments"
 
 permissions:
   id-token: write
