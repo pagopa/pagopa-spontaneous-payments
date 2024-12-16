@@ -3,7 +3,7 @@ locals {
 
   display_name = "pagopa-spontaneous-payments"
   description  = "App for handling the spontaneous payments"
-  path  = "gps/spontaneous-payments-service/v1"
+  path  = "spontaneous-payments-service"
 
   host         = "api.${var.apim_dns_zone_prefix}.${var.external_domain}"
   hostname     = var.hostname
