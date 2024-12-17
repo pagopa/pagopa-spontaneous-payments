@@ -1,7 +1,7 @@
 <policies>
   <inbound>
     <base />
-    <set-backend-service base-url="https://${hostname}/gps/spontaneous-payments-service/v1" />
+    <set-backend-service base-url="https://${hostname}/pagopa-spontaneous-payments-service" />
   </inbound>
   <outbound>
     <base />

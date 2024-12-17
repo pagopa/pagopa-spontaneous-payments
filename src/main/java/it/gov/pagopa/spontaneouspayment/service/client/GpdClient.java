@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import feign.FeignException;
 import it.gov.pagopa.spontaneouspayment.config.FeignConfig;
 import it.gov.pagopa.spontaneouspayment.model.response.PaymentPositionModel;
+import org.springframework.web.bind.annotation.RequestParam;
 
 
 @FeignClient(value = "gpd", url = "${service.gpd.host}", configuration = FeignConfig.class)
@@ -19,6 +20,7 @@ public interface GpdClient {
             backoff = @Backoff(delayExpression = "${retry.gpd.maxDelay}"))
     @PostMapping(value = "/organizations/{organizationfiscalcode}/debtpositions")
     PaymentPositionModel createDebtPosition(@PathVariable("organizationfiscalcode") String organizationFiscalCode,
-                                            @RequestBody PaymentPositionModel paymentPositionModel);
+                                            @RequestBody PaymentPositionModel paymentPositionModel,
+                                            @RequestParam Boolean toPublish);
 
 }

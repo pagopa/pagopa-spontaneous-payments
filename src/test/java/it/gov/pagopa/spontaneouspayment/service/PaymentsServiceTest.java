@@ -230,7 +230,7 @@ class PaymentsServiceTest {
 		when(iuvGeneratorClient.generateIUV(anyString(), any(IuvGenerationModel.class)))
 				.thenReturn(IuvGenerationModelResponse.builder().iuv("12345678901234567").build());
 		
-		when(gpdClient.createDebtPosition(anyString(), any(PaymentPositionModel.class))).thenReturn(paymentModel);
+		when(gpdClient.createDebtPosition(anyString(), any(PaymentPositionModel.class), any(Boolean.class))).thenReturn(paymentModel);
 
 		ArrayList<PaymentOptionModel> paymentOption = new ArrayList<>();
 		paymentOption.add(getMockPaymentOptionModel());
