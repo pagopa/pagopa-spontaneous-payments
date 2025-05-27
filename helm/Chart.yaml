@@ -3,7 +3,7 @@ name: pagopa-spontaneous-payments
 description: Microservice that handles spontaneous payments for pagoPA
 type: application
 version: 0.16.0
-appVersion: 0.1.12-PIDM-491-workload-identity
+appVersion: 0.1.12
 dependencies:
   - name: microservice-chart
     version: 7.5.0
