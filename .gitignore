@@ -10,3 +10,4 @@ emulatorcert.crt
 **/application-secret*.properties
 helm/charts/*
 /.cache_ggshield
+.terraform/

@@ -22,6 +22,7 @@ microservice-chart:
     periodSeconds: 10
   deployment:
     create: true
+    replicas: 1
   service:
     create: true
     type: ClusterIP
@@ -33,9 +34,9 @@ microservice-chart:
     path: /pagopa-spontaneous-payments-service/(.*)
     servicePort: 8080
   serviceAccount:
-    create: false
-    annotations: {}
-    name: ""
+    name: "gps-workload-identity"
+  azure:
+    workloadIdentityClientId: <workload-identity-client-id-set-automatically-by-gha>
   podAnnotations: {}
   podSecurityContext:
     seccompProfile:
@@ -45,7 +46,7 @@ microservice-chart:
   resources:
     requests:
       memory: "512Mi"
-      cpu: "0.5"
+      cpu: "0.3"
     limits:
       memory: "768Mi"
       cpu: "0.5"
